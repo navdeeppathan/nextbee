@@ -29,13 +29,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Models\Product;
-<<<<<<< HEAD
+
 use App\Models\User;
 use Carbon\Carbon;
-=======
+
 use App\Models\Payment;
 
->>>>>>> 3472405b63dedc103cb7f4d5702e4e064dd33d1b
+
 
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
@@ -59,7 +59,7 @@ Route::get('/inventory', function () {
 });
 
 Route::get('/inventory/dashboard', function () {
-<<<<<<< HEAD
+
     $totalSkus = Product::count();
     $categories = Category::count();
     $expiringsoon = Product::where('shelf_life' , '<', 3)->count();
@@ -76,10 +76,7 @@ Route::get('/inventory/dashboard', function () {
     });
 
     return view('Inventory.index', compact('totalSkus', 'categories', 'expiringsoon', 'lowstock', 'criticalExpiry'));
-=======
 
-    return view('Inventory.index');
->>>>>>> 3472405b63dedc103cb7f4d5702e4e064dd33d1b
 });
 
 Route::get('/sales', function () {
