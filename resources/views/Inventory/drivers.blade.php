@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --navy: #0f172a;
@@ -510,24 +511,24 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="index.html" class="nav-item">
+                    <a href="/inventory/dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                         <span class="nav-text">Dashboard</span>
                         <span class="tooltip">Dashboard</span>
                     </a>
-                    <a href="inventory.html" class="nav-item">
+                    <a href="/inventory-page" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-boxes"></i></span>
                         <span class="nav-text">Inventory</span>
                         <span class="nav-badge">47</span>
                         <span class="tooltip">Inventory</span>
                     </a>
-                    <a href="deliveries.html" class="nav-item">
+                    <a href="/deliveries" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-truck"></i></span>
                         <span class="nav-text">Deliveries</span>
                         <span class="nav-badge warning">156</span>
                         <span class="tooltip">Deliveries</span>
                     </a>
-                    <a href="drivers.html" class="nav-item active">
+                    <a href="/drivers" class="nav-item active">
                         <span class="nav-icon"><i class="fas fa-id-card"></i></span>
                         <span class="nav-text">Drivers</span>
                         <span class="tooltip">Drivers</span>
@@ -542,12 +543,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="customers.html" class="nav-item">
+                    <a href="/customers" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-store"></i></span>
                         <span class="nav-text">Customers</span>
                         <span class="tooltip">Customers</span>
                     </a>
-                    <a href="returns.html" class="nav-item">
+                    <a href="/returns" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                         <span class="nav-text">Returns</span>
                         <span class="nav-badge warning">3</span>
@@ -563,12 +564,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="sales_dashboard.html" class="nav-item">
+                    <a href="/sales-dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                         <span class="nav-text">Sales Dashboard</span>
                         <span class="tooltip">Sales Dashboard</span>
                     </a>
-                    <a href="sales_orders.html" class="nav-item">
+                    <a href="/sales-orders" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                         <span class="nav-text">Sales Orders</span>
                         <span class="tooltip">Sales Orders</span>
@@ -586,10 +587,17 @@
                     <p class="user-role">Operations Manager</p>
                 </div>
             </div>
-            <button class="logout-btn" onclick="logout()" aria-label="Logout">
+            <form method="POST" action="{{ url('/logout') }}">
+                @csrf
+            <button
+            type="submit"
+             class="logout-btn" 
+            {{-- onclick="logout()"  --}}
+            aria-label="Logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>
+            </form>
         </div>
     </aside>
 
@@ -633,10 +641,10 @@
                         <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Drivers</div>
                         <span class="text-blue-600 text-xs font-semibold bg-blue-50 px-2 py-1 rounded">Fleet</span>
                     </div>
-                    <div class="text-3xl font-bold text-slate-900 font-display">23</div>
+                    <div class="text-3xl font-bold text-slate-900 font-display">{{ $totalDrivers }}</div>
                     <div class="text-xs text-slate-500 mt-1">Active roster</div>
                 </div>
-                <div class="glass rounded-2xl p-6 border border-slate-200">
+                {{-- <div class="glass rounded-2xl p-6 border border-slate-200">
                     <div class="flex justify-between items-start mb-4">
                         <div class="text-slate-500 text-xs font-bold uppercase tracking-wider">Active Now</div>
                         <span class="text-emerald-600 text-xs font-semibold bg-emerald-50 px-2 py-1 rounded">Online</span>
@@ -659,14 +667,14 @@
                     </div>
                     <div class="text-3xl font-bold text-slate-600 font-display">5</div>
                     <div class="text-xs text-slate-500 mt-1">Break / End shift</div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Driver Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                 <!-- Driver 1: On Delivery -->
-                <div class="driver-card rounded-2xl p-6">
+                {{-- <div class="driver-card rounded-2xl p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
                             <div class="relative">
@@ -719,10 +727,106 @@
                         <button class="flex-1 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-semibold text-white transition">Track Live</button>
                         <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition">History</button>
                     </div>
+                </div> --}}
+                @foreach($drivers as $driver)
+                <div class="driver-card rounded-2xl p-6">
+
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-4">
+
+                            <!-- Avatar (Initials) -->
+                            @php
+                                $nameParts = explode(' ', $driver->name);
+                                $initials = strtoupper(substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? substr($nameParts[1], 0, 1) : ''));
+                            @endphp
+
+                            <div class="relative">
+                                <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600">
+                                    {{ $initials }}
+                                </div>
+
+                                <!-- Status Dot -->
+                                <div class="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900">
+                                    {{ $driver->name }}
+                                </h3>
+
+                                <p class="text-xs text-slate-500">
+                                    Driver ID: DRV-{{ str_pad($driver->id, 3, '0', STR_PAD_LEFT) }}
+                                </p>
+
+                                <p class="text-xs text-blue-600 font-semibold mt-1">
+                                    ● Active
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info -->
+                    <div class="space-y-3 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Vehicle</span>
+                            <span class="text-slate-900 font-medium">
+                                {{ $driver->assigned_vehicle ?? 'N/A' }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Phone</span>
+                            <span class="text-slate-900 font-medium">
+                                {{ $driver->phone }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">License</span>
+                            <span class="text-emerald-600 font-medium">
+                                Valid till {{ \Carbon\Carbon::parse($driver->licence_expiry)->format('Y') }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Status</span>
+                            <span class="text-slate-900 font-medium">
+                                Available
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Stats (Static for now) -->
+                    <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+                        <div class="p-2 bg-slate-50 rounded-lg border">
+                            <p class="text-lg font-bold text-slate-900">--</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Deliveries</p>
+                        </div>
+                        <div class="p-2 bg-slate-50 rounded-lg border">
+                            <p class="text-lg font-bold text-emerald-600">--</p>
+                            <p class="text-[10px] text-slate-500 uppercase">On Time</p>
+                        </div>
+                        <div class="p-2 bg-slate-50 rounded-lg border">
+                            <p class="text-lg font-bold text-slate-900">--</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Rating</p>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-2">
+                        <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
+                            Track
+                        </button>
+                        <button class="flex-1 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm font-semibold">
+                            Details
+                        </button>
+                    </div>
+
                 </div>
+                @endforeach
 
                 <!-- Driver 2: Loading -->
-                <div class="driver-card rounded-2xl p-6">
+                {{-- <div class="driver-card rounded-2xl p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
                             <div class="relative">
@@ -775,10 +879,10 @@
                         <button class="flex-1 py-2 bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-sm font-semibold transition">Monitor Loading</button>
                         <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition">History</button>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Driver 3: Off Duty -->
-                <div class="driver-card rounded-2xl p-6 opacity-75">
+                {{-- <div class="driver-card rounded-2xl p-6 opacity-75">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
                             <div class="relative">
@@ -831,10 +935,10 @@
                         <button class="flex-1 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm font-semibold transition">Assign Route</button>
                         <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition">History</button>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Driver 4: On Delivery -->
-                <div class="driver-card rounded-2xl p-6">
+                {{-- <div class="driver-card rounded-2xl p-6">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-4">
                             <div class="relative">
@@ -887,7 +991,7 @@
                         <button class="flex-1 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-semibold text-white transition">Track Live</button>
                         <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold transition">History</button>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
         </div>
@@ -901,37 +1005,43 @@
                 <button onclick="document.getElementById('add-driver-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
             </div>
 
-            <form class="space-y-4">
-                <div class="grid md:grid-cols-2 gap-4">
+            <form action="{{ route('register-driver') }}" method="POST" class="space-y-4">
+            @csrf
+                <div class="grid md:grid-cols-1 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">First Name</label>
-                        <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="John">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Full Name</label>
+                        <input type="text" name="name" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="John">
                     </div>
-                    <div>
+                    {{-- <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Last Name</label>
                         <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="Smith">
-                    </div>
+                    </div> --}}
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email</label>
+                    <input type="email" name="email" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="Smith">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Phone Number</label>
-                    <input type="tel" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="07879 000000">
+                    <input type="text" name="phone" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="07879 000000">
                 </div>
 
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">License Number</label>
-                        <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="SMITH901234AB5CD">
+                        <input type="text" name="licence_no" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="SMITH901234AB5CD">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">License Expiry</label>
-                        <input type="date" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
+                        <input type="date" name="licence_expiry" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Assigned Vehicle</label>
-                    <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
+                    <select name="assigned_vehicle" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
                         <option>VAN-04 (Ford Transit)</option>
                         <option>VAN-07 (Ford Transit)</option>
                         <option>VAN-12 (Mercedes Sprinter)</option>

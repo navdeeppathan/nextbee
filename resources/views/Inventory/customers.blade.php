@@ -623,24 +623,24 @@
                 <i class="fas fa-chevron-down section-chevron"></i>
             </div>
             <div class="section-content">
-                <a href="index.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/inventory/dashboard" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                     <span class="nav-text">Dashboard</span>
                     <span class="tooltip">Dashboard</span>
                 </a>
-                <a href="inventory.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/inventory-page" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-boxes"></i></span>
                     <span class="nav-text">Inventory</span>
                     <span class="nav-badge">47</span>
                     <span class="tooltip">Inventory</span>
                 </a>
-                <a href="deliveries.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/deliveries" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-truck"></i></span>
                     <span class="nav-text">Deliveries</span>
                     <span class="nav-badge warning">156</span>
                     <span class="tooltip">Deliveries</span>
                 </a>
-                <a href="drivers.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/drivers" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-id-card"></i></span>
                     <span class="nav-text">Drivers</span>
                     <span class="tooltip">Drivers</span>
@@ -655,12 +655,12 @@
                 <i class="fas fa-chevron-down section-chevron"></i>
             </div>
             <div class="section-content">
-                <a href="customers.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/customers" class="nav-item active">
                     <span class="nav-icon"><i class="fas fa-store"></i></span>
                     <span class="nav-text">Customers</span>
                     <span class="tooltip">Customers</span>
                 </a>
-                <a href="returns.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/returns" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                     <span class="nav-text">Returns</span>
                     <span class="nav-badge warning">3</span>
@@ -676,12 +676,12 @@
                 <i class="fas fa-chevron-down section-chevron"></i>
             </div>
             <div class="section-content">
-                <a href="sales_dashboard.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/sales-dashboard" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                     <span class="nav-text">Sales Dashboard</span>
                     <span class="tooltip">Sales Dashboard</span>
                 </a>
-                <a href="sales_orders.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/sales-orders" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                     <span class="nav-text">Sales Orders</span>
                     <span class="tooltip">Sales Orders</span>
@@ -699,10 +699,17 @@
                 <p class="user-role">Operations Manager</p>
             </div>
         </div>
-        <button class="logout-btn" onclick="logout()" aria-label="Logout">
+        <form method="POST" action="{{ url('/logout') }}">
+                @csrf
+        <button 
+        type="submit"
+        class="logout-btn"
+         {{-- onclick="logout()"  --}}
+        aria-label="Logout">
             <i class="fas fa-sign-out-alt"></i>
             <span>Logout</span>
         </button>
+        </form>
     </div>
 </aside>
 
@@ -741,44 +748,44 @@
         <div class="card p-6 mb-6">
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <p class="text-2xl font-bold text-slate-900 font-display">247</p>
+                    <p class="text-2xl font-bold text-slate-900 font-display">{{ $totalCustomers }}</p>
                     <p class="text-xs text-slate-500 uppercase font-medium mt-1">Total Customers</p>
                 </div>
                 <div class="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                    <p class="text-2xl font-bold text-emerald-600 font-display">198</p>
+                    <p class="text-2xl font-bold text-emerald-600 font-display">{{ $activeCustomers }}</p>
                     <p class="text-xs text-emerald-600 uppercase font-medium mt-1">Active</p>
                 </div>
                 <div class="text-center p-4 bg-amber-50 rounded-xl border border-amber-200">
-                    <p class="text-2xl font-bold text-amber-600 font-display">32</p>
+                    <p class="text-2xl font-bold text-amber-600 font-display">{{ $pendingCustomers }}</p>
                     <p class="text-xs text-amber-600 uppercase font-medium mt-1">Pending Setup</p>
                 </div>
                 <div class="text-center p-4 bg-red-50 rounded-xl border border-red-200">
-                    <p class="text-2xl font-bold text-red-600 font-display">17</p>
+                    <p class="text-2xl font-bold text-red-600 font-display">{{ $inactiveCustomers }}</p>
                     <p class="text-xs text-red-600 uppercase font-medium mt-1">Inactive</p>
                 </div>
                 <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-                    <p class="text-2xl font-bold text-blue-600 font-display">12</p>
+                    <p class="text-2xl font-bold text-blue-600 font-display">{{ $churnRiskCustomers }}</p>
                     <p class="text-xs text-blue-600 uppercase font-medium mt-1">Churn Risk</p>
                 </div>
             </div>
 
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="relative flex-1">
-                    <input type="text" placeholder="Search business name, contact, or postcode..." 
+                    <input type="text" id="customerSearch" placeholder="Search business name, contact, or postcode..." 
                            class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                     <span class="absolute right-3 top-3.5 text-slate-400">🔍</span>
                 </div>
-                <select class="bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
-                    <option>All Tiers</option>
-                    <option>Gold (High Volume)</option>
-                    <option>Silver (Regular)</option>
-                    <option>Bronze (Occasional)</option>
+                <select id="tierFilter" class="bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
+                    <option value="">All Tiers</option>
+                    <option value="gold">Gold (High Volume)</option>
+                    <option value="silver">Silver (Regular)</option>
+                    <option value="bronze">Bronze (Occasional)</option>
                 </select>
-                <select class="bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
-                    <option>All Status</option>
-                    <option>Active</option>
-                    <option>Inactive</option>
-                    <option>Churn Risk</option>
+                <select id="statusFilter" class="bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="churn">Churn Risk</option>
                 </select>
             </div>
         </div>
@@ -787,7 +794,7 @@
         <div class="space-y-4">
             
             <!-- Customer 1: Gold Tier -->
-            <div class="card p-6 customer-tier-gold">
+            {{-- <div class="card p-6 customer-tier-gold">
                 <div class="flex flex-col lg:flex-row gap-6 justify-between">
                     <div class="flex-1">
                         <div class="flex items-start justify-between mb-4">
@@ -858,10 +865,129 @@
                         </div>
                     </div>
                 </div>
+            </div> --}}
+            @foreach($customers as $customer)
+            <div 
+                class="card p-6 customer-tier-gold"
+
+                data-name="{{ strtolower($customer->business_name) }}"
+                data-contact="{{ strtolower($customer->primary_contact_name) }}"
+                data-address="{{ strtolower($customer->delivery_address) }}"
+                
+                data-tier="gold"
+                data-status="{{ strtolower($customer->status) }}"
+            >
+
+                <div class="flex flex-col lg:flex-row gap-6 justify-between">
+
+                    <!-- LEFT -->
+                    <div class="flex-1">
+
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+
+                                <!-- Icon -->
+                                <div class="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center text-2xl border-2 border-amber-200">
+                                    🏪
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center gap-3 mb-1">
+
+                                        <h3 class="text-lg font-bold text-slate-900">
+                                            {{ $customer->business_name }}
+                                        </h3>
+
+                                        <span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded">
+                                            GOLD
+                                        </span>
+
+                                        <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded">
+                                            {{ strtoupper($customer->status) }}
+                                        </span>
+                                    </div>
+
+                                    <p class="text-sm text-slate-500">
+                                        {{ $customer->business_type }} • 
+                                        CUST-{{ str_pad($customer->id, 3, '0', STR_PAD_LEFT) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STATS (STATIC FOR NOW) -->
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="p-3 bg-slate-50 rounded-lg border">
+                                <p class="text-xs text-slate-500 uppercase">Monthly Average</p>
+                                <p class="text-lg font-bold">--</p>
+                            </div>
+
+                            <div class="p-3 bg-slate-50 rounded-lg border">
+                                <p class="text-xs text-slate-500 uppercase">Order Frequency</p>
+                                <p class="text-lg font-bold">--</p>
+                            </div>
+
+                            <div class="p-3 bg-slate-50 rounded-lg border">
+                                <p class="text-xs text-slate-500 uppercase">Last Order</p>
+                                <p class="text-lg font-bold">--</p>
+                            </div>
+                        </div>
+
+                        <!-- INFO -->
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-500">Contact:</span>
+                                <span class="font-medium">{{ $customer->primary_contact_name }}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-500">Phone:</span>
+                                <span class="font-medium">{{ $customer->phone }}</span>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-500">Address:</span>
+                                <span class="font-medium">{{ $customer->delivery_address }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="lg:w-72 space-y-3">
+
+                        <!-- DELIVERY DAYS -->
+                        <div class="p-4 bg-slate-50 rounded-xl border">
+                            <p class="text-xs font-bold text-slate-500 uppercase mb-3">
+                                Delivery Schedule
+                            </p>
+
+                            <div class="flex gap-2 flex-wrap">
+                                @foreach($customer->preferred_delivery_days ?? [] as $day)
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full font-bold">
+                                        {{ $day }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- ACTIONS -->
+                        {{-- <div class="flex gap-2">
+                            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
+                                View Profile
+                            </button>
+
+                            <button class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
+                                Quick Order
+                            </button>
+                        </div> --}}
+                    </div>
+
+                </div>
             </div>
+            @endforeach
 
             <!-- Customer 2: Silver Tier - Churn Risk -->
-            <div class="card p-6 customer-tier-silver">
+            {{-- <div class="card p-6 customer-tier-silver">
                 <div class="flex flex-col lg:flex-row gap-6 justify-between">
                     <div class="flex-1">
                         <div class="flex items-start justify-between mb-4">
@@ -921,10 +1047,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Customer 3: Bronze Tier - New -->
-            <div class="card p-6 customer-tier-bronze">
+            {{-- <div class="card p-6 customer-tier-bronze">
                 <div class="flex flex-col lg:flex-row gap-6 justify-between">
                     <div class="flex-1">
                         <div class="flex items-start justify-between mb-4">
@@ -992,7 +1118,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
         </div>
 
@@ -1004,52 +1130,54 @@
                     <button onclick="document.getElementById('add-customer-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
                 </div>
                 
-                <form class="space-y-6">
+                <form action="{{ route('register-customer') }}" method="POST" class="space-y-6">
+                    @csrf
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Business Name</label>
-                        <input type="text" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="e.g., Premier Convenience Store">
+                        <input type="text" name="business_name" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="e.g., Premier Convenience Store">
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Business Type</label>
-                            <select class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
-                                <option>Convenience Store</option>
-                                <option>Supermarket</option>
-                                <option>Restaurant</option>
-                                <option>Cafe</option>
-                                <option>Hotel</option>
-                                <option>Other</option>
+                            <select name="business_type" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
+                                <option value="convenience_store">Convenience Store</option>
+                                <option value="supermarket">Supermarket</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="cafe">Cafe</option>
+                                <option value="hotel">Hotel</option>
+                                <option value="other">Other</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Estimated Monthly Volume (£)</label>
-                            <input type="number" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="5000">
+                            <input type="number" name="monthly_volume" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="5000">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Delivery Address</label>
-                        <textarea class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" rows="2" placeholder="Full address including postcode"></textarea>
+                        <textarea name="delivery_address" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" rows="2" placeholder="Full address including postcode"></textarea>
                     </div>
 
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Primary Contact</label>
-                            <input type="text" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="Full Name">
+                            <input type="text" name="primary_contact_name" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="Full Name">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Phone Number</label>
-                            <input type="tel" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="020 0000 0000">
+                            <input type="text" name="phone" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="020 0000 0000">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email Address</label>
-                        <input type="email" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="orders@business.com">
+                        <input type="email" name="email" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="orders@business.com">
                     </div>
 
-                    <div>
+
+                    {{-- <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Preferred Delivery Days</label>
                         <div class="flex gap-2 flex-wrap">
                             <label class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-lg cursor-pointer hover:bg-slate-200 transition">
@@ -1077,6 +1205,30 @@
                                 <span class="text-sm text-slate-700">Sat</span>
                             </label>
                         </div>
+                    </div> --}}
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">
+                            Preferred Delivery Days
+                        </label>
+
+                        <div class="flex gap-2 flex-wrap">
+                            @foreach(['Mon','Tue','Wed','Thu','Fri','Sat'] as $day)
+                                <label class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-lg cursor-pointer hover:bg-slate-200 transition">
+                                    
+                                    <input 
+                                        type="checkbox"
+                                        name="preferred_delivery_days[]"
+                                        value="{{ $day }}"
+                                        class="rounded bg-white border-slate-300 text-blue-600 focus:ring-blue-500"
+                                    >
+
+                                    <span class="text-sm text-slate-700">
+                                        {{ $day }}
+                                    </span>
+
+                                </label>
+                            @endforeach
+                        </div>
                     </div>
 
                     <div class="flex gap-4 pt-4">
@@ -1088,5 +1240,49 @@
         </div>
     </div>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const search = document.getElementById("customerSearch");
+    const tier = document.getElementById("tierFilter");
+    const status = document.getElementById("statusFilter");
+
+    const cards = document.querySelectorAll("[data-name]");
+
+    function filterCustomers() {
+        const searchVal = search.value.toLowerCase();
+        const tierVal = tier.value;
+        const statusVal = status.value;
+
+        cards.forEach(card => {
+            const name = card.dataset.name || '';
+            const contact = card.dataset.contact || '';
+            const address = card.dataset.address || '';
+            const cardTier = card.dataset.tier || '';
+            const cardStatus = card.dataset.status || '';
+
+            let matchSearch =
+                name.includes(searchVal) ||
+                contact.includes(searchVal) ||
+                address.includes(searchVal);
+
+            let matchTier = !tierVal || cardTier === tierVal;
+            let matchStatus = !statusVal || cardStatus === statusVal;
+
+            if (matchSearch && matchTier && matchStatus) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
+    search.addEventListener("input", filterCustomers);
+    tier.addEventListener("change", filterCustomers);
+    status.addEventListener("change", filterCustomers);
+
+});
+</script>
 </body>
 </html>

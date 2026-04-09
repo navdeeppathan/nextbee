@@ -495,24 +495,24 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="index.html" class="nav-item">
+                    <a href="/inventory/dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                         <span class="nav-text">Dashboard</span>
                         <span class="tooltip">Dashboard</span>
                     </a>
-                    <a href="inventory.html" class="nav-item">
+                    <a href="/inventory-page" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-boxes"></i></span>
                         <span class="nav-text">Inventory</span>
                         <span class="nav-badge">47</span>
                         <span class="tooltip">Inventory</span>
                     </a>
-                    <a href="deliveries.html" class="nav-item active">
+                    <a href="/deliveries" class="nav-item active">
                         <span class="nav-icon"><i class="fas fa-truck"></i></span>
                         <span class="nav-text">Deliveries</span>
                         <span class="nav-badge warning">156</span>
                         <span class="tooltip">Deliveries</span>
                     </a>
-                    <a href="drivers.html" class="nav-item">
+                    <a href="/drivers" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-id-card"></i></span>
                         <span class="nav-text">Drivers</span>
                         <span class="tooltip">Drivers</span>
@@ -526,12 +526,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="customers.html" class="nav-item">
+                    <a href="/customers" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-store"></i></span>
                         <span class="nav-text">Customers</span>
                         <span class="tooltip">Customers</span>
                     </a>
-                    <a href="returns.html" class="nav-item">
+                    <a href="/returns" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                         <span class="nav-text">Returns</span>
                         <span class="nav-badge warning">3</span>
@@ -546,12 +546,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="sales_dashboard.html" class="nav-item">
+                    <a href="/sales-dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                         <span class="nav-text">Sales Dashboard</span>
                         <span class="tooltip">Sales Dashboard</span>
                     </a>
-                    <a href="sales_orders.html" class="nav-item">
+                    <a href="/sales-orders" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                         <span class="nav-text">Sales Orders</span>
                         <span class="tooltip">Sales Orders</span>
@@ -568,10 +568,16 @@
                     <p class="user-role">Operations Manager</p>
                 </div>
             </div>
-            <button class="logout-btn" onclick="logout()" aria-label="Logout">
+            <form method="POST" action="{{ url('/logout') }}">
+                @csrf
+            <button 
+            type="submit" class="logout-btn" 
+            {{-- onclick="logout()" --}}
+             aria-label="Logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>
+            </form>
         </div>
     </aside>
 

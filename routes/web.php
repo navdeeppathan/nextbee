@@ -19,12 +19,18 @@ Route::get('/login', function () {
 });
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/register-driver', [AuthController::class, 'registerDriver'])->name('register-driver');
+Route::post('/register-customer', [AuthController::class, 'registerCustomer'])->name('register-customer');
+
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 use App\Http\Controllers\ProductController;
 use App\Models\Product;
+use App\Models\User;
+use Carbon\Carbon;
 
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
+Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
 Route::get('/', function () {
     $categories = Category::all();
@@ -44,8 +50,22 @@ Route::get('/inventory', function () {
 });
 
 Route::get('/inventory/dashboard', function () {
+    $totalSkus = Product::count();
+    $categories = Category::count();
+    $expiringsoon = Product::where('shelf_life' , '<', 3)->count();
+    $lowstock = Product::where('quantity' , '<', 10)->count();
+
     
-    return view('Inventory.index');
+
+    $criticalExpiry = Product::all()->filter(function ($product) {
+
+        $expiry = Carbon::parse($product->created_at)
+                    ->addDays($product->shelf_life);
+
+        return $expiry->between(now(), now()->addDays(8));
+    });
+
+    return view('Inventory.index', compact('totalSkus', 'categories', 'expiringsoon', 'lowstock', 'criticalExpiry'));
 });
 
 Route::get('/sales', function () {
@@ -54,7 +74,13 @@ Route::get('/sales', function () {
 
 
 Route::get('/customers', function () {
-    return view('inventory.customers');
+    $customers = User::where('role', 'customer')->whereNotNull('business_name')->get();
+    $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
+    $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
+    $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
+    $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
+    $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+    return view('inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
 Route::get('/deliveries', function () {
@@ -62,12 +88,16 @@ Route::get('/deliveries', function () {
 });
 
 Route::get('/drivers', function () {
-    return view('inventory.drivers');
+    $drivers = User::where('role', 'driver')->get();
+    $totalDrivers = User::where('role', 'driver')->count();
+    return view('inventory.drivers', compact('drivers', 'totalDrivers'));
 });
 
 Route::get('/inventory-page', function () {
     $categories = Category::all();
-    return view('inventory.inventory', compact('categories'));
+    $products = Product::all();
+
+    return view('inventory.inventory', compact('categories', 'products'));
 });
 
 Route::get('/returns', function () {

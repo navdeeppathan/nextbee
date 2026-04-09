@@ -515,24 +515,24 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="index.html" class="nav-item">
+                    <a href="/inventory/dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                         <span class="nav-text">Dashboard</span>
                         <span class="tooltip">Dashboard</span>
                     </a>
-                    <a href="inventory.html" class="nav-item active">
+                    <a href="/inventory-page" class="nav-item active">
                         <span class="nav-icon"><i class="fas fa-boxes"></i></span>
                         <span class="nav-text">Inventory</span>
                         <span class="nav-badge">47</span>
                         <span class="tooltip">Inventory</span>
                     </a>
-                    <a href="deliveries.html" class="nav-item">
+                    <a href="/deliveries" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-truck"></i></span>
                         <span class="nav-text">Deliveries</span>
                         <span class="nav-badge warning">156</span>
                         <span class="tooltip">Deliveries</span>
                     </a>
-                    <a href="drivers.html" class="nav-item">
+                    <a href="/drivers" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-id-card"></i></span>
                         <span class="nav-text">Drivers</span>
                         <span class="tooltip">Drivers</span>
@@ -547,12 +547,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="customers.html" class="nav-item">
+                    <a href="/customers" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-store"></i></span>
                         <span class="nav-text">Customers</span>
                         <span class="tooltip">Customers</span>
                     </a>
-                    <a href="returns.html" class="nav-item">
+                    <a href="/returns" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                         <span class="nav-text">Returns</span>
                         <span class="nav-badge warning">3</span>
@@ -568,12 +568,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="sales_dashboard.html" class="nav-item">
+                    <a href="/sales-dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                         <span class="nav-text">Sales Dashboard</span>
                         <span class="tooltip">Sales Dashboard</span>
                     </a>
-                    <a href="sales_orders.html" class="nav-item">
+                    <a href="/sales-orders" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                         <span class="nav-text">Sales Orders</span>
                         <span class="tooltip">Sales Orders</span>
@@ -591,10 +591,17 @@
                     <p class="user-role">Operations Manager</p>
                 </div>
             </div>
-            <button class="logout-btn" onclick="logout()" aria-label="Logout">
+            <form method="POST" action="{{ url('/logout') }}">
+                @csrf
+            <button
+            type="submit"
+             class="logout-btn"
+             {{-- onclick="logout()"  --}}
+             aria-label="Logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>
+            </form>
         </div>
     </aside>
 
@@ -636,12 +643,12 @@
                 <div class="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
                     <div class="flex gap-4 flex-wrap">
                         <div class="relative">
-                            <input type="text" placeholder="Search SKU, name, or location..." 
+                            <input type="text" id="searchInput" placeholder="Search SKU, name, or location..." 
                                    class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 w-64 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
                             <span class="absolute right-3 top-2.5 text-slate-400"><i class="fas fa-search"></i></span>
                         </div>
                         
-                            <select class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
+                            <select id="categoryFilter" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
                                 <option>All Categories</option>
                                 {{-- <option>Dairy & Eggs</option>
                                 <option>Fresh Produce</option>
@@ -649,13 +656,15 @@
                                 <option>Dry Goods</option>
                                 <option>Beverages</option> --}}
                                 @foreach($categories as $category)
-                                    <option>{{ $category->name }}</option>
+                                    <option value="{{ strtolower($category->name) }}">
+                                        {{ $category->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         
 
 
-                        <select class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
+                        <select id="locationFilter" class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
                             <option>All Locations</option>
                             <option>Aisle A - Cold Storage</option>
                             <option>Aisle B - Dry Goods</option>
@@ -663,14 +672,14 @@
                             <option>Aisle D - Produce</option>
                         </select>
                     </div>
-                    <div class="flex gap-2">
+                    {{-- <div class="flex gap-2">
                         <button class="px-4 py-2 bg-red-50 text-red-600 rounded-lg text-sm font-semibold border border-red-200 hover:bg-red-100 transition">
                             <i class="fas fa-exclamation-circle mr-1"></i> Expiring Soon (47)
                         </button>
                         <button class="px-4 py-2 bg-amber-50 text-amber-600 rounded-lg text-sm font-semibold border border-amber-200 hover:bg-amber-100 transition">
                             <i class="fas fa-box-open mr-1"></i> Low Stock (18)
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -678,7 +687,7 @@
             <div class="grid gap-4" id="inventory-grid">
 
                 <!-- Item 1: Milk with Multiple Locations & Lots -->
-                <div class="inventory-card rounded-2xl p-6 aisle-a">
+                {{-- <div class="inventory-card rounded-2xl p-6 aisle-a">
                     <div class="flex flex-col lg:flex-row gap-6 justify-between">
                         <div class="flex-1">
                             <div class="flex items-start gap-4 mb-4">
@@ -774,10 +783,163 @@
                             </div>
                         </div>
                     </div>
+                </div> --}}
+                @foreach($products as $product)
+                <div 
+                    class="inventory-card rounded-2xl p-6 aisle-{{ strtolower($product->aisle ?? 'a') }}"
+                    
+                    data-name="{{ strtolower($product->title) }}"
+                    data-sku="{{ strtolower($product->sku_code) }}"
+                    data-category="{{ strtolower($product->category->name ?? '') }}"
+                    data-location="{{ strtolower($product->aisle) }}"
+                >
+
+                    <div class="flex flex-col lg:flex-row gap-6 justify-between">
+                        
+                        <!-- LEFT -->
+                        <div class="flex-1">
+                            <div class="flex items-start gap-4 mb-4">
+
+                                <!-- Icon -->
+                                <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center text-3xl">
+                                    <img src="{{asset($product->image)}}" alt="" class="w-12 h-12 object-contain">
+                                </div>
+
+                                <div>
+                                    <div class="flex items-center gap-3 mb-1">
+                                        
+                                        <h3 class="text-lg font-bold text-slate-900">
+                                            {{ $product->title }}
+                                        </h3>
+
+                                        <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600 border border-slate-200">
+                                            SKU: {{ $product->sku_code }}
+                                        </span>
+                                    </div>
+
+                                    <p class="text-sm text-slate-500">
+                                        {{ $product->category->name ?? 'N/A' }} • 
+                                        Aisle {{ $product->aisle }} • Rack {{ $product->rack }}
+                                    </p>
+
+                                    <div class="flex items-center gap-4 mt-2 text-xs">
+                                        <span class="text-slate-500">MOQ: {{ $product->moq }}</span>
+                                        <span class="text-slate-500">Stock: {{ $product->quantity }} units</span>
+                                        <span class="text-emerald-600 font-medium">
+                                            Shelf Life: {{ $product->shelf_life }} days
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- LOCATION -->
+                            <div class="space-y-3">
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                                    Storage Location
+                                </p>
+
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                    
+                                    <div class="flex items-center gap-3">
+                                        <span class="location-pill px-3 py-1 rounded-full text-xs font-bold">
+                                            {{ $product->aisle }}-R{{ $product->rack }}-B{{ $product->basket }}
+                                        </span>
+
+                                        <div>
+                                            <p class="text-sm font-medium text-slate-900">
+                                                Aisle {{ $product->aisle }}, Rack {{ $product->rack }}, Basket {{ $product->basket }}
+                                            </p>
+
+                                            <p class="text-xs text-slate-500">
+                                                Quantity: {{ $product->quantity }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-slate-900">
+                                            {{ $product->quantity }} units
+                                        </p>
+
+                                        @if($product->quantity < 50)
+                                            <span class="expiry-badge expiry-critical">Low Stock</span>
+                                        @elseif($product->quantity < 100)
+                                            <span class="expiry-badge expiry-warning">Medium</span>
+                                        @else
+                                            <span class="expiry-badge expiry-good">Good</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT PANEL -->
+                        <div class="lg:w-64 space-y-3">
+                            <div class="">
+                                <button 
+                                    onclick="openEditModal(this)"
+                                    class="text-blue-600 hover:text-blue-800"
+                                    
+                                    data-id="{{ $product->id }}"
+                                    data-title="{{ $product->title }}"
+                                    data-sku="{{ $product->sku_code }}"
+                                    data-category="{{ $product->category_id }}"
+                                    data-moq="{{ $product->moq }}"
+                                    data-shelf="{{ $product->shelf_life }}"
+                                    data-aisle="{{ $product->aisle }}"
+                                    data-rack="{{ $product->rack }}"
+                                    data-basket="{{ $product->basket }}"
+                                    data-quantity="{{ $product->quantity }}"
+                                    data-price="{{ $product->price }}"
+                                    data-description="{{ $product->description }}"
+                                >
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+
+                            <!-- ALERT -->
+                            @if($product->quantity < 50)
+                            <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
+                                <p class="text-xs font-bold text-red-600 uppercase mb-1">Stock Alert</p>
+                                <p class="text-sm text-slate-900 font-medium">
+                                    Low stock available
+                                </p>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    Recommend reorder
+                                </p>
+                            </div>
+                            @endif
+
+                            
+
+                            <!-- ACTIONS -->
+                            {{-- <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <p class="text-xs font-bold text-slate-500 uppercase mb-2">
+                                    Quick Actions
+                                </p>
+
+                                <div class="space-y-2">
+                                    <button class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
+                                        Transfer Stock
+                                    </button>
+
+                                    <button class="w-full py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
+                                        Edit Product
+                                    </button>
+
+                                    <button class="w-full py-2 bg-emerald-100 text-emerald-700 border rounded-lg text-sm font-semibold">
+                                        Mark Delivered
+                                    </button>
+                                </div>
+                            </div> --}}
+
+                        </div>
+                    </div>
                 </div>
+                @endforeach
 
                 <!-- Item 2: Eggs with Single Location -->
-                <div class="inventory-card rounded-2xl p-6 aisle-a">
+                {{-- <div class="inventory-card rounded-2xl p-6 aisle-a">
                     <div class="flex flex-col lg:flex-row gap-6 justify-between">
                         <div class="flex-1">
                             <div class="flex items-start gap-4 mb-4">
@@ -834,10 +996,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Item 3: Rice - Dry Goods, Multiple Locations -->
-                <div class="inventory-card rounded-2xl p-6 aisle-b">
+                {{-- <div class="inventory-card rounded-2xl p-6 aisle-b">
                     <div class="flex flex-col lg:flex-row gap-6 justify-between">
                         <div class="flex-1">
                             <div class="flex items-start gap-4 mb-4">
@@ -903,7 +1065,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
         </div>
@@ -996,6 +1158,98 @@
                 <div class="flex gap-4 pt-4">
                     <button type="button" onclick="document.getElementById('add-item-modal').classList.add('hidden')" class="flex-1 py-3 border border-slate-300 rounded-lg text-slate-600 font-semibold hover:bg-slate-50 transition">Cancel</button>
                     <button type="submit" class="flex-1 py-3 bg-blue-600 rounded-lg text-white font-semibold hover:bg-blue-500 transition">Add Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="update-item-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-900 font-display">Add New Inventory Item</h2>
+                <button onclick="document.getElementById('add-item-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            </div>
+
+            <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                @method('PUT')
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Item Name</label>
+                        <input type="text" name="title" id="edit_title" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Semi-Skimmed Milk 1L">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">SKU Code</label>
+                        <input type="text" name="sku_code" id="edit_sku" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., MILK-SSL-1L">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Category</label>
+                        <select name="category_id" id="edit_category" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">MOQ (Units)</label>
+                        <input type="number" name="moq" id="edit_moq" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="12">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Shelf Life (Days)</label>
+                        <input type="number" name="shelf_life" id="edit_shelf" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 pt-6">
+                    <h3 class="text-sm font-bold text-slate-900 mb-4">Primary Location</h3>
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Aisle</label>
+                            <select name="aisle" id="edit_aisle" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2">
+                                <option value="A - Cold Storage">A - Cold Storage</option>
+                                <option value="B - Dry Goods">B - Dry Goods</option>
+                                <option value="C - Frozen">C - Frozen</option>
+                                <option value="D - Produce">D - Produce</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rack</label>
+                            <input type="number" name="rack" id="edit_rack"  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Basket</label>
+                            <input type="number"name="basket"  id="edit_basket" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Quantity</label>
+                            <input type="number" name="quantity" id="edit_quantity" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="0">
+                        </div>
+                    </div>
+                     <!-- Optional Fields -->
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Price</label>
+                            <input type="number" name="price" id="edit_price" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Image</label>
+                            <input type="file" name="image"  class="w-full">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
+                        <textarea name="description" id="edit_description" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="button" onclick="document.getElementById('update-item-modal').classList.add('hidden')" class="flex-1 py-3 border border-slate-300 rounded-lg text-slate-600 font-semibold hover:bg-slate-50 transition">Cancel</button>
+                    <button type="submit" class="flex-1 py-3 bg-blue-600 rounded-lg text-white font-semibold hover:bg-blue-500 transition">Update Item</button>
                 </div>
             </form>
         </div>
@@ -1109,6 +1363,79 @@
                 window.location.href = 'login.html';
             }
         }
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const locationFilter = document.getElementById("locationFilter");
+
+        const cards = document.querySelectorAll(".inventory-card");
+
+        function filterProducts() {
+            const search = searchInput.value.toLowerCase();
+            const category = categoryFilter.value.toLowerCase();
+            const location = locationFilter.value.toLowerCase();
+
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const sku = card.dataset.sku;
+                const cat = card.dataset.category;
+                const loc = card.dataset.location;
+
+                let matchSearch =
+                    name.includes(search) ||
+                    sku.includes(search) ||
+                    loc.includes(search);
+
+                let matchCategory =
+                    category === "all categories" || cat.includes(category);
+
+                let matchLocation =
+                    location === "all locations" || loc.includes(location);
+
+                if (matchSearch && matchCategory && matchLocation) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Event listeners
+        searchInput.addEventListener("input", filterProducts);
+        categoryFilter.addEventListener("change", filterProducts);
+        locationFilter.addEventListener("change", filterProducts);
+    });
+    </script>
+
+    <script>
+    function openEditModal(btn) {
+
+        const modal = document.getElementById('update-item-modal');
+        modal.classList.remove('hidden');
+
+        const id = btn.dataset.id;
+
+        // SET FORM ACTION
+        const form = document.getElementById('editForm');
+        form.action = `/products/${id}`;
+
+        // PREFILL VALUES
+        document.getElementById('edit_title').value = btn.dataset.title;
+        document.getElementById('edit_sku').value = btn.dataset.sku;
+        document.getElementById('edit_category').value = btn.dataset.category;
+        document.getElementById('edit_moq').value = btn.dataset.moq;
+        document.getElementById('edit_shelf').value = btn.dataset.shelf;
+        document.getElementById('edit_aisle').value = btn.dataset.aisle;
+        document.getElementById('edit_rack').value = btn.dataset.rack;
+        document.getElementById('edit_basket').value = btn.dataset.basket;
+        document.getElementById('edit_quantity').value = btn.dataset.quantity;
+        document.getElementById('edit_price').value = btn.dataset.price;
+        document.getElementById('edit_description').value = btn.dataset.description;
+    }
     </script>
 </body>
 </html>

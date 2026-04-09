@@ -75,7 +75,7 @@ class ProductController extends Controller
             $file = $request->file('image');
             $name = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads'), $name);
-            $data['image'] = $name;
+            $data['image'] = 'uploads/' . $name;;
         }
 
         Product::create($data);
@@ -92,20 +92,48 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
 
-        $data = $request->all();
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'sku_code' => 'required|string',
+            'price' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'moq' => 'required|integer|min:0',
+            'shelf_life' => 'required|integer|min:0',
+            'aisle' => 'nullable|string|max:100',
+            'rack' => 'nullable|string|max:50',
+            'basket' => 'nullable|string|max:50',
+            'quantity' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'description' => 'nullable|string'
+        ]);
 
+        $data = $request->only([
+            'title',
+            'sku_code',
+            'description',
+            'price',
+            'category_id',
+            'moq',
+            'shelf_life',
+            'aisle',
+            'rack',
+            'basket',
+            'quantity',
+        ]);
+
+        // IMAGE UPDATE
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $name = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads'), $name);
-            $data['image'] = $name;
+            $data['image'] = 'uploads/' . $name;
         }
 
         $product->update($data);
 
-        return redirect('/admin/products');
+        return redirect()->back()->with('success', 'Product updated successfully');
     }
 
     public function destroy($id)

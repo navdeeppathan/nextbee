@@ -15,11 +15,24 @@ class User extends Authenticatable
         'password',
         'role',
         'business_name',
-        'phone'
+        'phone',
+        'licence_no',
+        'licence_expiry',
+        'assigned_vehicle',
+        'business_type',
+        'delivery_address',
+        'primary_contact_name',
+        'preferred_delivery_days',
+        'monthly_volume',
+        'status'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'preferred_delivery_days' => 'array',
     ];
 }
