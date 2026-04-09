@@ -640,14 +640,21 @@
                                    class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 w-64 text-sm text-slate-900 focus:outline-none focus:border-blue-500">
                             <span class="absolute right-3 top-2.5 text-slate-400"><i class="fas fa-search"></i></span>
                         </div>
-                        <select class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
-                            <option>All Categories</option>
-                            <option>Dairy & Eggs</option>
-                            <option>Fresh Produce</option>
-                            <option>Frozen Goods</option>
-                            <option>Dry Goods</option>
-                            <option>Beverages</option>
-                        </select>
+                        
+                            <select class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
+                                <option>All Categories</option>
+                                {{-- <option>Dairy & Eggs</option>
+                                <option>Fresh Produce</option>
+                                <option>Frozen Goods</option>
+                                <option>Dry Goods</option>
+                                <option>Beverages</option> --}}
+                                @foreach($categories as $category)
+                                    <option>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        
+
+
                         <select class="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-900">
                             <option>All Locations</option>
                             <option>Aisle A - Cold Storage</option>
@@ -910,36 +917,35 @@
                 <button onclick="document.getElementById('add-item-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
             </div>
 
-            <form class="space-y-6">
+            <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Item Name</label>
-                        <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Semi-Skimmed Milk 1L">
+                        <input type="text" name="title" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Semi-Skimmed Milk 1L">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">SKU Code</label>
-                        <input type="text" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., MILK-SSL-1L">
+                        <input type="text" name="sku_code" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., MILK-SSL-1L">
                     </div>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Category</label>
-                        <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
-                            <option>Dairy & Eggs</option>
-                            <option>Fresh Produce</option>
-                            <option>Frozen Goods</option>
-                            <option>Dry Goods</option>
-                            <option>Beverages</option>
+                        <select name="category_id" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">MOQ (Units)</label>
-                        <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="12">
+                        <input type="number" name="moq" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="12">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Shelf Life (Days)</label>
-                        <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
+                        <input type="number" name="shelf_life" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
                     </div>
                 </div>
 
@@ -948,25 +954,42 @@
                     <div class="grid md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Aisle</label>
-                            <select class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900">
-                                <option>A - Cold Storage</option>
-                                <option>B - Dry Goods</option>
-                                <option>C - Frozen</option>
-                                <option>D - Produce</option>
+                            <select name="aisle" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2">
+                                <option value="A - Cold Storage">A - Cold Storage</option>
+                                <option value="B - Dry Goods">B - Dry Goods</option>
+                                <option value="C - Frozen">C - Frozen</option>
+                                <option value="D - Produce">D - Produce</option>
                             </select>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Rack</label>
-                            <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="1">
+                            <input type="number" name="rack"  class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="1">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Basket</label>
-                            <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="1">
+                            <input type="number"name="basket" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="1">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Quantity</label>
-                            <input type="number" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="0">
+                            <input type="number" name="quantity" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="0">
                         </div>
+                    </div>
+                     <!-- Optional Fields -->
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Price</label>
+                            <input type="number" name="price" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Image</label>
+                            <input type="file" name="image" class="w-full">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Description</label>
+                        <textarea name="description" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3"></textarea>
                     </div>
                 </div>
 
