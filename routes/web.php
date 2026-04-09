@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,9 @@ Route::get('/login', function () {
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
+use App\Http\Controllers\ProductController;
+
+Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 
 Route::get('/', function () {
     return view('landing.index');
@@ -30,9 +34,14 @@ Route::get('/main', function () {
 });
 
 Route::get('/inventory', function () {
-    return view('inventory.index');
+     
+    return view('Inventory.layouts.app');
 });
 
+Route::get('/inventory/dashboard', function () {
+    
+    return view('Inventory.index');
+});
 
 Route::get('/sales', function () {
     return view('SalesRep.sales_dashboard');
@@ -52,7 +61,8 @@ Route::get('/drivers', function () {
 });
 
 Route::get('/inventory-page', function () {
-    return view('inventory.inventory');
+    $categories = Category::all();
+    return view('inventory.inventory', compact('categories'));
 });
 
 Route::get('/returns', function () {
