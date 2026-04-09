@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,29 +23,34 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController;
 use App\Models\Product;
+use App\Models\Payment;
+
 
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 
 Route::get('/', function () {
     $categories = Category::all();
-    $products = Product::all();
+    $products = Product::with('category')->get(); // 👈 important
     return view('landing.index', compact('categories', 'products'));
 });
 
 Route::get('/main', function () {
     $categories = Category::all();
-    $products = Product::all();
+    $products = Product::with('category')->get(); // 👈 important
     return view('landing.main', compact('categories', 'products'));
 });
 
+
 Route::get('/inventory', function () {
-     
+
     return view('Inventory.layouts.app');
 });
 
 Route::get('/inventory/dashboard', function () {
-    
+
     return view('Inventory.index');
 });
 
@@ -141,10 +147,55 @@ Route::get('/customer/profile', function () {
     return view('customer.profile');
 })->middleware('auth');
 
-Route::get('/customer/orders', function () {
-    return view('customer.orders');
-})->middleware('auth');
+// Route::get('/customer/orders', function () {
+//     return view('customer.orders');
+// })->middleware('auth');
+Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
+Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
 
 Route::get('/customer/payments', function () {
-    return view('customer.payments');
+
+    $payments = Payment::where('user_id', auth()->id())
+        ->latest()
+        ->get();
+
+    return view('customer.payments', compact('payments'));
+
 })->middleware('auth');
+
+Route::get('/cart', function () {
+    $cartItems = \App\Models\Cart::with('product')
+        ->where('user_id', auth()->id())
+        ->get();
+
+    return view('landing.cart', compact('cartItems'));
+})->middleware('auth');
+Route::get('/checkout', function () {
+
+    $cartItems = \App\Models\Cart::with('product')
+        ->where('user_id', auth()->id())
+        ->get();
+
+    // ✅ JS friendly array banao
+    $cartData = $cartItems->map(function ($item) {
+        return [
+            'id' => $item->id, // ✅ MUST
+            'name' => $item->product->title,
+            'sku' => $item->product->sku_code,
+            'price' => $item->product->price,
+            'moq' => 1,
+            'qty' => max(5, $item->quantity),
+            'lineTotal' => $item->product->price * max(5, $item->quantity)
+        ];
+    });
+
+    return view('landing.checkout', compact('cartItems', 'cartData'));
+});
+Route::post('/cart/update', function (Request $request) {
+
+    \App\Models\Cart::where('id', $request->cart_id)
+        ->update(['quantity' => $request->qty]);
+
+    return response()->json(['success' => true]);
+});
+Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');

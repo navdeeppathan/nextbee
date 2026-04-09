@@ -35,7 +35,7 @@
                 <div style="height:1px; background:#f1f5f9;"></div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span style="font-size:13px; color:#64748b;">Total Spent</span>
-                    <span style="font-size:13px; font-weight:700; color:#0f172a;">₹8,400</span>
+                    <span style="font-size:13px; font-weight:700; color:#0f172a;">£8,400</span>
                 </div>
                 <div style="height:1px; background:#f1f5f9;"></div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
