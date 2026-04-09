@@ -117,3 +117,19 @@ Route::get('/sales-tasks', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 });
+
+Route::get('/customer/dashboard', function () {
+    return view('customer.dashboard');
+})->middleware('auth');
+
+Route::get('/customer/profile', function () {
+    return view('customer.profile');
+})->middleware('auth');
+
+Route::get('/customer/orders', function () {
+    return view('customer.orders');
+})->middleware('auth');
+
+Route::get('/customer/payments', function () {
+    return view('customer.payments');
+})->middleware('auth');

@@ -48,7 +48,7 @@ class AuthController extends Controller
 
         // ONLY customer goes to frontend
         if (trim($user->role) == 'customer') {
-            return redirect('/customers');
+            return redirect('/main');
         }
         if (trim($user->role) == 'business_owner') {
              return redirect('/main');

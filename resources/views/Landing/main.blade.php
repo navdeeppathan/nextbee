@@ -450,7 +450,7 @@
                     </button>
 
                     <!-- Account Manager Info -->
-                    <div class="hidden md:flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl">
+                    <!-- <div class="hidden md:flex items-center gap-3 px-4 py-2 bg-slate-50 rounded-xl">
                         <div class="text-right">
                             <p class="text-xs text-slate-500">Account Manager</p>
                             <p class="text-sm font-semibold text-slate-900">Sarah Johnson</p>
@@ -458,17 +458,17 @@
                         <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <i class="fas fa-headset text-blue-900"></i>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- User Profile -->
                     <div class="relative" id="profile-container">
                         <button onclick="toggleProfile()" class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl transition">
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
-                                JD
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
                             <div class="hidden md:block text-left">
-                                <p class="text-sm font-semibold text-slate-900">John Doe</p>
-                                <p class="text-xs text-slate-500">Purchasing Manager</p>
+                                <p class="text-sm font-semibold text-slate-900"> {{ Auth::user()->name }}</p>
+                                <p class="text-xs text-slate-500"> {{ Auth::user()->role }}</p>
                             </div>
                             <i class="fas fa-chevron-down text-slate-400 text-xs"></i>
                         </button>
@@ -476,28 +476,20 @@
                         <!-- Profile Dropdown -->
                         <div class="profile-dropdown" id="profile-dropdown">
                             <div class="p-4 border-b border-slate-100">
-                                <p class="font-semibold text-slate-900">John Doe</p>
-                                <p class="text-sm text-slate-500">john.doe@restaurantchain.co.uk</p>
-                                <p class="text-xs text-slate-400 mt-1">Business ID: MET-78432</p>
+                                <p class="font-semibold text-slate-900"> {{ Auth::user()->name }}</p>
+                                <p class="text-sm text-slate-500">{{ Auth::user()->email }}</p>
+                                <!-- <p class="text-xs text-slate-400 mt-1">Business ID: MET-78432</p> -->
                             </div>
                             <div class="p-2">
-                                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
+                                <a href="/customer/profile" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
                                     <i class="fas fa-user text-slate-400"></i>
                                     My Profile
                                 </a>
-                                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
+                                <a href="/customer/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
                                     <i class="fas fa-building text-slate-400"></i>
-                                    Company Details
+                                   Dashboard
                                 </a>
-                                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
-                                    <i class="fas fa-file-invoice text-slate-400"></i>
-                                    Order History
-                                </a>
-                                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
-                                    <i class="fas fa-credit-card text-slate-400"></i>
-                                    Payment Terms
-                                    <span class="ml-auto text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Net 30</span>
-                                </a>
+                               
                             </div>
                             <div class="p-2 border-t border-slate-100">
                                 <form method="POST" action="{{ url('/logout') }}">
