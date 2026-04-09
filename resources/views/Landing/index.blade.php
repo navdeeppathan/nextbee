@@ -401,6 +401,16 @@
         </div>
     </section>
 
+    @php
+    $categoryIcons = [
+        'beverages' => '🥤',
+        'food-groceries' => '🥫',
+        'frozen-foods' => '❄️',
+        'snacks-confectionery' => '🍿',
+        'household' => '🧴',
+        'health-beauty' => '💊',
+    ];
+    @endphp
     <!-- ALL CATEGORIES & PRODUCTS SECTION -->
     <section id="products" class="bg-slate-50 min-h-screen">
         
@@ -408,7 +418,7 @@
         <div class="sticky-cat">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
-                    <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium" onclick="filterCategory('all', this)">
+                    {{-- <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium" onclick="filterCategory('all', this)">
                         All Products
                     </button>
                     <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('beverages', this)">
@@ -434,7 +444,29 @@
                     </button>
                     <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('pet', this)">
                         🐾 Pet Supplies
+                    </button> --}}
+
+                    <!-- All Products -->
+                    <button 
+                        class="category-btn active px-6 py-3 rounded-full text-sm font-medium"
+                        onclick="filterCategory('all', this)">
+                        All Products
                     </button>
+
+                    <!-- Dynamic Categories -->
+                    @foreach($categories as $category)
+                        @php
+                            $slug = \Illuminate\Support\Str::slug($category->name);
+                            $icon = $categoryIcons[$slug] ?? '📦';
+                        @endphp
+
+                        <button 
+                            class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600"
+                            onclick="filterCategory('{{ $slug }}', this)">
+                            
+                            {{ $icon }} {{ $category->name }}
+                        </button>
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -22,15 +22,20 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 use App\Http\Controllers\ProductController;
+use App\Models\Product;
 
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 
 Route::get('/', function () {
-    return view('landing.index');
+    $categories = Category::all();
+    $products = Product::all();
+    return view('landing.index', compact('categories', 'products'));
 });
 
 Route::get('/main', function () {
-    return view('landing.main');
+    $categories = Category::all();
+    $products = Product::all();
+    return view('landing.main', compact('categories', 'products'));
 });
 
 Route::get('/inventory', function () {
