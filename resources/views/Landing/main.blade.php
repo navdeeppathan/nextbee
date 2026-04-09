@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NextBee Wholesale | B2B Sales Order Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -60,7 +63,9 @@
         }
 
         @keyframes shine {
-            to { background-position: 200% center; }
+            to {
+                background-position: 200% center;
+            }
         }
 
         /* Navigation */
@@ -78,7 +83,7 @@
             margin-top: 0.5rem;
             background: white;
             border-radius: 1rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             min-width: 280px;
             opacity: 0;
             visibility: hidden;
@@ -276,7 +281,7 @@
             width: 400px;
             height: calc(100vh - 80px);
             background: white;
-            box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
             transform: translateX(100%);
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 50;
@@ -381,9 +386,11 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #1e40af;
             border-radius: 4px;
@@ -398,11 +405,20 @@
             margin-right: 6px;
         }
 
-        .status-dot.green { background: #10b981; }
-        .status-dot.amber { background: #f59e0b; }
-        .status-dot.blue { background: #3b82f6; }
+        .status-dot.green {
+            background: #10b981;
+        }
+
+        .status-dot.amber {
+            background: #f59e0b;
+        }
+
+        .status-dot.blue {
+            background: #3b82f6;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Loader -->
@@ -421,7 +437,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <a href="#" class="flex items-center gap-3 group">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
                         <i class="fas fa-building text-white text-xl"></i>
                     </div>
                     <div>
@@ -431,11 +448,16 @@
                 </a>
 
                 <div class="hidden lg:flex items-center gap-8">
-                    <a href="#products" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Products</a>
-                    <a href="#sea-items" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Items on Sea</a>
-                    <a href="#brands" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Brands</a>
-                    <a href="#services" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Services</a>
-                    <a href="/sales-order-page2" class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
+                    <a href="#products"
+                        class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Products</a>
+                    <a href="#sea-items" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Items
+                        on Sea</a>
+                    <a href="#brands"
+                        class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Brands</a>
+                    <a href="#services"
+                        class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Services</a>
+                    <a href="/checkout"
+                        class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
                         <i class="fas fa-clipboard-list"></i>
                         Create Sales Order
                     </a>
@@ -444,7 +466,8 @@
                 <!-- LOGGED IN USER SECTION -->
                 <div class="flex items-center gap-4">
                     <!-- Notifications -->
-                    <button onclick="toggleNotifications()" class="relative p-2 text-slate-600 hover:text-blue-900 transition">
+                    <button onclick="toggleNotifications()"
+                        class="relative p-2 text-slate-600 hover:text-blue-900 transition">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="notification-badge">3</span>
                     </button>
@@ -462,8 +485,10 @@
 
                     <!-- User Profile -->
                     <div class="relative" id="profile-container">
-                        <button onclick="toggleProfile()" class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl transition">
-                            <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
+                        <button onclick="toggleProfile()"
+                            class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl transition">
+                            <div
+                                class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </div>
                             <div class="hidden md:block text-left">
@@ -481,23 +506,23 @@
                                 <!-- <p class="text-xs text-slate-400 mt-1">Business ID: MET-78432</p> -->
                             </div>
                             <div class="p-2">
-                                <a href="/customer/profile" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
+                                <a href="/customer/profile"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
                                     <i class="fas fa-user text-slate-400"></i>
                                     My Profile
                                 </a>
-                                <a href="/customer/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
+                                <a href="/customer/dashboard"
+                                    class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 transition text-sm text-slate-700">
                                     <i class="fas fa-building text-slate-400"></i>
-                                   Dashboard
+                                    Dashboard
                                 </a>
-                               
+
                             </div>
                             <div class="p-2 border-t border-slate-100">
                                 <form method="POST" action="{{ url('/logout') }}">
                                     @csrf
-                                    <button
-                                        type="submit"
-                                     {{-- onclick="logout()" --}}
-                                      class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition text-sm text-red-600">
+                                    <button type="submit" {{-- onclick="logout()" --}}
+                                        class="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-red-50 transition text-sm text-red-600">
                                         <i class="fas fa-sign-out-alt"></i>
                                         Logout
                                     </button>
@@ -515,7 +540,8 @@
     </nav>
 
     <!-- Notification Panel -->
-    <div id="notification-panel" class="fixed top-20 right-4 w-80 bg-white rounded-2xl shadow-2xl z-50 opacity-0 invisible transition-all duration-300 transform translate-y-2">
+    <div id="notification-panel"
+        class="fixed top-20 right-4 w-80 bg-white rounded-2xl shadow-2xl z-50 opacity-0 invisible transition-all duration-300 transform translate-y-2">
         <div class="p-4 border-b border-slate-100 flex justify-between items-center">
             <h3 class="font-semibold text-slate-900">Notifications</h3>
             <button onclick="toggleNotifications()" class="text-slate-400 hover:text-slate-600">
@@ -580,11 +606,16 @@
                 </button>
             </div>
             <div class="space-y-6">
-                <a href="#products" class="block text-2xl font-medium text-slate-800" onclick="toggleMobileMenu()">Products</a>
-                <a href="#sea-items" class="block text-2xl font-medium text-slate-800" onclick="toggleMobileMenu()">Items on Sea</a>
-                <a href="#brands" class="block text-2xl font-medium text-slate-800" onclick="toggleMobileMenu()">Brands</a>
-                <a href="#services" class="block text-2xl font-medium text-slate-800" onclick="toggleMobileMenu()">Services</a>
-                <a href="/sales-order-page2" onclick="toggleMobileMenu();" class="block text-2xl font-medium text-blue-900">Create Sales Order</a>
+                <a href="#products" class="block text-2xl font-medium text-slate-800"
+                    onclick="toggleMobileMenu()">Products</a>
+                <a href="#sea-items" class="block text-2xl font-medium text-slate-800"
+                    onclick="toggleMobileMenu()">Items on Sea</a>
+                <a href="#brands" class="block text-2xl font-medium text-slate-800"
+                    onclick="toggleMobileMenu()">Brands</a>
+                <a href="#services" class="block text-2xl font-medium text-slate-800"
+                    onclick="toggleMobileMenu()">Services</a>
+                <a href="/sales-order-page2" onclick="toggleMobileMenu();"
+                    class="block text-2xl font-medium text-blue-900">Create Sales Order</a>
                 <hr class="border-slate-200">
                 <a href="#" class="block text-lg font-medium text-slate-600">My Profile</a>
                 <a href="#" class="block text-lg font-medium text-slate-600">Order History</a>
@@ -629,7 +660,7 @@
                         </div>
                         <span class="eta-badge text-white text-xs font-bold px-3 py-1 rounded-full">ETA 3 Days</span>
                     </div>
-                  
+
                     <div class="border-t border-white/10 pt-4">
                         <p class="text-xs text-slate-400 mb-2">Key Items:</p>
                         <div class="flex flex-wrap gap-2">
@@ -638,7 +669,8 @@
                             <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Heinz</span>
                         </div>
                     </div>
-                    <button onclick="preorderContainer('MET-2024-089')" class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
+                    <button onclick="preorderContainer('MET-2024-089')"
+                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
                         Pre-order Items
                     </button>
                 </div>
@@ -652,7 +684,7 @@
                         </div>
                         <span class="eta-badge text-white text-xs font-bold px-3 py-1 rounded-full">ETA 7 Days</span>
                     </div>
-                   
+
                     <div class="border-t border-white/10 pt-4">
                         <p class="text-xs text-slate-400 mb-2">Key Items:</p>
                         <div class="flex flex-wrap gap-2">
@@ -661,7 +693,8 @@
                             <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Nestlé</span>
                         </div>
                     </div>
-                    <button onclick="preorderContainer('MET-2024-090')" class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
+                    <button onclick="preorderContainer('MET-2024-090')"
+                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
                         Pre-order Items
                     </button>
                 </div>
@@ -674,7 +707,7 @@
                         </div>
                         <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">ETA 12 Days</span>
                     </div>
-                   
+
                     <div class="border-t border-white/10 pt-4">
                         <p class="text-xs text-slate-400 mb-2">Key Items:</p>
                         <div class="flex flex-wrap gap-2">
@@ -683,7 +716,8 @@
                             <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Pringles</span>
                         </div>
                     </div>
-                    <button onclick="preorderContainer('MET-2024-091')" class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
+                    <button onclick="preorderContainer('MET-2024-091')"
+                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
                         Pre-order Items
                     </button>
                 </div>
@@ -693,11 +727,12 @@
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="text-xs text-slate-400 uppercase tracking-wider">Container</p>
-    
+
                         </div>
-                        <span class="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded-full">ETA 18 Days</span>
+                        <span class="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded-full">ETA 18
+                            Days</span>
                     </div>
-                  
+
                     <div class="border-t border-white/10 pt-4">
                         <p class="text-xs text-slate-400 mb-2">Key Items:</p>
                         <div class="flex flex-wrap gap-2">
@@ -706,7 +741,8 @@
                             <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Oils</span>
                         </div>
                     </div>
-                    <button onclick="preorderContainer('MET-2024-092')" class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
+                    <button onclick="preorderContainer('MET-2024-092')"
+                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
                         Pre-order Items
                     </button>
                 </div>
@@ -733,7 +769,16 @@
             </div>
         </div>
     </section>
-
+    @php
+        $categoryIcons = [
+            'beverages' => '🥤',
+            'food-groceries' => '🥫',
+            'frozen-foods' => '❄️',
+            'snacks-confectionery' => '🍿',
+            'household' => '🧴',
+            'health-beauty' => '💊',
+        ];
+    @endphp
     <!-- ALL CATEGORIES & PRODUCTS SECTION -->
     <section id="products" class="bg-slate-50 min-h-screen">
 
@@ -741,33 +786,24 @@
         <div class="sticky-cat">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
-                    <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium" onclick="filterCategory('all', this)">
+                    <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium"
+                        onclick="filterCategory('all', this)">
                         All Products
                     </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('beverages', this)">
-                        🥤 Beverages
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('food', this)">
-                        🥫 Food & Groceries
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('frozen', this)">
-                        ❄️ Frozen Foods
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('snacks', this)">
-                        🍿 Snacks & Confectionery
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('household', this)">
-                        🧴 Household
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('health', this)">
-                        💊 Health & Beauty
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('baby', this)">
-                        👶 Baby & Child
-                    </button>
-                    <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600" onclick="filterCategory('pet', this)">
-                        🐾 Pet Supplies
-                    </button>
+
+                    <!-- Dynamic Categories -->
+                    @foreach($categories as $category)
+                        @php
+                            $slug = \Illuminate\Support\Str::slug($category->name);
+                            $icon = $categoryIcons[$slug] ?? '📦';
+                        @endphp
+
+                        <button class="category-btn px-6 py-3 rounded-full text-sm font-medium text-slate-600"
+                            onclick="filterCategory('{{ $slug }}', this)">
+
+                            {{ $icon }} {{ $category->name }}
+                        </button>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -777,798 +813,71 @@
 
             <!-- BEVERAGES CATEGORY -->
             <div class="category-group mb-16" data-category="beverages">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="font-display text-3xl font-bold text-slate-900">Beverages</h2>
-                        <p class="text-slate-500 mt-1">Soft drinks, juices, water, energy drinks, and alcohol</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-slate-500">1,200+ products</span>
-                        <button onclick="viewPriceList('beverages')" class="text-blue-900 font-medium hover:underline flex items-center gap-2">
-                            Download Price List <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                </div>
+
 
                 <div class="category-grid">
                     <!-- Product 1 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
-                            </div>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity"></div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Coca Cola 330ml Cans (24 pack)', 'CC-330-24', 5)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: CC-330-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2 line-clamp-2">Coca Cola 330ml Cans</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 cans per case • Classic/Zero/Diet</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£8.45</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">5 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
+                    @foreach($products as $product)
 
-                    <!-- Product 2 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=400&h=400&fit=crop" alt="Red Bull" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">TRENDING</span>
-                            </div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Red Bull Energy Drink 250ml (24 pack)', 'RB-250-24', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: RB-250-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Red Bull Energy Drink 250ml</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 cans per case • Original/Sugarfree</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£18.90</p>
+                        @php
+                            $slug = \Illuminate\Support\Str::slug($product->category->name);
+                        @endphp
+                        <div class="product-card bg-white rounded-2xl overflow-hidden product-item"
+                            data-category="{{ $slug }}">
+                            <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
+                                    alt="Coca Cola" class="product-image w-full h-full object-cover">
+                                <div class="product-badge">
+                                    <span
+                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
                                 </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                                </div>
+                                <div class="quick-add absolute bottom-4 left-4 right-4">
+                                    <!-- <button onclick="addToSalesOrder('Coca Cola 330ml Cans (24 pack)', 'CC-330-24', 5)"
+                                        class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
+                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                    </button> -->
+                                    <button onclick="addToCart({{ $product->id }})"
+                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                          <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                        </button>
                                 </div>
                             </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs text-slate-500">SKU : {{ $product->sku_code }}</span>
+                                    <span class="status-dot green"></span><span class="text-xs text-green-600">In
+                                        Stock</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2">{{ $product->title }}</h3>
+                                <p class="text-sm text-slate-500 mb-3">{{ $product->category->name }}</p>
+                                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                                    <div>
+                                        <p class="text-xs text-slate-400">Trade Price</p>
+                                        <p class="text-lg font-bold text-blue-900">£ {{ $product->price }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-slate-400">MOQ</p>
+                                        <p class="text-sm font-semibold text-slate-700">{{ $product->moq }} cases</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Next-day delivery available</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
 
-                    <!-- Product 3 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=400&fit=crop" alt="Evian" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Evian Natural Mineral Water 500ml (24 pack)', 'EV-500-24', 10)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: EV-500-24</span>
-                                <span class="status-dot amber"></span><span class="text-xs text-amber-600">Low Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Evian Natural Water 500ml</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 bottles per case • Still/Sparkling</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£12.30</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">10 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 4 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&h=400&fit=crop" alt="Fanta" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Fanta Orange 330ml (24 pack)', 'FA-330-24', 5)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: FA-330-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Fanta Orange 330ml Cans</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 cans per case • Orange/Grape/Zero</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£7.95</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">5 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 5 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400&h=400&fit=crop" alt="Pepsi" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Pepsi Max 330ml (24 pack)', 'PM-330-24', 5)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: PM-330-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Pepsi Max 330ml Cans</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 cans per case • Max/Regular/Diet</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£7.65</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">5 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Product 6 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1618885472179-5e47401952d9?w=400&h=400&fit=crop" alt="Monster" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-green-600 text-white text-xs font-bold rounded-full">NEW</span>
-                            </div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Monster Energy 500ml (12 pack)', 'MO-500-12', 4)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: MO-500-12</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Monster Energy 500ml</h3>
-                            <p class="text-sm text-slate-500 mb-3">12 cans per case • Original/Ultra</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£14.20</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">4 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 7 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1560023907-5f339617ea30?w=400&h=400&fit=crop" alt="Tropicana" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Tropicana Orange Juice 1L (12 pack)', 'TJ-1L-12', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: TJ-1L-12</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Tropicana Orange Juice 1L</h3>
-                            <p class="text-sm text-slate-500 mb-3">12 cartons per case • Smooth/Bits</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£15.60</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 8 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=400&fit=crop" alt="Lucozade" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Lucozade Sport 500ml (24 pack)', 'LS-500-24', 5)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: LS-500-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Lucozade Sport 500ml</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 bottles per case • Orange/Apple</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£16.80</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">5 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- FOOD & GROCERIES CATEGORY -->
-            <div class="category-group mb-16" data-category="food">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="font-display text-3xl font-bold text-slate-900">Food & Groceries</h2>
-                        <p class="text-slate-500 mt-1">Canned goods, sauces, rice, pasta, oils, and cooking ingredients</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-slate-500">2,500+ products</span>
-                        <button onclick="viewPriceList('food')" class="text-blue-900 font-medium hover:underline flex items-center gap-2">
-                            Download Price List <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                </div>
 
-                <div class="category-grid">
-                    <!-- Product 1 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400&h=400&fit=crop" alt="Heinz Beans" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">BESTSELLER</span>
-                            </div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Heinz Baked Beans 415g (24 pack)', 'HB-415-24', 5)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: HB-415-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Heinz Baked Beans 415g</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 cans per case • Classic recipe</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£14.40</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">5 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 2 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1612255389712-853823722e38?w=400&h=400&fit=crop" alt="Uncle Bens" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Uncle Bens Long Grain Rice 5kg', 'UB-RICE-5K', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: UB-RICE-5K</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Uncle Ben's Long Grain Rice 5kg</h3>
-                            <p class="text-sm text-slate-500 mb-3">6 bags per case • Microwave/Boil</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£28.50</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 3 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&h=400&fit=crop" alt="Barilla Pasta" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Barilla Spaghetti No.5 500g (20 pack)', 'BA-PASTA-500', 2)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: BA-PASTA-500</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Barilla Spaghetti No.5 500g</h3>
-                            <p class="text-sm text-slate-500 mb-3">20 packs per case • Durum wheat</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£18.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">2 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 4 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400&h=400&fit=crop" alt="Spices" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Schwartz Mixed Herbs 100g (6 pack)', 'SC-HERB-100', 4)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: SC-HERB-100</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Schwartz Mixed Herbs 100g</h3>
-                            <p class="text-sm text-slate-500 mb-3">6 jars per case • Catering size</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£24.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">4 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 5 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=400&h=400&fit=crop" alt="Olive Oil" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Filippo Berio Olive Oil 5L (4 pack)', 'FB-OIL-5L', 2)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: FB-OIL-5L</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Filippo Berio Olive Oil 5L</h3>
-                            <p class="text-sm text-slate-500 mb-3">4 tins per case • Extra Virgin/Pure</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£42.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">2 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 6 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1589188088057-6c2c14e64c05?w=400&h=400&fit=crop" alt="Ketchup" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">DEAL</span>
-                            </div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Heinz Tomato Ketchup 5L (2 pack)', 'HK-5L-2', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: HK-5L-2</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Heinz Tomato Ketchup 5L</h3>
-                            <p class="text-sm text-slate-500 mb-3">2 drums per case • Catering size</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£16.80</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 7 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1551462147-37885acc36f1?w=400&h=400&fit=crop" alt="Mayonnaise" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Hellmanns Mayonnaise 5L (2 pack)', 'HM-5L-2', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: HM-5L-2</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Hellmann's Mayonnaise 5L</h3>
-                            <p class="text-sm text-slate-500 mb-3">2 drums per case • Real/Light</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£19.20</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 8 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1603569283847-aa295f0d016a?w=400&h=400&fit=crop" alt="Baked Beans" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Batchelors Mushy Peas 300g (24 pack)', 'BP-300-24', 5)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: BP-300-24</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Batchelors Mushy Peas 300g</h3>
-                            <p class="text-sm text-slate-500 mb-3">24 cans per case • Traditional</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£13.20</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">5 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-truck"></i>
-                                <span>Next-day delivery available</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FROZEN FOODS CATEGORY -->
-            <div class="category-group mb-16" data-category="frozen">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="font-display text-3xl font-bold text-slate-900">Frozen Foods</h2>
-                        <p class="text-slate-500 mt-1">Frozen meals, vegetables, meat, poultry, and ice cream</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-sm text-slate-500">600+ products</span>
-                        <button onclick="viewPriceList('frozen')" class="text-blue-900 font-medium hover:underline flex items-center gap-2">
-                            Download Price List <i class="fas fa-download"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="category-grid">
-                    <!-- Product 1 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1624813744264-f9eff0bbff38?w=400&h=400&fit=crop" alt="Frozen Vegetables" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-cyan-600 text-white text-xs font-bold rounded-full">FROZEN</span>
-                            </div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Birds Eye Garden Peas 1kg (10 pack)', 'BE-PEAS-1K', 2)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: BE-PEAS-1K</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Birds Eye Garden Peas 1kg</h3>
-                            <p class="text-sm text-slate-500 mb-3">10 bags per case • Grade A</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£22.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">2 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-snowflake text-cyan-500"></i>
-                                <span>Temperature-controlled delivery</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 2 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1560008581-09826d1de69e?w=400&h=400&fit=crop" alt="Ice Cream" class="product-image w-full h-full object-cover">
-                            <div class="product-badge">
-                                <span class="px-3 py-1 bg-pink-500 text-white text-xs font-bold rounded-full">-20%</span>
-                            </div>
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Wall's Magnum Classic 110ml (20 pack)', 'WM-MAG-110', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: WM-MAG-110</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Wall's Magnum Classic 110ml</h3>
-                            <p class="text-sm text-slate-500 mb-3">20 units per case • Almond/White</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£18.40</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-snowflake text-cyan-500"></i>
-                                <span>Temperature-controlled delivery</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 3 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&h=400&fit=crop" alt="Frozen Pizza" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('Chicago Town Pizza 4 Pack (12 pack)', 'CT-PIZZA-4', 2)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: CT-PIZZA-4</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">Chicago Town Pizza 4 Pack</h3>
-                            <p class="text-sm text-slate-500 mb-3">12 boxes per case • Pepperoni/Cheese</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£24.00</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">2 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-snowflake text-cyan-500"></i>
-                                <span>Temperature-controlled delivery</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product 4 -->
-                    <div class="product-card bg-white rounded-2xl overflow-hidden">
-                        <div class="relative h-48 bg-gray-100 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop" alt="Frozen Chips" class="product-image w-full h-full object-cover">
-                            <div class="quick-add absolute bottom-4 left-4 right-4">
-                                <button onclick="addToSalesOrder('McCain Oven Chips 2.5kg (4 pack)', 'MC-CHIPS-2.5K', 3)" class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="text-xs text-slate-500">SKU: MC-CHIPS-2.5K</span>
-                                <span class="status-dot green"></span><span class="text-xs text-green-600">In Stock</span>
-                            </div>
-                            <h3 class="font-bold text-slate-900 mb-2">McCain Oven Chips 2.5kg</h3>
-                            <p class="text-sm text-slate-500 mb-3">4 bags per case • Straight/Crinkle</p>
-                            <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                <div>
-                                    <p class="text-xs text-slate-400">Trade Price</p>
-                                    <p class="text-lg font-bold text-blue-900">£19.20</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-400">MOQ</p>
-                                    <p class="text-sm font-semibold text-slate-700">3 cases</p>
-                                </div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                <i class="fas fa-snowflake text-cyan-500"></i>
-                                <span>Temperature-controlled delivery</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Remaining categories abbreviated for space -->
-            <div class="category-group mb-16" data-category="snacks">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="font-display text-3xl font-bold text-slate-900">Snacks & Confectionery</h2>
-                        <p class="text-slate-500 mt-1">Crisps, chocolate, biscuits, and sweets</p>
-                    </div>
-                    <button onclick="viewPriceList('snacks')" class="text-blue-900 font-medium hover:underline flex items-center gap-2">
-                        Download Price List <i class="fas fa-download"></i>
-                    </button>
-                </div>
-                <div class="category-grid">
-                    <div class="product-card bg-white rounded-2xl overflow-hidden p-8 text-center">
-                        <i class="fas fa-candy-cane text-4xl text-slate-300 mb-4"></i>
-                        <p class="text-slate-500">800+ products available</p>
-                        <button onclick="viewPriceList('snacks')" class="mt-4 text-blue-900 font-medium hover:underline">View Full Catalog</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="category-group mb-16" data-category="household">
-                <div class="flex items-center justify-between mb-6">
-                    <div>
-                        <h2 class="font-display text-3xl font-bold text-slate-900">Household & Cleaning</h2>
-                        <p class="text-slate-500 mt-1">Cleaning products, paper goods, and disposables</p>
-                    </div>
-                    <button onclick="viewPriceList('household')" class="text-blue-900 font-medium hover:underline flex items-center gap-2">
-                        Download Price List <i class="fas fa-download"></i>
-                    </button>
-                </div>
-                <div class="category-grid">
-                    <div class="product-card bg-white rounded-2xl overflow-hidden p-8 text-center">
-                        <i class="fas fa-soap text-4xl text-slate-300 mb-4"></i>
-                        <p class="text-slate-500">900+ products available</p>
-                        <button onclick="viewPriceList('household')" class="mt-4 text-blue-900 font-medium hover:underline">View Full Catalog</button>
-                    </div>
-                </div>
-            </div>
 
         </div>
     </section>
@@ -1581,7 +890,8 @@
                     <h2 class="font-display text-xl font-bold text-slate-900">Sales Order</h2>
                     <p class="text-sm text-slate-500">Draft #SO-2024-DRAFT</p>
                 </div>
-                <button onclick="toggleOrderPanel()" class="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-slate-100 transition shadow-sm">
+                <button onclick="toggleOrderPanel()"
+                    class="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:bg-slate-100 transition shadow-sm">
                     <i class="fas fa-times text-slate-600"></i>
                 </button>
             </div>
@@ -1602,16 +912,19 @@
         <div class="p-6 border-t border-slate-200 bg-slate-50">
             <!-- NEW: Coupon Code Section -->
             <div class="mb-4 p-3 bg-white rounded-xl border border-slate-200">
-                <label class="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Coupon Code</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Coupon
+                    Code</label>
                 <div class="flex gap-2">
-                    <input type="text" id="coupon-input" placeholder="Enter code (e.g., BULK10)" 
+                    <input type="text" id="coupon-input" placeholder="Enter code (e.g., BULK10)"
                         class="flex-1 px-3 py-2 text-sm border-2 border-slate-200 rounded-lg focus:border-blue-900 focus:outline-none uppercase">
-                    <button onclick="applyCoupon()" class="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition">
+                    <button onclick="applyCoupon()"
+                        class="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition">
                         Apply
                     </button>
                 </div>
                 <div id="coupon-message" class="text-xs mt-2"></div>
-                <div id="active-coupon" class="hidden mt-2 flex items-center justify-between bg-green-50 px-3 py-2 rounded-lg">
+                <div id="active-coupon"
+                    class="hidden mt-2 flex items-center justify-between bg-green-50 px-3 py-2 rounded-lg">
                     <span class="text-xs text-green-700 font-medium" id="active-coupon-name"></span>
                     <button onclick="removeCoupon()" class="text-xs text-red-600 hover:underline">Remove</button>
                 </div>
@@ -1640,10 +953,13 @@
             </div>
 
             <div class="space-y-2">
-                <button onclick="submitSalesOrder()" class="w-full py-3 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg" id="submit-order-btn" disabled>
+                <button onclick="submitSalesOrder()"
+                    class="w-full py-3 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg"
+                    id="submit-order-btn" disabled>
                     Submit Sales Order
                 </button>
-                <button onclick="saveDraftOrder()" class="w-full py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition">
+                <button onclick="saveDraftOrder()"
+                    class="w-full py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition">
                     Save as Draft
                 </button>
                 <button onclick="clearOrder()" class="w-full py-2 text-red-600 text-sm hover:underline">
@@ -1666,7 +982,8 @@
             <div class="p-6 border-b border-slate-200">
                 <div class="flex justify-between items-center">
                     <h3 class="font-display text-xl font-bold text-slate-900">Add to Sales Order</h3>
-                    <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
+                    <button onclick="closeOrderModal()"
+                        class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
                         <i class="fas fa-times text-slate-600"></i>
                     </button>
                 </div>
@@ -1677,15 +994,18 @@
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-slate-700 mb-2">Quantity (cases)</label>
                     <div class="flex items-center gap-3">
-                        <button onclick="adjustQty(-1)" class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
+                        <button onclick="adjustQty(-1)"
+                            class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
                             <i class="fas fa-minus text-slate-600"></i>
                         </button>
                         <input type="number" id="modal-qty" value="1" min="1" class="qty-input text-lg">
-                        <button onclick="adjustQty(1)" class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
+                        <button onclick="adjustQty(1)"
+                            class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition">
                             <i class="fas fa-plus text-slate-600"></i>
                         </button>
                     </div>
-                    <p class="text-xs text-slate-500 mt-2">Minimum Order Quantity: <span id="modal-moq">5</span> cases</p>
+                    <p class="text-xs text-slate-500 mt-2">Minimum Order Quantity: <span id="modal-moq">5</span> cases
+                    </p>
                 </div>
 
                 <p class="text-sm font-medium text-slate-700 mb-3">How would you like to add this item?</p>
@@ -1694,7 +1014,8 @@
                     <label class="order-option block cursor-pointer" onclick="selectOrderOption('new')">
                         <input type="radio" name="order-option" value="new" checked>
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-file text-blue-600"></i>
                             </div>
                             <div>
@@ -1707,7 +1028,8 @@
                     <label class="order-option block cursor-pointer" onclick="selectOrderOption('regular')">
                         <input type="radio" name="order-option" value="regular">
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-sync text-green-600"></i>
                             </div>
                             <div>
@@ -1720,7 +1042,8 @@
                     <label class="order-option block cursor-pointer" onclick="selectOrderOption('current')">
                         <input type="radio" name="order-option" value="current">
                         <div class="flex items-start gap-3">
-                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <div
+                                class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-plus-circle text-purple-600"></i>
                             </div>
                             <div>
@@ -1731,7 +1054,8 @@
                     </label>
                 </div>
 
-                <button onclick="confirmAddToOrder()" class="w-full mt-6 py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg">
+                <button onclick="confirmAddToOrder()"
+                    class="w-full mt-6 py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg">
                     Confirm Addition
                 </button>
             </div>
@@ -1779,33 +1103,39 @@
 
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
+                    <div
+                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
                         <i class="fas fa-truck-fast"></i>
                     </div>
                     <h3 class="font-bold text-xl mb-3">Next-Day Delivery</h3>
-                    <p class="text-slate-600 mb-4">Order by 6PM for delivery across Greater London within 24 hours. Temperature-controlled vehicles for frozen goods.</p>
+                    <p class="text-slate-600 mb-4">Order by 6PM for delivery across Greater London within 24 hours.
+                        Temperature-controlled vehicles for frozen goods.</p>
                     <div class="flex items-center gap-2 text-sm text-blue-900">
                         <i class="fas fa-check-circle"></i>
                         <span>Available on your account</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
+                    <div
+                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
                         <i class="fas fa-pound-sign"></i>
                     </div>
                     <h3 class="font-bold text-xl mb-3">Trade Credit: Net 30</h3>
-                    <p class="text-slate-600 mb-4">30-day payment terms approved. Credit limit: £25,000. Available balance: £18,450.</p>
+                    <p class="text-slate-600 mb-4">30-day payment terms approved. Credit limit: £25,000. Available
+                        balance: £18,450.</p>
                     <div class="flex items-center gap-2 text-sm text-blue-900">
                         <i class="fas fa-check-circle"></i>
                         <span>Active on your account</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
+                    <div
+                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
                         <i class="fas fa-headset"></i>
                     </div>
                     <h3 class="font-bold text-xl mb-3">Dedicated Support</h3>
-                    <p class="text-slate-600 mb-4">Your account manager Sarah Johnson available 7 days. Direct line: 020 7946 0958 ext. 204.</p>
+                    <p class="text-slate-600 mb-4">Your account manager Sarah Johnson available 7 days. Direct line: 020
+                        7946 0958 ext. 204.</p>
                     <div class="flex items-center gap-2 text-sm text-blue-900">
                         <i class="fas fa-check-circle"></i>
                         <span>Priority support active</span>
@@ -1821,15 +1151,18 @@
             <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 text-blue-600">
                 Need Help with Your Order?
             </h2>
-            
+
             <p class="text-xl text-blue-600 mb-8">
-                Contact your account manager Sarah directly for assistance with large orders, special pricing, or product sourcing.
+                Contact your account manager Sarah directly for assistance with large orders, special pricing, or
+                product sourcing.
             </p>
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="tel:02079460958" class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold rounded-full hover:bg-yellow-400 transition text-lg">
+                <a href="tel:02079460958"
+                    class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold rounded-full hover:bg-yellow-400 transition text-lg">
                     <i class="fas fa-phone mr-2"></i> Call Sarah
                 </a>
-                <a href="/sales-order-page2" class="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition border border-blue-700 text-lg inline-flex items-center">
+                <a href="/sales-order-page2"
+                    class="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition border border-blue-700 text-lg inline-flex items-center">
                     <i class="fas fa-clipboard-list mr-2"></i> Create Sales Order
                 </a>
             </div>
@@ -1852,8 +1185,12 @@
                     </div>
                     <p class="text-sm mb-4">London's premier wholesale food and grocery distributor since 1995.</p>
                     <div class="flex gap-3">
-                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-900 transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-900 transition"><i
+                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-900 transition"><i
+                                class="fab fa-twitter"></i></a>
                     </div>
                 </div>
                 <div>
@@ -1861,7 +1198,8 @@
                     <ul class="space-y-2 text-sm">
                         <li><a href="#products" class="hover:text-white transition">Browse Products</a></li>
                         <li><a href="#sea-items" class="hover:text-white transition">Items on Sea</a></li>
-                        <li><a href="#" onclick="toggleOrderPanel()" class="hover:text-white transition">My Sales Orders</a></li>
+                        <li><a href="#" onclick="toggleOrderPanel()" class="hover:text-white transition">My Sales
+                                Orders</a></li>
                         <li><a href="#" class="hover:text-white transition">Order History</a></li>
                     </ul>
                 </div>
@@ -1884,7 +1222,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div
+                class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
                 <p>&copy; 2026 NextBee Wholesale London Ltd. All rights reserved.</p>
                 <div class="flex gap-6">
                     <a href="#" class="hover:text-white transition">Privacy</a>
@@ -1896,7 +1235,8 @@
     </footer>
 
     <!-- TOAST -->
-    <div id="toast" class="toast fixed bottom-8 right-8 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3">
+    <div id="toast"
+        class="toast fixed bottom-8 right-8 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl z-50 flex items-center gap-3">
         <i class="fas fa-check-circle text-green-400 text-xl"></i>
         <span id="toast-message">Added to sales order</span>
     </div>
@@ -2116,17 +1456,15 @@
         }
 
         // Submit sales order
-        function submitSalesOrder() {
-            if (currentOrder.length === 0) return;
+       function submitSalesOrder() {
+    if (currentOrder.length === 0) return;
 
-            const orderNumber = 'SO-2024-' + Math.floor(1000 + Math.random() * 9000);
-            showToast('Sales Order ' + orderNumber + ' submitted successfully!');
+    // localStorage me save karo
+    localStorage.setItem('checkout_items', JSON.stringify(currentOrder));
 
-            // Clear order
-            currentOrder = [];
-            updateOrderDisplay();
-            document.getElementById('sales-order-panel').classList.remove('active');
-        }
+    // redirect to checkout
+    window.location.href = "/checkout";
+}
 
         // Save draft
         function saveDraftOrder() {
@@ -2216,5 +1554,53 @@
             });
         });
     </script>
+    <script>
+function filterCategory(category, btn) {
+
+    // active button
+    document.querySelectorAll('.category-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    // filter products
+    document.querySelectorAll('.product-item').forEach(item => {
+
+        if (category === 'all') {
+            item.style.display = 'block';
+        } else {
+            if (item.dataset.category === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        }
+
+    });
+}
+</script>
+<script>
+function addToCart(productId) {
+
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            product_id: productId
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success){
+            // 🔥 DIRECT CHECKOUT
+            window.location.href = "/checkout";
+        }
+    })
+}
+</script>
 </body>
+
 </html>
