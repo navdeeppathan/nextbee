@@ -43,13 +43,13 @@ Route::put('/products/{id}', [ProductController::class, 'update'])->name('produc
 Route::get('/', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
-    return view('landing.index', compact('categories', 'products'));
+    return view('Landing.index', compact('categories', 'products'));
 });
 
 Route::get('/main', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
-    return view('landing.main', compact('categories', 'products'));
+    return view('Landing.main', compact('categories', 'products'));
 });
 
 
@@ -91,44 +91,44 @@ Route::get('/customers', function () {
     $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
     $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
     $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
-    return view('inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
+    return view('Inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
 Route::get('/deliveries', function () {
-    return view('inventory.deliveries');
+    return view('Inventory.deliveries');
 });
 
 Route::get('/drivers', function () {
     $drivers = User::where('role', 'driver')->get();
     $totalDrivers = User::where('role', 'driver')->count();
-    return view('inventory.drivers', compact('drivers', 'totalDrivers'));
+    return view('Inventory.drivers', compact('drivers', 'totalDrivers'));
 });
 
 Route::get('/inventory-page', function () {
     $categories = Category::all();
     $products = Product::all();
 
-    return view('inventory.inventory', compact('categories', 'products'));
+    return view('Inventory.inventory', compact('categories', 'products'));
 });
 
 Route::get('/returns', function () {
-    return view('inventory.returns');
+    return view('Inventory.returns');
 });
 
 Route::get('/sales-dashboard', function () {
-    return view('inventory.sales_dashboard');
+    return view('Inventory.sales_dashboard');
 });
 
 Route::get('/sales-order', function () {
-    return view('inventory.sales_order_detail');
+    return view('Inventory.sales_order_detail');
 });
 
 Route::get('/sales-order-page', function () {
-    return view('inventory.sales_order_page');
+    return view('Inventory.sales_order_page');
 });
 
 Route::get('/sales-orders', function () {
-    return view('inventory.sales_orders');
+    return view('Inventory.sales_orders');
 });
 
 
