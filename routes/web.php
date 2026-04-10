@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 |
 */
 Route::get('/login', function () {
-    return view('landing.index');
+    return view('Landing.index');
 });
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -203,7 +203,7 @@ Route::get('/cart', function () {
         ->where('user_id', auth()->id())
         ->get();
 
-    return view('landing.cart', compact('cartItems'));
+    return view('Landing.cart', compact('cartItems'));
 })->middleware('auth');
 Route::get('/checkout', function () {
 
@@ -224,7 +224,7 @@ Route::get('/checkout', function () {
         ];
     });
 
-    return view('landing.checkout', compact('cartItems', 'cartData'));
+    return view('Landing.checkout', compact('cartItems', 'cartData'));
 });
 Route::post('/cart/update', function (Request $request) {
 
