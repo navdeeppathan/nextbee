@@ -596,23 +596,23 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="sales_dashboard.html" class="nav-item active" aria-current="page">
+                    <a href="/sales-dashboard" class="nav-item active" aria-current="page">
                         <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                         <span class="nav-text">Dashboard</span>
                         <span class="tooltip">Dashboard</span>
                     </a>
-                    <a href="sales_customers.html" class="nav-item">
+                    <a href="/sales-customers" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-users"></i></span>
                         <span class="nav-text">My Customers</span>
                         <span class="nav-badge">3</span>
                         <span class="tooltip">My Customers</span>
                     </a>
-                    <a href="sales_orders.html" class="nav-item">
+                    <a href="/sales-orders" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                         <span class="nav-text">All Orders</span>
                         <span class="tooltip">All Orders</span>
                     </a>
-                    <a href="sales_tasks.html" class="nav-item">
+                    <a href="/sales-tasks" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-tasks"></i></span>
                         <span class="nav-text">Tasks</span>
                         <span class="nav-badge warning">5</span>
@@ -628,17 +628,17 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="sales_performance.html" class="nav-item">
+                    <a href="/sales-performance" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
                         <span class="nav-text">Performance</span>
                         <span class="tooltip">Performance</span>
                     </a>
-                    <a href="sales_commissions.html" class="nav-item">
+                    <a href="/sales-commissions" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-pound-sign"></i></span>
                         <span class="nav-text">Commissions</span>
                         <span class="tooltip">Commissions</span>
                     </a>
-                    <a href="sales_targets.html" class="nav-item">
+                    <a href="/sales-targets" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-bullseye"></i></span>
                         <span class="nav-text">Targets</span>
                         <span class="tooltip">Targets</span>

@@ -11,51 +11,51 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
 <style>
-body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #f8fafc;
-}
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: #f8fafc;
+    }
 
-/* SIDEBAR */
-#sidebar {
-    width: 80px;
-    transition: 0.4s;
-    background: #020617;
-    position: fixed;
-    height: 100vh;
-    z-index: 1000;
-}
+    /* SIDEBAR */
+    #sidebar {
+        width: 80px;
+        transition: 0.4s;
+        background: #020617;
+        position: fixed;
+        height: 100vh;
+        z-index: 1000;
+    }
 
-#sidebar:hover {
-    width: 260px;
-}
+    #sidebar:hover {
+        width: 260px;
+    }
 
-/* MAIN CONTENT SHIFT */
-#main-content {
-    margin-left: 80px;
-    transition: 0.4s;
-}
+    /* MAIN CONTENT SHIFT */
+    #main-content {
+        margin-left: 80px;
+        transition: 0.4s;
+    }
 
-#sidebar:hover ~ #main-content {
-    margin-left: 260px;
-}
+    #sidebar:hover ~ #main-content {
+        margin-left: 260px;
+    }
 
-/* NAV ITEM */
-.nav-item { display: flex; align-items: center; padding: 18px 28px; color: #94a3b8; white-space: nowrap; cursor: pointer; transition: 0.3s; }
-        .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
-        .nav-label { opacity: 0; transition: opacity 0.3s; margin-left: 25px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+    /* NAV ITEM */
+    .nav-item { display: flex; align-items: center; padding: 18px 28px; color: #94a3b8; white-space: nowrap; cursor: pointer; transition: 0.3s; }
+            .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+            .nav-label { opacity: 0; transition: opacity 0.3s; margin-left: 25px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
 
-#sidebar:hover .nav-label {
-    opacity: 1;
-}
+    #sidebar:hover .nav-label {
+        opacity: 1;
+    }
 
-/* CARD */
-.glass-card {
-    background: white;
-    border-radius: 2rem;
-    padding: 24px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-}
+    /* CARD */
+    .glass-card {
+        background: white;
+        border-radius: 2rem;
+        padding: 24px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
 </style>
 </head>
 
