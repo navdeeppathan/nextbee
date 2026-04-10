@@ -15,22 +15,18 @@ class ProductController extends Controller
         $products = Product::with('category')->get();
         return view('admin.products.index', compact('products'));
     }
-    public function search(Request $request)
-    {
-        $query = $request->q;
+   public function search(Request $request)
+{
+    $query = $request->q;
 
-        if (!$query) {
-            return response()->json([]);
-        }
+    $products = Product::where('title', 'like', "%{$query}%")
+        ->orWhere('sku_code', 'like', "%{$query}%")
+        ->select('id', 'title', 'price', 'image', 'sku_code')
+        // ->limit(10)
+        ->get();
 
-        $products = Product::where('title', 'like', "%{$query}%")
-            ->orWhere('name', 'like', "%{$query}%")
-            ->select('id', 'title', 'price', 'image')
-            ->limit(8)
-            ->get();
-
-        return response()->json($products);
-    }
+    return response()->json($products);
+}
 
     public function create()
     {
@@ -141,4 +137,6 @@ class ProductController extends Controller
         Product::find($id)->delete();
         return back();
     }
+
+    
 }

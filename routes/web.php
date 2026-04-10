@@ -224,6 +224,7 @@ Route::get('/checkout', function () {
 
     return view('Landing.checkout', compact('cartItems', 'cartData'));
 });
+Route::get('/products/search', [ProductController::class, 'search']);
 Route::post('/cart/update', function (Request $request) {
 
     \App\Models\Cart::where('id', $request->cart_id)

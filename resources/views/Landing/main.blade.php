@@ -835,14 +835,15 @@
                                     class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
                                 </div>
                                 <div class="quick-add absolute bottom-4 left-4 right-4">
-                                    <!-- <button onclick="addToSalesOrder('Coca Cola 330ml Cans (24 pack)', 'CC-330-24', 5)"
+                                    <button
+                                        onclick="addToSalesOrder('{{ $product->title }}', '{{ $product->sku_code }}', {{ $product->moq }}, {{ $product->price }}, {{ $product->id }})"
                                         class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                    </button> -->
-                                    <button onclick="addToCart({{ $product->id }})"
+                                    </button>
+                                    <!-- <button onclick="addToCart({{ $product->id }})"
                                             class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                          <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                        </button>
+                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                        </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1304,11 +1305,19 @@
         }
 
         // Add to Sales Order - Open Modal
-        function addToSalesOrder(productName, sku, moq, price = 0) {
-            tempProduct = { name: productName, sku: sku, moq: moq, price: price };
-            document.getElementById('modal-product-name').textContent = productName + ' (' + sku + ')';
+        function addToSalesOrder(name, sku, moq, price, id) {
+            tempProduct = {
+                name,
+                sku,
+                moq,
+                price,
+                id // 👈 IMPORTANT
+            };
+
+            document.getElementById('modal-product-name').textContent = name;
             document.getElementById('modal-moq').textContent = moq;
             document.getElementById('modal-qty').value = moq;
+
             document.getElementById('order-modal').classList.add('active');
         }
 
@@ -1320,9 +1329,18 @@
 
         // Adjust quantity
         function adjustQty(delta) {
+
             const input = document.getElementById('modal-qty');
-            let val = parseInt(input.value) + delta;
-            if (val < 1) val = 1;
+            let val = parseInt(input.value) || tempProduct.moq;
+
+            val += delta;
+
+            // ✅ MOQ apply
+            if (val < tempProduct.moq) {
+                val = tempProduct.moq;
+                showToast('Minimum ' + tempProduct.moq);
+            }
+
             input.value = val;
         }
 
@@ -1336,38 +1354,45 @@
 
         // Confirm add to order
         function confirmAddToOrder() {
+
             const qty = parseInt(document.getElementById('modal-qty').value);
-            const option = document.querySelector('input[name="order-option"]:checked').value;
 
             if (qty < tempProduct.moq) {
-                showToast('Quantity must meet MOQ of ' + tempProduct.moq + ' cases');
+                showToast('Minimum ' + tempProduct.moq);
                 return;
             }
 
-            const lineItem = {
-                ...tempProduct,
-                qty: qty,
-                lineTotal: qty * tempProduct.price
-            };
+            // ✅ backend call (IMPORTANT)
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: tempProduct.id, // 👈 product id pass karo
+                    quantity: qty
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
 
-            if (option === 'new') {
-                currentOrder = [lineItem];
-                showToast('New sales order started with ' + tempProduct.name);
-            } else if (option === 'regular') {
-                // Simulate adding to regular template
-                showToast(tempProduct.name + ' added to your regular items template');
-            } else {
-                currentOrder.push(lineItem);
-                showToast(tempProduct.name + ' added to current sales order');
-            }
+                    if (data.success) {
 
-            updateOrderDisplay();
-            closeOrderModal();
+                        showToast('Added to cart successfully ✅');
 
-            // Open panel if items exist
-            if (currentOrder.length > 0) {
-                document.getElementById('sales-order-panel').classList.add('active');
-            }
+                        // optional: panel me bhi dikhao
+                        currentOrder.push({
+                            ...tempProduct,
+                            qty: qty,
+                            lineTotal: qty * tempProduct.price
+                        });
+
+                        updateOrderDisplay();
+                        closeOrderModal();
+                    }
+
+                });
         }
 
         // Update order display
@@ -1456,15 +1481,15 @@
         }
 
         // Submit sales order
-       function submitSalesOrder() {
-    if (currentOrder.length === 0) return;
+        function submitSalesOrder() {
+            if (currentOrder.length === 0) return;
 
-    // localStorage me save karo
-    localStorage.setItem('checkout_items', JSON.stringify(currentOrder));
+            // localStorage me save karo
+            localStorage.setItem('checkout_items', JSON.stringify(currentOrder));
 
-    // redirect to checkout
-    window.location.href = "/checkout";
-}
+            // redirect to checkout
+            window.location.href = "/checkout";
+        }
 
         // Save draft
         function saveDraftOrder() {
@@ -1555,52 +1580,52 @@
         });
     </script>
     <script>
-function filterCategory(category, btn) {
+        function filterCategory(category, btn) {
 
-    // active button
-    document.querySelectorAll('.category-btn').forEach(b => {
-        b.classList.remove('active');
-    });
-    btn.classList.add('active');
+            // active button
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
 
-    // filter products
-    document.querySelectorAll('.product-item').forEach(item => {
+            // filter products
+            document.querySelectorAll('.product-item').forEach(item => {
 
-        if (category === 'all') {
-            item.style.display = 'block';
-        } else {
-            if (item.dataset.category === category) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+                if (category === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+
+            });
         }
+    </script>
+    <script>
+        function addToCart(productId) {
 
-    });
-}
-</script>
-<script>
-function addToCart(productId) {
-
-    fetch('/cart/add', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            product_id: productId
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.success){
-            // 🔥 DIRECT CHECKOUT
-            window.location.href = "/checkout";
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // 🔥 DIRECT CHECKOUT
+                        showToast('Added to cart ✅');
+                    }
+                })
         }
-    })
-}
-</script>
+    </script>
 </body>
 
 </html>
