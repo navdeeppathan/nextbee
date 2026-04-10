@@ -11,48 +11,69 @@ use App\Models\Payment;
 
 class OrderController extends Controller
 {
+
+    public function showOrder($order_id)
+    {
+        $order = Order::with('items.product')
+            ->where('id', $order_id) // ya jo order open karna hai
+            ->firstOrFail();
+
+        $orderData = $order->items->map(function ($item) {
+            return [
+                'id' => $item->id, // 👈 order_item_id
+                'name' => $item->product->title,
+                'sku' => $item->product->sku_code,
+                'price' => $item->product->price,
+                'moq' => 1,
+                'qty' => $item->quantity,
+                'lineTotal' => $item->product->price * $item->quantity
+            ];
+        });
+
+        return view('SalesRep.checkout', compact('orderData', 'order'));
+    }
     
     // 📦 PLACE ORDER
    public function store(Request $request)
-{
-    $items = $request->items;
+    {
+        $items = $request->items;
 
-    if (!$items || count($items) === 0) {
+        if (!$items || count($items) === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No items'
+            ]);
+        }
+
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'total_price' => 0
+        ]);
+
+        $total = 0;
+
+        foreach ($items as $item) {
+
+            $price = $item['price'] ?? 0;
+            $qty = $item['qty'] ?? 1;
+
+            $total += $price * $qty;
+
+            $order->items()->create([
+                'product_id' => null, // agar product_id bhejna hai to add karo
+                'quantity' => $qty,
+                'price' => $price
+            ]);
+        }
+
+        $order->update([
+            'total_price' => $total
+        ]);
+
         return response()->json([
-            'success' => false,
-            'message' => 'No items'
+            'success' => true
         ]);
     }
-
-    $order = Order::create([
-        'user_id' => auth()->id(),
-        'total_price' => 0
-    ]);
-
-    $total = 0;
-
-    foreach ($items as $item) {
-
-        $price = $item['price'] ?? 0;
-        $qty = $item['qty'] ?? 1;
-
-        $total += $price * $qty;
-
-        $order->items()->create([
-            'product_id' => null, // agar product_id bhejna hai to add karo
-            'quantity' => $qty,
-            'price' => $price
-        ]);
-    }
-
-    $order->update([
-        'total_price' => $total
-    ]);
-
-    return response()->json([
-        'success' => true
-    ]);
-}
 
     public function show($id)
     {
@@ -80,22 +101,22 @@ class OrderController extends Controller
     }
     // 📋 MY ORDERS
    public function index()
-{
-    $orders = Order::where('user_id', auth()->id())->latest()->get();
-    $categories = Category::all();
-    $products = Product::all(); // 👈 ADD THIS
+    {
+        $orders = Order::where('user_id', auth()->id())->latest()->get();
+        $categories = Category::all();
+        $products = Product::all(); // 👈 ADD THIS
 
-    return view('orders', compact('orders', 'categories', 'products'));
-}
+        return view('orders', compact('orders', 'categories', 'products'));
+    }
 
    public function myOrder()
-{
-    $orders = Order::where('user_id', auth()->id())->latest()->get();
-    $categories = Category::all();
-    $products = Product::all(); // 👈 ADD THIS
+    {
+        $orders = Order::where('user_id', auth()->id())->latest()->get();
+        $categories = Category::all();
+        $products = Product::all(); // 👈 ADD THIS
 
-    return view('customer.orders', compact('orders', 'categories', 'products'));
-}
+        return view('customer.orders', compact('orders', 'categories', 'products'));
+    }
 
 public function placeOrder()
 {

@@ -34,6 +34,9 @@ Route::post('/admin/products/store', [ProductController::class, 'store'])->name(
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
 use App\Http\Controllers\LocationController;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\OrderLog;
 
 Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
@@ -129,6 +132,20 @@ Route::get('/sales-orders', function () {
     return view('Inventory.sales_orders');
 });
 
+Route::get('/sales-orders-inventory', function () {
+    $orders= Order::with(['user', 'payment'])->where('status', 'confirm')->get();
+    
+    $totalOrders = Order::where('status', 'confirm')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->count();
+    $confirmedOrders = Order::where('status', 'confirm')->count();    
+    $pendingOrders = Order::where('status', 'pending')->count();
+    $processingOrders = Order::where('status', 'processing')->count();
+    $deliveredOrders = Order::where('status', 'delivered')->count();
+    return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+});
+
 
 //sales folder
 Route::get('/sales-commissions', function () {
@@ -153,7 +170,17 @@ Route::get('/sales-order-page2', function () {
 });
 
 Route::get('/sales-orders2', function () {
-    return view('SalesRep.sales_orders');
+    $orders= Order::with(['user', 'payment'])->get();
+    $totalOrders = Order::where('status', 'confirm')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->count();
+    $confirmedOrders = Order::where('status', 'confirm')->count();    
+    $pendingOrders = Order::where('status', 'pending')->count();
+    $processingOrders = Order::where('status', 'processing')->count();
+    $deliveredOrders = Order::where('status', 'delivered')->count();
+
+    return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
 });
 
 Route::get('/sales-performance', function () {
@@ -203,6 +230,30 @@ Route::get('/cart', function () {
 
     return view('Landing.cart', compact('cartItems'));
 })->middleware('auth');
+
+Route::get('/checkout-sales/{order_id}', function ($order_id) {
+
+   
+    $order = Order::with('items.product.locations')
+        ->where('id', $order_id)
+        ->firstOrFail();
+
+    $orderData = $order->items->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->product->title,
+            'sku' => $item->product->sku_code,
+            'price' => $item->product->price,
+            'totalQuantity' => $item->product->locations()->sum('quantity'),
+            'moq' => 1,
+            'qty' => $item->quantity,
+            'lineTotal' => $item->product->price * $item->quantity
+        ];
+    });
+
+    return view('SalesRep.checkout', compact('orderData', 'order'));
+});
+
 Route::get('/checkout', function () {
 
     $cartItems = \App\Models\Cart::with('product')
@@ -224,7 +275,57 @@ Route::get('/checkout', function () {
 
     return view('Landing.checkout', compact('cartItems', 'cartData'));
 });
+
+Route::post('/order-item/update', function (Request $req) {
+
+    $item = OrderItem::findOrFail($req->order_item_id);
+
+    $oldQty = $item->quantity; // 🔥 old value
+    $item->quantity = $req->qty;
+    $item->save();
+
+     // ✅ LOG ENTRY
+    OrderLog::create([
+        'order_id' => $item->order_id,
+        'order_item_id' => $item->id,
+        'user_id' => auth()->id(),
+        'action_type' => 'quantity_update',
+        'old_value' => $oldQty,
+        'new_value' => $req->qty
+    ]);
+
+    return response()->json(['success' => true]);
+});
+
+Route::post('/order/update-status', function (Request $req) {
+
+    $order = Order::findOrFail($req->order_id);
+    $oldStatus = $order->status; // 🔥 old status
+    $order->status = $req->status;
+    $order->save();
+
+     // ✅ LOG ENTRY
+    OrderLog::create([
+        'order_id' => $order->id,
+        'user_id' => auth()->id(),
+        'action_type' => 'status_update',
+        'old_value' => $oldStatus,
+        'new_value' => $req->status
+    ]);
+
+    return response()->json(['success' => true]);
+});
+
+
+
+Route::post('/order-item/delete', function (Request $req) {
+
+    OrderItem::where('id', $req->order_item_id)->delete();
+
+    return response()->json(['success' => true]);
+});
 Route::get('/products/search', [ProductController::class, 'search']);
+
 Route::post('/cart/update', function (Request $request) {
 
     \App\Models\Cart::where('id', $request->cart_id)

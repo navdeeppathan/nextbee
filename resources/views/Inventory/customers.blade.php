@@ -676,12 +676,12 @@
                 <i class="fas fa-chevron-down section-chevron"></i>
             </div>
             <div class="section-content">
-                <a href="/sales-dashboard" class="nav-item [ACTIVE_CLASS]">
+                {{-- <a href="/sales-dashboard" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                     <span class="nav-text">Sales Dashboard</span>
                     <span class="tooltip">Sales Dashboard</span>
-                </a>
-                <a href="/sales-orders" class="nav-item [ACTIVE_CLASS]">
+                </a> --}}
+                <a href="/sales-orders-inventory" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                     <span class="nav-text">Sales Orders</span>
                     <span class="tooltip">Sales Orders</span>

@@ -672,33 +672,33 @@
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Total Orders</p>
-                    <p class="text-2xl font-bold text-slate-900">156</p>
+                    <p class="text-2xl font-bold text-slate-900">{{ $totalOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">This month</p>
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Pending</p>
-                    <p class="text-2xl font-bold text-amber-600">18</p>
+                    <p class="text-2xl font-bold text-amber-600">{{ $pendingOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">Needs action</p>
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Confirmed</p>
-                    <p class="text-2xl font-bold text-blue-600">42</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $confirmedOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">Ready to process</p>
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Processing</p>
-                    <p class="text-2xl font-bold text-purple-600">35</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ $processingOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">In fulfillment</p>
                 </div>
                 <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Delivered</p>
-                    <p class="text-2xl font-bold text-emerald-600">61</p>
+                    <p class="text-2xl font-bold text-emerald-600">{{ $deliveredOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">Completed</p>
                 </div>
             </div>
 
             <!-- Filters -->
-            <div class="bg-white rounded-xl p-4 mb-6 border border-slate-200">
+            {{-- <div class="bg-white rounded-xl p-4 mb-6 border border-slate-200">
                 <div class="flex flex-wrap items-center gap-3">
                     <div class="flex items-center gap-2">
                         <input type="text" placeholder="Search orders..." class="px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-900 w-64">
@@ -734,7 +734,7 @@
                         Export
                     </button>
                 </div>
-            </div>
+            </div> --}}
 
             <!-- Orders Table -->
             <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
@@ -751,8 +751,60 @@
                             <div>Action</div>
                         </div>
 
-                        <!-- Order 1 -->
+                         @foreach($orders as $order)
                         <div class="order-row">
+                            <div>
+                                <p class="font-semibold text-blue-900">#SO-{{ $order->id }}</p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $order->items->count() }} items
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="font-medium text-slate-900">
+                                    {{ $order->user->name ?? 'N/A' }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    ID: {{ $order->user->id ?? '-' }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-slate-900">
+                                    {{ $order->created_at->format('M d, Y') }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $order->created_at->format('h:i A') }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-slate-900">
+                                    £{{ number_format($order->total_price, 2) }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="status-badge status-{{ $order->status }}">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-slate-600">
+                                    {{ $order->payment->status ?? 'No Payment' }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <button class="text-blue-900 hover:underline text-sm">
+                                    <a href="/checkout-sales/{{ $order->id }}">View</a>
+                                </button>
+                            </div>
+                        </div>
+                        @endforeach
+                        <!-- Order 1 -->
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0892</p>
                                 <p class="text-xs text-slate-500">12 items</p>
@@ -781,10 +833,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0892')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 2 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0891</p>
                                 <p class="text-xs text-slate-500">28 items</p>
@@ -813,10 +865,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0891')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 3 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0890</p>
                                 <p class="text-xs text-slate-500">8 items</p>
@@ -845,10 +897,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0890')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 4 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0889</p>
                                 <p class="text-xs text-slate-500">18 items</p>
@@ -877,10 +929,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0889')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 5 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0888</p>
                                 <p class="text-xs text-slate-500">45 items</p>
@@ -909,10 +961,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0888')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 6 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0887</p>
                                 <p class="text-xs text-slate-500">6 items</p>
@@ -941,10 +993,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0887')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 7 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0886</p>
                                 <p class="text-xs text-slate-500">22 items</p>
@@ -973,10 +1025,10 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0886')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Order 8 -->
-                        <div class="order-row">
+                        {{-- <div class="order-row">
                             <div>
                                 <p class="font-semibold text-blue-900">#SO-2026-0885</p>
                                 <p class="text-xs text-slate-500">15 items</p>
@@ -1005,7 +1057,7 @@
                             <div>
                                 <button onclick="viewOrder('SO-2026-0885')" class="text-blue-900 hover:underline text-sm">View</button>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
 

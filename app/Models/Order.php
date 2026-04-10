@@ -13,7 +13,8 @@ class Order extends Model
     // 🔥 ADD THIS
     protected $fillable = [
         'user_id',
-        'total_price'
+        'total_price',
+        'status'
     ];
     public function items()
 {
@@ -23,4 +24,10 @@ public function user()
 {
     return $this->belongsTo(User::class);
 }
+public function payment()
+{
+    return $this->hasOne(Payment::class);
+
+}
+
 }
