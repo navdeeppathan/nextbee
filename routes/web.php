@@ -15,9 +15,7 @@ use Illuminate\Http\Request;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/login', function () {
-    return view('Landing.index');
-});
+
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register-driver', [AuthController::class, 'registerDriver'])->name('register-driver');
@@ -36,6 +34,11 @@ use Carbon\Carbon;
 use App\Models\Payment;
 
 
+Route::get('/login', function () {
+    $categories = Category::all();
+    $products = Product::with('category')->get(); // 👈 important
+    return view('Landing.index', compact('categories', 'products'));
+});
 
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
