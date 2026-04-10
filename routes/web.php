@@ -235,3 +235,4 @@ Route::post('/cart/update', function (Request $request) {
 });
 Route::post('/cart/delete', [CartController::class, 'delete'])->middleware('auth');
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
+Route::get('/invoice/{id}', [OrderController::class, 'invoice'])->middleware('auth');

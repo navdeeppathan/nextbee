@@ -181,4 +181,15 @@ class OrderController extends Controller
 
         return view('customer.view-order', compact('order', 'orderData'));
     }
+    public function invoice($id)
+{
+    $payment = Payment::with('order.items.product')
+        ->where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    $order = $payment->order;
+
+    return view('customer.invoice', compact('payment', 'order'));
+}
 }
