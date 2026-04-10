@@ -76,6 +76,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div style="padding:15px;">
+    {{ $payments->links() }}
+</div>
         </div>
         
     </div>

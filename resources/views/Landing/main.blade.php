@@ -841,9 +841,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                        </button> -->
+                                                class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                            </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1378,7 +1378,7 @@
                 .then(data => {
 
                     if (data.success) {
-
+                        closeOrderModal();
                         showToast('Added to cart successfully ✅');
 
                         // optional: panel me bhi dikhao
