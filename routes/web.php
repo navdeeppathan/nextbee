@@ -43,6 +43,11 @@ Route::get('/login', function () {
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
+use App\Http\Controllers\LocationController;
+
+Route::post('/locations/store', [LocationController::class, 'store'])
+    ->name('locations.store');
+
 Route::get('/', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important

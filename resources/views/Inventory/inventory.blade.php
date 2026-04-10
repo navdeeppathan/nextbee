@@ -786,13 +786,13 @@
                 </div> --}}
                 @foreach($products as $product)
                 <div 
-                    class="inventory-card rounded-2xl p-6 aisle-{{ strtolower($product->aisle ?? 'a') }}"
-                    
-                    data-name="{{ strtolower($product->title) }}"
-                    data-sku="{{ strtolower($product->sku_code) }}"
-                    data-category="{{ strtolower($product->category->name ?? '') }}"
-                    data-location="{{ strtolower($product->aisle) }}"
-                >
+                        class="inventory-card rounded-2xl p-6 aisle-{{ strtolower($product->aisle ?? 'a') }}"
+                        
+                        data-name="{{ strtolower($product->title) }}"
+                        data-sku="{{ strtolower($product->sku_code) }}"
+                        data-category="{{ strtolower($product->category->name ?? '') }}"
+                        data-location="{{ strtolower($product->aisle) }}"
+                    >
 
                     <div class="flex flex-col lg:flex-row gap-6 justify-between">
                         
@@ -870,12 +870,56 @@
                                         @endif
                                     </div>
                                 </div>
+                                @forelse($product->locations as $location)
+
+                                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        
+                                        <div class="flex items-center gap-3">
+                                            
+                                            <!-- LOCATION TAG -->
+                                            <span class="location-pill px-3 py-1 rounded-full text-xs font-bold">
+                                                {{ $location->aisle }}-R{{ $location->rack }}-B{{ $location->basket }}
+                                            </span>
+
+                                            <!-- DETAILS -->
+                                            <div>
+                                                <p class="text-sm font-medium text-slate-900">
+                                                    Aisle {{ $location->aisle }}, 
+                                                    Rack {{ $location->rack }}, 
+                                                    Basket {{ $location->basket }}
+                                                </p>
+
+                                                <p class="text-xs text-slate-500">
+                                                    Quantity: {{ $location->quantity }}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <!-- RIGHT SIDE -->
+                                        <div class="text-right">
+                                            <p class="text-sm font-bold text-slate-900">
+                                                {{ $location->quantity }} units
+                                            </p>
+
+                                            @if($location->quantity < 50)
+                                                <span class="expiry-badge expiry-critical">Low Stock</span>
+                                            @elseif($location->quantity < 100)
+                                                <span class="expiry-badge expiry-warning">Medium</span>
+                                            @else
+                                                <span class="expiry-badge expiry-good">Good</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                @empty
+                                    <p></p>
+                                @endforelse
                             </div>
                         </div>
 
                         <!-- RIGHT PANEL -->
                         <div class="lg:w-64 space-y-3">
-                            <div class="">
+                            {{-- <div class="">
                                 <button 
                                     onclick="openEditModal(this)"
                                     class="text-blue-600 hover:text-blue-800"
@@ -895,7 +939,7 @@
                                 >
                                     <i class="fas fa-edit"></i>
                                 </button>
-                            </div>
+                            </div> --}}
 
                             <!-- ALERT -->
                             @if($product->quantity < 50)
@@ -913,25 +957,43 @@
                             
 
                             <!-- ACTIONS -->
-                            {{-- <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
                                 <p class="text-xs font-bold text-slate-500 uppercase mb-2">
                                     Quick Actions
                                 </p>
 
                                 <div class="space-y-2">
-                                    <button class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
+                                    {{-- <button class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
                                         Transfer Stock
-                                    </button>
+                                    </button> --}}
 
-                                    <button class="w-full py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
+                                    <button 
+                                    onclick="openEditModal(this)"
+                                    data-id="{{ $product->id }}"
+                                    data-title="{{ $product->title }}"
+                                    data-sku="{{ $product->sku_code }}"
+                                    data-category="{{ $product->category_id }}"
+                                    data-moq="{{ $product->moq }}"
+                                    data-shelf="{{ $product->shelf_life }}"
+                                    data-aisle="{{ $product->aisle }}"
+                                    data-rack="{{ $product->rack }}"
+                                    data-basket="{{ $product->basket }}"
+                                    data-quantity="{{ $product->quantity }}"
+                                    data-price="{{ $product->price }}"
+                                    data-description="{{ $product->description }}"
+
+                                    class="w-full py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
                                         Edit Product
                                     </button>
 
-                                    <button class="w-full py-2 bg-emerald-100 text-emerald-700 border rounded-lg text-sm font-semibold">
+                                    <button  onclick="openLocationModal({{ $product->id }})" class="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-semibold text-white transition">Add Location</button>
+
+
+                                    {{-- <button class="w-full py-2 bg-emerald-100 text-emerald-700 border rounded-lg text-sm font-semibold">
                                         Mark Delivered
-                                    </button>
+                                    </button> --}}
                                 </div>
-                            </div> --}}
+                            </div>
 
                         </div>
                     </div>
@@ -1254,6 +1316,92 @@
             </form>
         </div>
     </div>
+
+    <div id="locationModal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl p-6 rounded-2xl">
+
+            <h2 class="text-lg font-bold mb-4">Add Locations</h2>
+
+            <form method="POST" action="{{ route('locations.store') }}">
+                @csrf
+
+                <input type="hidden" name="product_id" id="product_id">
+
+                <div id="location-wrapper">
+                    <!-- Dynamic rows -->
+                </div>
+
+                <button type="button" onclick="addRow()" 
+                    class="mt-3 mb-4 px-4 py-2 bg-slate-200 rounded-lg">
+                    + Add More
+                </button>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="closeModal()" 
+                        class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+
+                    <button type="submit" 
+                        class="px-4 py-2 bg-blue-600 text-white rounded">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    let index = 0;
+
+    function openLocationModal(productId) {
+        document.getElementById('locationModal').classList.remove('hidden');
+        document.getElementById('product_id').value = productId;
+
+        document.getElementById('location-wrapper').innerHTML = '';
+        index = 0;
+        addRow();
+    }
+
+    function closeModal() {
+        document.getElementById('locationModal').classList.add('hidden');
+    }
+
+    function addRow() {
+        const wrapper = document.getElementById('location-wrapper');
+
+        wrapper.innerHTML += `
+            <div class="grid grid-cols-5 gap-2 mb-2">
+
+                <!-- Aisle Dropdown -->
+                <select name="locations[${index}][aisle]" 
+                    class="border p-2 rounded bg-slate-50">
+                    <option value="">Select Aisle</option>
+                    <option value="A - Cold Storage">A - Cold Storage</option>
+                    <option value="B - Dry Goods">B - Dry Goods</option>
+                    <option value="C - Frozen">C - Frozen</option>
+                    <option value="D - Produce">D - Produce</option>
+                </select>
+
+                <input name="locations[${index}][rack]" 
+                    placeholder="Rack" type="number" 
+                    class="border p-2 rounded">
+
+                <input name="locations[${index}][basket]" 
+                    placeholder="Basket" type="number" 
+                    class="border p-2 rounded">
+
+                <input name="locations[${index}][quantity]" 
+                    placeholder="Qty" type="number" 
+                    class="border p-2 rounded">
+
+                <input name="locations[${index}][shelf_life]" 
+                    placeholder="Shelf Life" type="number" 
+                    class="border p-2 rounded">
+            </div>
+        `;
+
+        index++;
+    }
+</script>
 
     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
