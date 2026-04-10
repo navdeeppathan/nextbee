@@ -15,6 +15,7 @@ class Location extends Model
         'rack',
         'basket',
         'quantity',
+        'expiry_date'
     ];
 
     protected $casts = [

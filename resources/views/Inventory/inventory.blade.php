@@ -819,15 +819,15 @@
 
                                     <p class="text-sm text-slate-500">
                                         {{ $product->category->name ?? 'N/A' }} • 
-                                        Aisle {{ $product->aisle }} • Rack {{ $product->rack }}
+                                       {{ $product->brand ?? 'N/A' }}
                                     </p>
 
                                     <div class="flex items-center gap-4 mt-2 text-xs">
                                         <span class="text-slate-500">MOQ: {{ $product->moq }}</span>
                                         <span class="text-slate-500">Stock: {{ $product->quantity }} units</span>
-                                        <span class="text-emerald-600 font-medium">
+                                        {{-- <span class="text-emerald-600 font-medium">
                                             Shelf Life: {{ $product->shelf_life }} days
-                                        </span>
+                                        </span> --}}
                                     </div>
                                 </div>
                             </div>
@@ -838,7 +838,7 @@
                                     Storage Location
                                 </p>
 
-                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                {{-- <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
                                     
                                     <div class="flex items-center gap-3">
                                         <span class="location-pill px-3 py-1 rounded-full text-xs font-bold">
@@ -869,7 +869,7 @@
                                             <span class="expiry-badge expiry-good">Good</span>
                                         @endif
                                     </div>
-                                </div>
+                                </div> --}}
                                 @forelse($product->locations as $location)
 
                                     <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
@@ -891,6 +891,9 @@
 
                                                 <p class="text-xs text-slate-500">
                                                     Quantity: {{ $location->quantity }}
+                                                </p>
+                                                <p class="text-xs text-slate-500">
+                                                    Expiry: {{ date('M d, Y', strtotime($location->expiry_date)) }}
                                                 </p>
                                             </div>
                                         </div>
@@ -981,6 +984,7 @@
                                     data-quantity="{{ $product->quantity }}"
                                     data-price="{{ $product->price }}"
                                     data-description="{{ $product->description }}"
+                                    data-brand="{{ $product->brand }}"
 
                                     class="w-full py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
                                         Edit Product
@@ -1167,14 +1171,29 @@
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">MOQ (Units)</label>
                         <input type="number" name="moq" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="12">
                     </div>
-                    <div>
+                    {{-- <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Shelf Life (Days)</label>
                         <input type="number" name="shelf_life" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
-                    </div>
+                    </div> --}}
+
+                    <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Product Type</label>
+                            <select name="product_type" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2">
+                                <option value="A - Cold Storage">A - Cold Storage</option>
+                                <option value="B - Dry Goods">B - Dry Goods</option>
+                                <option value="C - Frozen">C - Frozen</option>
+                                <option value="D - Produce">D - Produce</option>
+                            </select>
+                        </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Product Brand</label>
+                    <input type="number" name="brand" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
                 </div>
 
                 <div class="border-t border-slate-200 pt-6">
-                    <h3 class="text-sm font-bold text-slate-900 mb-4">Primary Location</h3>
+                    {{-- <h3 class="text-sm font-bold text-slate-900 mb-4">Primary Location</h3>
                     <div class="grid md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Aisle</label>
@@ -1197,7 +1216,7 @@
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Quantity</label>
                             <input type="number" name="quantity" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="0">
                         </div>
-                    </div>
+                    </div> --}}
                      <!-- Optional Fields -->
                     <div class="grid md:grid-cols-2 gap-4 mt-4">
                         <div>
@@ -1228,7 +1247,7 @@
     <div id="update-item-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-900 font-display">Add New Inventory Item</h2>
+                <h2 class="text-2xl font-bold text-slate-900 font-display">Update Inventory Item</h2>
                 <button onclick="document.getElementById('add-item-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
             </div>
 
@@ -1259,15 +1278,29 @@
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">MOQ (Units)</label>
                         <input type="number" name="moq" id="edit_moq" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="12">
                     </div>
-                    <div>
+                    {{-- <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Shelf Life (Days)</label>
                         <input type="number" name="shelf_life" id="edit_shelf" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
-                    </div>
+                    </div> --}}
+                    <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Product Type</label>
+                            <select name="product_type" id="edit_type" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2">
+                                <option value="A - Cold Storage">A - Cold Storage</option>
+                                <option value="B - Dry Goods">B - Dry Goods</option>
+                                <option value="C - Frozen">C - Frozen</option>
+                                <option value="D - Produce">D - Produce</option>
+                            </select>
+                        </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Product Brand</label>
+                    <input type="text" name="brand" id="edit_brand" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Nestle">
                 </div>
 
                 <div class="border-t border-slate-200 pt-6">
-                    <h3 class="text-sm font-bold text-slate-900 mb-4">Primary Location</h3>
-                    <div class="grid md:grid-cols-4 gap-4">
+                    {{-- <h3 class="text-sm font-bold text-slate-900 mb-4">Primary Location</h3> --}}
+                    {{-- <div class="grid md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Aisle</label>
                             <select name="aisle" id="edit_aisle" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2">
@@ -1289,7 +1322,7 @@
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Quantity</label>
                             <input type="number" name="quantity" id="edit_quantity" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-900" placeholder="0">
                         </div>
-                    </div>
+                    </div> --}}
                      <!-- Optional Fields -->
                     <div class="grid md:grid-cols-2 gap-4 mt-4">
                         <div>
@@ -1320,7 +1353,7 @@
     <div id="locationModal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-3xl p-6 rounded-2xl">
 
-            <h2 class="text-lg font-bold mb-4">Add Locations</h2>
+            <h2 class="text-lg font-bold mb-4">Add Items</h2>
 
             <form method="POST" action="{{ route('locations.store') }}">
                 @csrf
@@ -1372,14 +1405,9 @@
             <div class="grid grid-cols-5 gap-2 mb-2">
 
                 <!-- Aisle Dropdown -->
-                <select name="locations[${index}][aisle]" 
-                    class="border p-2 rounded bg-slate-50">
-                    <option value="">Select Aisle</option>
-                    <option value="A - Cold Storage">A - Cold Storage</option>
-                    <option value="B - Dry Goods">B - Dry Goods</option>
-                    <option value="C - Frozen">C - Frozen</option>
-                    <option value="D - Produce">D - Produce</option>
-                </select>
+                <input name="locations[${index}][aisle]" 
+                    placeholder="Aisle" type="text" 
+                    class="border p-2 rounded">
 
                 <input name="locations[${index}][rack]" 
                     placeholder="Rack" type="number" 
@@ -1393,8 +1421,8 @@
                     placeholder="Qty" type="number" 
                     class="border p-2 rounded">
 
-                <input name="locations[${index}][shelf_life]" 
-                    placeholder="Shelf Life" type="number" 
+                <input name="locations[${index}][expiry_date]" 
+                    placeholder="Expiry" type="date" 
                     class="border p-2 rounded">
             </div>
         `;
@@ -1583,6 +1611,8 @@
         document.getElementById('edit_quantity').value = btn.dataset.quantity;
         document.getElementById('edit_price').value = btn.dataset.price;
         document.getElementById('edit_description').value = btn.dataset.description;
+        document.getElementById('edit_type').value = btn.dataset.type;
+        document.getElementById('edit_brand').value = btn.dataset.brand;
     }
     </script>
 </body>

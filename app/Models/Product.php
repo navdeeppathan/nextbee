@@ -24,6 +24,8 @@ class Product extends Model
         'rack',
         'basket',
         'quantity',
+        'product_type',
+        'brand'
     ];
 
     public function category()

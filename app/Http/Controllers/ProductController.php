@@ -43,17 +43,20 @@ class ProductController extends Controller
         // dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
-            'sku_code' => 'required|string',
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-            'moq' => 'required|integer|min:0',
-            'shelf_life' => 'required|integer|min:0',
+            'sku_code' => 'nullable|string',
+            'price' => 'nullable|numeric',
+            'category_id' => 'nullable|exists:categories,id',
+            'moq' => 'nullable|integer|min:0',
+            'shelf_life' => 'nullable|integer|min:0',
             'aisle' => 'nullable|string|max:100',
             'rack' => 'nullable|string|max:50',
             'basket' => 'nullable|string|max:50',
-            'quantity' => 'required|integer|min:0',
+            'quantity' => 'nullable|integer|min:0',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'product_type' => 'nullable|string',
+            'brand' => 'nullable|string',
+
         ]);
 
         $data = $request->only([
@@ -68,6 +71,8 @@ class ProductController extends Controller
             'rack',
             'basket',
             'quantity',
+            'product_type',
+            'brand',
         ]);
 
         // IMAGE UPLOAD
@@ -92,21 +97,24 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        
         $product = Product::findOrFail($id);
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'sku_code' => 'required|string',
-            'price' => 'required|numeric',
+            'sku_code' => 'nullable|string',
+            'price' => 'nullable|numeric',
             'category_id' => 'required|exists:categories,id',
-            'moq' => 'required|integer|min:0',
-            'shelf_life' => 'required|integer|min:0',
+            'moq' => 'nullable|integer|min:0',
+            'shelf_life' => 'nullable|integer|min:0',
             'aisle' => 'nullable|string|max:100',
             'rack' => 'nullable|string|max:50',
             'basket' => 'nullable|string|max:50',
-            'quantity' => 'required|integer|min:0',
+            'quantity' => 'nullable|integer|min:0',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'description' => 'nullable|string'
+            'description' => 'nullable|string',
+            'product_type' => 'nullable|string',
+            'brand' => 'nullable|string',
         ]);
 
         $data = $request->only([
@@ -121,6 +129,8 @@ class ProductController extends Controller
             'rack',
             'basket',
             'quantity',
+            'product_type',
+            'brand',
         ]);
 
         // IMAGE UPDATE
