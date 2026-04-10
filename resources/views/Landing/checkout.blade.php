@@ -524,9 +524,37 @@ function setQty(index, value) {
 
 // ✅ remove item
 function removeItem(index) {
-    orderLines.splice(index, 1);
-    renderOrderLines();
-    updateSummary();
+
+    let item = orderLines[index]; // 👈 cart item
+
+    fetch('/cart/delete', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            cart_id: item.id // 👈 IMPORTANT (cart table id)
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.success) {
+
+            // ✅ UI se remove
+            orderLines.splice(index, 1);
+
+            renderOrderLines();
+            updateSummary();
+
+            showToast('Item removed successfully ✅');
+        }
+
+    })
+    .catch(() => {
+        alert('Delete failed ❌');
+    });
 }
 
 

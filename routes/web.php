@@ -241,4 +241,5 @@ Route::post('/cart/update', function (Request $request) {
 
     return response()->json(['success' => true]);
 });
+Route::post('/cart/delete', [CartController::class, 'delete'])->middleware('auth');
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
