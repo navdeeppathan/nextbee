@@ -25,6 +25,7 @@ class CartController extends Controller
 
         return response()->json(['success' => true]);
     }
+    
     public function delete(Request $request)
 {
     Cart::where('id', $request->cart_id)
