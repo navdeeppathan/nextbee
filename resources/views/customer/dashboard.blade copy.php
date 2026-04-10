@@ -101,7 +101,7 @@
             gap: 10px;
             padding: 10px 12px;
             border-radius: 10px;
-            color: #fff;
+            color: rgba(255, 255, 255, 0.55);
             font-size: 13.5px;
             font-weight: 500;
             text-decoration: none;
@@ -116,7 +116,7 @@
 
         .nav-link.active {
             background: rgba(30, 64, 175, 0.45);
-            color: #fff;
+            color: #93c5fd;
         }
 
         .nav-link .nav-icon {
@@ -449,29 +449,6 @@
                 margin-left: 0;
             }
         }
-
-        .logout-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 10px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #94a3b8;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 13px;
-            transition: all 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-        }
     </style>
 </head>
 
@@ -533,7 +510,7 @@
                 My Orders
             </a>
 
-            <a href="/customer/payments" class="nav-link {{ Request::is('customer/payments') ||  Request::is('invoice/*')   ? 'active' : '' }}">
+            <a href="/customer/payments" class="nav-link {{ Request::is('customer/payments') ? 'active' : '' }}">
                 <svg class="nav-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <rect x="2" y="5" width="20" height="14" rx="2" />
                     <path d="M2 10h20" />
@@ -550,15 +527,6 @@
                     <div class="user-info-role">{{ ucfirst(Auth::user()->role) }}</div>
                 </div>
             </div>
-            <form method="POST" action="{{ url('/logout') }}">
-                @csrf
-                {{-- <button class="logout-btn" onclick="logout()" aria-label="Logout"> --}}
-                    <button type="submit" class="logout-btn" aria-label="Logout">
-
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </button>
-            </form>
         </div>
     </aside>
 
@@ -586,13 +554,6 @@
     <main class="main-content">
         @yield('content')
     </main>
-    <script>
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = '/';
-            }
-        }
-    </script>
 
 </body>
 

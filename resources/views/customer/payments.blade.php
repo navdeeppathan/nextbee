@@ -38,6 +38,7 @@
                         <th>Amount</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,10 +73,20 @@
                                     {{ $p->status }}
                                 </span>
                             </td>
+                            <td>
+                                <a href="/invoice/{{ $p->id }}">
+                                    <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                        View
+                                    </button>
+                                </a>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+            <div style="padding:15px;">
+    {{ $payments->links() }}
+</div>
         </div>
         
     </div>

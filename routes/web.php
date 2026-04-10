@@ -217,7 +217,7 @@ Route::get('/customer/payments', function () {
 
     $payments = Payment::where('user_id', auth()->id())
         ->latest()
-        ->get();
+        ->paginate(10);
 
     return view('customer.payments', compact('payments'));
 
@@ -326,6 +326,8 @@ Route::post('/order-item/delete', function (Request $req) {
 });
 Route::get('/products/search', [ProductController::class, 'search']);
 
+Route::get('/order/{id}', [OrderController::class, 'view'])->middleware('auth');
+
 Route::post('/cart/update', function (Request $request) {
 
     \App\Models\Cart::where('id', $request->cart_id)
@@ -335,3 +337,4 @@ Route::post('/cart/update', function (Request $request) {
 });
 Route::post('/cart/delete', [CartController::class, 'delete'])->middleware('auth');
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
+Route::get('/invoice/{id}', [OrderController::class, 'invoice'])->middleware('auth');

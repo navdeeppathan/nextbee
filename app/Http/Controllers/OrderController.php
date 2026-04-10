@@ -11,32 +11,11 @@ use App\Models\Payment;
 
 class OrderController extends Controller
 {
-
-    public function showOrder($order_id)
-    {
-        $order = Order::with('items.product')
-            ->where('id', $order_id) // ya jo order open karna hai
-            ->firstOrFail();
-
-        $orderData = $order->items->map(function ($item) {
-            return [
-                'id' => $item->id, // 👈 order_item_id
-                'name' => $item->product->title,
-                'sku' => $item->product->sku_code,
-                'price' => $item->product->price,
-                'moq' => 1,
-                'qty' => $item->quantity,
-                'lineTotal' => $item->product->price * $item->quantity
-            ];
-        });
-
-        return view('SalesRep.checkout', compact('orderData', 'order'));
-    }
     
     // 📦 PLACE ORDER
    public function store(Request $request)
-    {
-        $items = $request->items;
+{
+    $items = $request->items;
 
         if (!$items || count($items) === 0) {
             return response()->json([
@@ -101,68 +80,100 @@ class OrderController extends Controller
     }
     // 📋 MY ORDERS
    public function index()
-    {
-        $orders = Order::where('user_id', auth()->id())->latest()->get();
-        $categories = Category::all();
-        $products = Product::all(); // 👈 ADD THIS
+{
+    $orders = Order::where('user_id', auth()->id())->latest()->get();
+    $categories = Category::all();
+    $products = Product::all(); // 👈 ADD THIS
 
         return view('orders', compact('orders', 'categories', 'products'));
     }
 
    public function myOrder()
-    {
-        $orders = Order::where('user_id', auth()->id())->latest()->get();
-        $categories = Category::all();
-        $products = Product::all(); // 👈 ADD THIS
-
-        return view('customer.orders', compact('orders', 'categories', 'products'));
-    }
-
-public function placeOrder()
 {
-    $items = Cart::where('user_id', auth()->id())
-        ->with('product')
-        ->get();
+    $orders = Order::where('user_id', auth()->id())->latest()->get();
+    $categories = Category::all();
+    $products = Product::all(); // 👈 ADD THIS
 
-    if ($items->isEmpty()) {
-        return redirect('/cart')->with('error', 'Cart empty');
-    }
-
-    $order = Order::create([
-        'user_id' => auth()->id(),
-        'total_price' => 0
-    ]);
-
-    $total = 0;
-
-   foreach ($items as $item) {
-
-    $price = $item->product->price;
-
-    $qty = max(5, $item->quantity);
-
-    $total += $price * $qty;
-
-    $order->items()->create([
-        'product_id' => $item->product_id,
-        'quantity' => $qty,
-    ]);
+    return view('customer.orders', compact('orders', 'categories', 'products'));
 }
 
-    $order->update([
-        'total_price' => $total
-    ]);
-     // ✅ PAYMENT SAVE
-    Payment::create([
-        'order_id' => $order->id,
-        'user_id' => auth()->id(),
-        'amount' => $total,
-        'method' => 'UPI', // ya dynamic bana sakte ho
-        'status' => 'Paid'
-    ]);
+    public function placeOrder()
+    {
+        $items = Cart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
 
-    Cart::where('user_id', auth()->id())->delete();
+        if ($items->isEmpty()) {
+            return redirect('/cart')->with('error', 'Cart empty');
+        }
 
-    return redirect('/customer/orders')->with('success', 'Order placed ✅');
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'total_price' => 0
+        ]);
+
+        $total = 0;
+
+        foreach ($items as $item) {
+
+            $price = $item->product->price;
+
+            $qty = max(5, $item->quantity);
+
+            $total += $price * $qty;
+
+            $order->items()->create([
+                'product_id' => $item->product_id,
+                'quantity' => $qty,
+                'price' => $price // ✅ MUST
+            ]);
+        }
+
+        $order->update([
+            'total_price' => $total
+        ]);
+        // ✅ PAYMENT SAVE
+        Payment::create([
+            'order_id' => $order->id,
+            'user_id' => auth()->id(),
+            'amount' => $total,
+            'method' => 'UPI', // ya dynamic bana sakte ho
+            'status' => 'Paid'
+        ]);
+
+        Cart::where('user_id', auth()->id())->delete();
+
+        return redirect('/customer/orders')->with('success', 'Order placed ✅');
+    }
+    public function view($id)
+    {
+        $order = Order::with('items.product')
+            ->where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $orderData = $order->items->map(function ($item) {
+            return [
+                'name' => $item->product->title ?? 'Product',
+                'sku' => $item->product->sku_code ?? '-',
+                'moq' => $item->product->moq ?? 1, // ✅ ADD THIS
+                'price' => (float) ($item->price ?? 0),
+                'qty' => (int) $item->quantity,
+                'lineTotal' => (float) ($item->price ?? 0) * $item->quantity
+            ];
+        });
+
+        return view('customer.view-order', compact('order', 'orderData'));
+    }
+    public function invoice($id)
+{
+    $payment = Payment::with('order.items.product')
+        ->where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    $order = $payment->order;
+
+    return view('customer.invoice', compact('payment', 'order'));
 }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Models\Order;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +15,7 @@ class Payment extends Model
         'status'
     ];
 
-    public function order()
+     public function order()
     {
         return $this->belongsTo(Order::class);
     }
