@@ -711,7 +711,7 @@
         class="fixed inset-0 bg-black/50 backdrop-blur z-50 opacity-0 pointer-events-none transition-opacity"
         onclick="closeModal()"></div>
     <div id="modal"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity">
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity overflow-y-auto">
         <div class="bg-white rounded-3xl max-w-md w-full p-8 transform scale-95 transition-transform"
             id="modal-content">
 
