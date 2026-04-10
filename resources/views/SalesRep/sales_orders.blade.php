@@ -655,10 +655,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="createOrder()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
+                    {{-- <button onclick="createOrder()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
                         <i class="fas fa-plus"></i>
                         <span class="hidden sm:inline">Create Order</span>
-                    </button>
+                    </button> --}}
                     <button class="relative p-2 text-slate-600 hover:text-blue-900 transition">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">8</span>
@@ -796,9 +796,13 @@
                                 </p>
                             </div>
 
-                            <div>
+                            <div class="flex gap-2">
                                 <button class="text-blue-900 hover:underline text-sm">
                                     <a href="/checkout-sales/{{ $order->id }}">View</a>
+                                </button>
+                                <button onclick="openLogs({{ $order->id }})"
+                                    class="text-purple-700 hover:underline text-sm">
+                                    History
                                 </button>
                             </div>
                         </div>
@@ -1081,6 +1085,67 @@
             </div>
         </div>
     </main>
+
+    <div id="logsModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl w-[600px] max-h-[80vh] overflow-y-auto p-6">
+            
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Order History</h2>
+                <button onclick="closeLogs()" class="text-xl">&times;</button>
+            </div>
+
+            <div id="logsContent">
+                <!-- logs will come here -->
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openLogs(orderId) {
+
+            const modal = document.getElementById('logsModal');
+            const content = document.getElementById('logsContent');
+
+            modal.classList.remove('hidden');
+            content.innerHTML = "Loading...";
+
+            fetch(`/order/logs/${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.length === 0) {
+                        content.innerHTML = `<p class="text-sm text-slate-500">No logs found</p>`;
+                        return;
+                    }
+
+                    content.innerHTML = data.map(log => `
+                        <div class="border-b py-3">
+                            <p class="text-sm font-semibold text-slate-800">
+                                ${log.action_type}
+                            </p>
+
+                            <p class="text-xs text-slate-500">
+                                Old: ${log.old_value ?? '-'} → New: ${log.new_value ?? '-'}
+                            </p>
+
+                            <p class="text-xs text-slate-400">
+                                By User ID: ${log.user.name} | ${formatDate(log.created_at)}
+                            </p>
+                        </div>
+                    `).join('');
+
+                });
+        }
+
+        function closeLogs() {
+            document.getElementById('logsModal').classList.add('hidden');
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString();
+        }
+    </script>
 
     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====

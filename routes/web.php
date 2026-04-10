@@ -33,6 +33,7 @@ Route::get('/login', function () {
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
+
 use App\Http\Controllers\LocationController;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -133,7 +134,9 @@ Route::get('/sales-orders', function () {
 });
 
 Route::get('/sales-orders-inventory', function () {
-    $orders= Order::with(['user', 'payment'])->where('status', 'confirm')->get();
+    $orders = Order::with(['user', 'payment'])
+    ->where('status', '!=', 'pending')
+    ->get();
     
     $totalOrders = Order::where('status', 'confirm')
         ->whereMonth('created_at', Carbon::now()->month)
@@ -143,9 +146,20 @@ Route::get('/sales-orders-inventory', function () {
     $pendingOrders = Order::where('status', 'pending')->count();
     $processingOrders = Order::where('status', 'processing')->count();
     $deliveredOrders = Order::where('status', 'delivered')->count();
+
+   
     return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
 });
 
+Route::get('/order/logs/{order_id}', function ($order_id) {
+
+    $logs = \App\Models\OrderLog::where('order_id', $order_id)
+        ->latest()
+        ->with('user') // optional if relation
+        ->get();
+
+    return response()->json($logs);
+});
 
 //sales folder
 Route::get('/sales-commissions', function () {
@@ -182,6 +196,24 @@ Route::get('/sales-orders2', function () {
 
     return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
 });
+
+
+Route::get('/driver-orders', function () {
+   $orders = Order::with(['user', 'payment'])
+    ->whereNotIn('status', ['confirm', 'pending'])
+    ->get();
+    $totalOrders = Order::where('status', 'confirm')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->count();
+    $confirmedOrders = Order::where('status', 'confirm')->count();    
+    $pendingOrders = Order::where('status', 'pending')->count();
+    $processingOrders = Order::where('status', 'processing')->count();
+    $deliveredOrders = Order::where('status', 'delivered')->count();
+
+    return view('drivers.index', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+});
+
 
 Route::get('/sales-performance', function () {
     return view('SalesRep.sales_performance');

@@ -180,7 +180,7 @@
                         </div>
                     </a>
                     <span class="text-slate-300">|</span>
-                    <span class="text-lg font-semibold text-slate-800">Create Sales Order</span>
+                    <span class="text-lg font-semibold text-slate-800">Update Sales Order</span>
                 </div>
 
                 <div class="flex items-center gap-4">
@@ -203,12 +203,12 @@
         <div class="mb-8">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h1 class="font-display text-3xl font-bold text-slate-900">New Sales Order</h1>
-                    <p class="text-slate-500 mt-1">Create a new sales order for your business</p>
+                    <h1 class="font-display text-3xl font-bold text-slate-900">Sales Order</h1>
+                    {{-- <p class="text-slate-500 mt-1">Create a new sales order for your business</p> --}}
                 </div>
                 <div class="flex items-center gap-3">
                     <!-- <span class="text-sm text-slate-500">Order #:</span> -->
-                    <a href="/main">
+                    <a href="{{redirect()->back()->getTargetUrl()}}">
 
                         <!-- <span class="font-mono font-semibold text-blue-900 bg-blue-50 px-3 py-1 rounded-lg"> Back</span> -->
                         <button

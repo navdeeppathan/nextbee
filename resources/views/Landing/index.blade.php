@@ -792,37 +792,38 @@
                 <div class="text-center mb-6">
                     <h3 class="font-display text-2xl font-bold text-slate-900 mb-2">Open Trade Account</h3>
                 </div>
-                <form onsubmit="event.preventDefault(); handleRegister();">
+                <form action="{{ route('register-customer') }}" method="POST">
+                    @csrf
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Business Name</label>
-                            <input type="text" id="reg-business"
+                            <input type="text" name="business_name"
                                 class="w-full px-4 py-3 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-blue-900 focus:outline-none transition"
                                 placeholder="Your Business Ltd" required>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">First Name</label>
-                                <input type="text" id="reg-firstname"
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
+                                <input type="text" name="name"
                                     class="w-full px-4 py-3 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-blue-900 focus:outline-none transition"
-                                    placeholder="John" required>
+                                    placeholder="John Smith" required>
                             </div>
-                            <div>
+                            {{-- <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Last Name</label>
                                 <input type="text" id="reg-lastname"
                                     class="w-full px-4 py-3 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-blue-900 focus:outline-none transition"
                                     placeholder="Smith" required>
-                            </div>
+                            </div> --}}
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Business Email</label>
-                            <input type="email" id="reg-email"
+                            <input type="email" name="email"
                                 class="w-full px-4 py-3 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-blue-900 focus:outline-none transition"
                                 placeholder="john@yourbusiness.com" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Phone</label>
-                            <input type="tel" id="reg-phone"
+                            <input type="tel" name="phone"
                                 class="w-full px-4 py-3 rounded-xl bg-slate-50 border-2 border-slate-200 focus:border-blue-900 focus:outline-none transition"
                                 placeholder="020 7946 0958" required>
                         </div>
@@ -880,7 +881,28 @@
         </div>
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: "{{ session('success') }}",
+        confirmButtonColor: '#3085d6'
+    });
+</script>
+@endif
 
+@if(session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#d33'
+    });
+</script>
+@endif
 
 
     <script>

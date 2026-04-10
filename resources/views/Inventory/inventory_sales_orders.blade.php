@@ -659,10 +659,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="createOrder()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
+                    {{-- <button onclick="createOrder()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
                         <i class="fas fa-plus"></i>
                         <span class="hidden sm:inline">Create Order</span>
-                    </button>
+                    </button> --}}
                     <button class="relative p-2 text-slate-600 hover:text-blue-900 transition">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">8</span>
@@ -831,237 +831,20 @@
                                 </p>
                             </div>
 
-                            <div>
+                            <div class="flex gap-2">
                                 <button class="text-blue-900 hover:underline text-sm">
                                    <a href="/checkout-sales/{{ $order->id }}">View </a>
+                                </button>
+
+                                <button onclick="openLogs({{ $order->id }})"
+                                    class="text-purple-700 hover:underline text-sm">
+                                    History
                                 </button>
                             </div>
                         </div>
                         @endforeach
 
-                        <!-- Order 2 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0891</p>
-                                <p class="text-xs text-slate-500">28 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">West End Catering</p>
-                                <p class="text-xs text-slate-500">ID: CWE-002</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 31, 2026</p>
-                                <p class="text-xs text-slate-500">04:30 PM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£9,400.00</p>
-                                <p class="text-xs text-slate-500">Net 30</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-confirmed">
-                                    <i class="fas fa-check-circle"></i>
-                                    Confirmed
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-emerald-600">Approved</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0891')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
-
-                        <!-- Order 3 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0890</p>
-                                <p class="text-xs text-slate-500">8 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">The Crown Pub</p>
-                                <p class="text-xs text-slate-500">ID: CTC-004</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 30, 2026</p>
-                                <p class="text-xs text-slate-500">11:20 AM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£2,850.00</p>
-                                <p class="text-xs text-slate-500">Net 15</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-processing">
-                                    <i class="fas fa-cog fa-spin"></i>
-                                    Processing
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-blue-600">Picking Items</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0890')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
-
-                        <!-- Order 4 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0889</p>
-                                <p class="text-xs text-slate-500">18 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">Riverside Restaurant</p>
-                                <p class="text-xs text-slate-500">ID: CRR-003</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 28, 2026</p>
-                                <p class="text-xs text-slate-500">02:15 PM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£6,750.00</p>
-                                <p class="text-xs text-slate-500">Net 30</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-delivered">
-                                    <i class="fas fa-truck"></i>
-                                    Delivered
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-emerald-600">Paid</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0889')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
-
-                        <!-- Order 5 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0888</p>
-                                <p class="text-xs text-slate-500">45 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">Highbury Gardens Hotel</p>
-                                <p class="text-xs text-slate-500">ID: CHG-005</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 27, 2026</p>
-                                <p class="text-xs text-slate-500">09:00 AM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£15,200.00</p>
-                                <p class="text-xs text-slate-500">Net 30</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-delivered">
-                                    <i class="fas fa-truck"></i>
-                                    Delivered
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-emerald-600">Paid</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0888')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
-
-                        <!-- Order 6 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0887</p>
-                                <p class="text-xs text-slate-500">6 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">London Bistro Ltd</p>
-                                <p class="text-xs text-slate-500">ID: CLB-001</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 25, 2026</p>
-                                <p class="text-xs text-slate-500">03:45 PM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£3,800.00</p>
-                                <p class="text-xs text-slate-500">Net 30</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-cancelled">
-                                    <i class="fas fa-times-circle"></i>
-                                    Cancelled
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-red-600">Customer Request</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0887')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
-
-                        <!-- Order 7 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0886</p>
-                                <p class="text-xs text-slate-500">22 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">West End Catering</p>
-                                <p class="text-xs text-slate-500">ID: CWE-002</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 22, 2026</p>
-                                <p class="text-xs text-slate-500">10:30 AM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£11,200.00</p>
-                                <p class="text-xs text-slate-500">Net 30</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-delivered">
-                                    <i class="fas fa-truck"></i>
-                                    Delivered
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-emerald-600">Paid</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0886')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
-
-                        <!-- Order 8 -->
-                        {{-- <div class="order-row">
-                            <div>
-                                <p class="font-semibold text-blue-900">#SO-2026-0885</p>
-                                <p class="text-xs text-slate-500">15 items</p>
-                            </div>
-                            <div>
-                                <p class="font-medium text-slate-900">Riverside Restaurant</p>
-                                <p class="text-xs text-slate-500">ID: CRR-003</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-slate-900">Mar 20, 2026</p>
-                                <p class="text-xs text-slate-500">01:00 PM</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-slate-900">£7,100.00</p>
-                                <p class="text-xs text-slate-500">Net 30</p>
-                            </div>
-                            <div>
-                                <span class="status-badge status-delivered">
-                                    <i class="fas fa-truck"></i>
-                                    Delivered
-                                </span>
-                            </div>
-                            <div>
-                                <p class="text-sm text-emerald-600">Paid</p>
-                            </div>
-                            <div>
-                                <button onclick="viewOrder('SO-2026-0885')" class="text-blue-900 hover:underline text-sm">View</button>
-                            </div>
-                        </div> --}}
+                       
                     </div>
                 </div>
 
@@ -1086,110 +869,171 @@
         </div>
     </main>
 
+    <div id="logsModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl w-[600px] max-h-[80vh] overflow-y-auto p-6">
+            
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Order History</h2>
+                <button onclick="closeLogs()" class="text-xl">&times;</button>
+            </div>
+
+            <div id="logsContent">
+                <!-- logs will come here -->
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openLogs(orderId) {
+
+            const modal = document.getElementById('logsModal');
+            const content = document.getElementById('logsContent');
+
+            modal.classList.remove('hidden');
+            content.innerHTML = "Loading...";
+
+            fetch(`/order/logs/${orderId}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.length === 0) {
+                        content.innerHTML = `<p class="text-sm text-slate-500">No logs found</p>`;
+                        return;
+                    }
+
+                    content.innerHTML = data.map(log => `
+                        <div class="border-b py-3">
+                            <p class="text-sm font-semibold text-slate-800">
+                                ${log.action_type}
+                            </p>
+
+                            <p class="text-xs text-slate-500">
+                                Old: ${log.old_value ?? '-'} → New: ${log.new_value ?? '-'}
+                            </p>
+
+                            <p class="text-xs text-slate-400">
+                                By User ID: ${log.user.name} | ${formatDate(log.created_at)}
+                            </p>
+                        </div>
+                    `).join('');
+
+                });
+        }
+
+        function closeLogs() {
+            document.getElementById('logsModal').classList.add('hidden');
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString();
+        }
+    </script>
+
     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
 
-// Initialize sidebar state from localStorage
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('sidebar');
-    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    
-    if (isCollapsed && window.innerWidth > 1024) {
-        sidebar.classList.add('collapsed');
-    }
-    
-    // Initialize section states from localStorage
-    const sections = ['section-main', 'section-analytics', 'section-tools'];
-    sections.forEach(sectionId => {
-        const isSectionCollapsed = localStorage.getItem(sectionId + '_collapsed') === 'true';
-        if (isSectionCollapsed) {
-            document.getElementById(sectionId).classList.add('collapsed');
+        // Initialize sidebar state from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            
+            if (isCollapsed && window.innerWidth > 1024) {
+                sidebar.classList.add('collapsed');
+            }
+            
+            // Initialize section states from localStorage
+            const sections = ['section-main', 'section-analytics', 'section-tools'];
+            sections.forEach(sectionId => {
+                const isSectionCollapsed = localStorage.getItem(sectionId + '_collapsed') === 'true';
+                if (isSectionCollapsed) {
+                    document.getElementById(sectionId).classList.add('collapsed');
+                }
+            });
+        });
+
+        // Toggle sidebar collapse (desktop only)
+        function toggleSidebar() {
+            if (window.innerWidth <= 1024) return;
+            
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Save state to localStorage
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
         }
-    });
-});
 
-// Toggle sidebar collapse (desktop only)
-function toggleSidebar() {
-    if (window.innerWidth <= 1024) return;
-    
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('collapsed');
-    
-    // Save state to localStorage
-    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-}
-
-// Toggle menu sections (accordion style)
-function toggleSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    const isCollapsed = section.classList.toggle('collapsed');
-    
-    // Save state to localStorage
-    localStorage.setItem(sectionId + '_collapsed', isCollapsed);
-    
-    // Update aria-expanded for accessibility
-    const header = section.querySelector('.section-header');
-    header.setAttribute('aria-expanded', !isCollapsed);
-}
-
-// ===== MOBILE SIDEBAR =====
-
-function openMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('mobileOverlay');
-    
-    sidebar.classList.add('mobile-open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('mobileOverlay');
-    
-    sidebar.classList.remove('mobile-open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-// Close mobile sidebar on window resize to desktop
-window.addEventListener('resize', function() {
-    if (window.innerWidth > 1024) {
-        closeMobileSidebar();
-    }
-});
-
-// ===== KEYBOARD ACCESSIBILITY =====
-
-// Allow keyboard navigation for section headers
-document.querySelectorAll('.section-header').forEach(header => {
-    header.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            this.click();
+        // Toggle menu sections (accordion style)
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const isCollapsed = section.classList.toggle('collapsed');
+            
+            // Save state to localStorage
+            localStorage.setItem(sectionId + '_collapsed', isCollapsed);
+            
+            // Update aria-expanded for accessibility
+            const header = section.querySelector('.section-header');
+            header.setAttribute('aria-expanded', !isCollapsed);
         }
-    });
-});
 
-// Escape key to close mobile sidebar
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeMobileSidebar();
-    }
-});
+        // ===== MOBILE SIDEBAR =====
 
-// ===== COMMON FUNCTIONS =====
+        function openMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
-function openProfile() {
-    // Implement profile modal or navigation
-    console.log('Opening profile...');
-}
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        window.location.href = 'index.html';
-    }
-}
+        // Close mobile sidebar on window resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                closeMobileSidebar();
+            }
+        });
+
+        // ===== KEYBOARD ACCESSIBILITY =====
+
+        // Allow keyboard navigation for section headers
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // Escape key to close mobile sidebar
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMobileSidebar();
+            }
+        });
+
+        // ===== COMMON FUNCTIONS =====
+
+        function openProfile() {
+            // Implement profile modal or navigation
+            console.log('Opening profile...');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
     </script>
 </body>
 </html>

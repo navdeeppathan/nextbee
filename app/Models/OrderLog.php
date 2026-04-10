@@ -14,4 +14,9 @@ class OrderLog extends Model
         'old_value',
         'new_value'
     ];
+    // OrderLog model
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

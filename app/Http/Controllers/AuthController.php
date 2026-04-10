@@ -63,17 +63,18 @@ class AuthController extends Controller
     {
         $request->validate([
             'business_name' => 'required',
+            'name' => 'nullable',
             'email' => 'required|email|unique:users',
-            'business_type'=>'required',
-            'delivery_address'=>'required',
-            'primary_contact_name'=>'required',
-            'preferred_delivery_days' => 'required|array',
-            'phone'=>'required',
-            'monthly_volume'=>'required',
+            'business_type'=>'nullable',
+            'delivery_address'=>'nullable',
+            'primary_contact_name'=>'nullable',
+            'preferred_delivery_days' => 'nullable|array',
+            'phone'=>'nullable',
+            'monthly_volume'=>'nullable',
         ]);
 
         User::create([
-            'name' => $request->business_name,
+            'name' => $request->name ?? $request->business_name,
             'email' => $request->email,
             'role' =>'customer',
             'phone'=>$request->phone,
@@ -120,6 +121,9 @@ class AuthController extends Controller
 
             if(trim($user->role) == 'delivery_team') {
                 return redirect('/delivery');
+            }
+            if(trim($user->role) == 'driver') {
+                return redirect('/driver-orders');
             
             }
 

@@ -537,6 +537,11 @@
                         <span class="nav-text">Drivers</span>
                         <span class="tooltip">Drivers</span>
                     </a>
+                    <a href="/order-logs" class="nav-item">
+                        <span class="nav-icon"><i class="fas fa-id-card"></i></span>
+                        <span class="nav-text">Order Logs</span>
+                        <span class="tooltip">Order Logs</span>
+                    </a>
                 </div>
             </div>
 

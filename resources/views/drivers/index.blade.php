@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commissions | Sales Rep Portal</title>
+    <title>All Orders | Sales Rep Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-            :root {
-                --navy: #0f172a;
-                --royal: #1e40af;
-                --gold: #d4af37;
-                --emerald: #059669;
-                --crimson: #dc2626;
-                --amber: #f59e0b;
-                --sidebar-width: 280px;
-                --sidebar-collapsed-width: 64px;
-                --transition-speed: 250ms;
-            }
+       :root {
+            --navy: #0f172a;
+            --royal: #1e40af;
+            --gold: #d4af37;
+            --emerald: #059669;
+            --crimson: #dc2626;
+            --amber: #f59e0b;
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 64px;
+            --transition-speed: 250ms;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -31,7 +30,7 @@
             font-family: 'Space Grotesk', sans-serif;
         }
 
-       /* ===== SIDEBAR STYLES ===== */
+          /* ===== SIDEBAR STYLES ===== */
         .sidebar {
             position: fixed;
             left: 0;
@@ -454,7 +453,73 @@
         .logout-btn:focus-visible {
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
-        }   
+        }
+
+            .order-row {
+                display: grid;
+                grid-template-columns: 1.5fr 2fr 1fr 1fr 1fr 1fr 120px;
+                gap: 16px;
+                align-items: center;
+                padding: 16px 20px;
+                background: white;
+                border-bottom: 1px solid #e2e8f0;
+                transition: background 0.2s;
+            }
+
+            .order-row:hover {
+                background: #f8fafc;
+            }
+
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+            .status-pending {
+                background: #fffbeb;
+                color: #b45309;
+            }
+
+            .status-confirmed {
+                background: #f0fdf4;
+                color: #15803d;
+            }
+
+            .status-processing {
+                background: #eff6ff;
+                color: #1d4ed8;
+            }
+
+            .status-delivered {
+                background: #f0fdf4;
+                color: #15803d;
+            }
+
+            .status-cancelled {
+                background: #fef2f2;
+                color: #dc2626;
+            }
+
+            @media (max-width: 1024px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                }
+                .sidebar.active {
+                    transform: translateX(0);
+                }
+                .main-content {
+                    margin-left: 0;
+                }
+                .order-row {
+                    grid-template-columns: 1fr;
+                    gap: 8px;
+                }
+            }
     </style>
 </head>
 <body>
@@ -493,23 +558,13 @@
                     <span class="nav-text">Dashboard</span>
                     <span class="tooltip">Dashboard</span>
                 </a>
-                <a href="/sales-customers" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-users"></i></span>
-                    <span class="nav-text">My Customers</span>
-                    <span class="nav-badge">3</span>
-                    <span class="tooltip">My Customers</span>
-                </a>
+                
                 <a href="/sales-orders" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                     <span class="nav-text">All Orders</span>
                     <span class="tooltip">All Orders</span>
                 </a>
-                <a href="/sales-tasks" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-tasks"></i></span>
-                    <span class="nav-text">Tasks</span>
-                    <span class="nav-badge warning">5</span>
-                    <span class="tooltip">Tasks</span>
-                </a>
+                
             </div>
         </div>
 
@@ -520,17 +575,17 @@
                 <i class="fas fa-chevron-down section-chevron"></i>
             </div>
             <div class="section-content">
-                <a href="sales_performance.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/sales-performance" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
                     <span class="nav-text">Performance</span>
                     <span class="tooltip">Performance</span>
                 </a>
-                <a href="sales_commissions.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/sales-commissions" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-pound-sign"></i></span>
                     <span class="nav-text">Commissions</span>
                     <span class="tooltip">Commissions</span>
                 </a>
-                <a href="sales_targets.html" class="nav-item [ACTIVE_CLASS]">
+                <a href="/sales-target" class="nav-item [ACTIVE_CLASS]">
                     <span class="nav-icon"><i class="fas fa-bullseye"></i></span>
                     <span class="nav-text">Targets</span>
                     <span class="tooltip">Targets</span>
@@ -538,25 +593,7 @@
             </div>
         </div>
 
-        <!-- Tools Section -->
-        <div class="menu-section" id="section-tools">
-            <div class="section-header" onclick="toggleSection('section-tools')" tabindex="0" role="button" aria-expanded="true">
-                <span class="section-label">Tools</span>
-                <i class="fas fa-chevron-down section-chevron"></i>
-            </div>
-            <div class="section-content">
-                <a href="sales_price_lists.html" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
-                    <span class="nav-text">Price Lists</span>
-                    <span class="tooltip">Price Lists</span>
-                </a>
-                <a href="sales_catalog.html" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-box-open"></i></span>
-                    <span class="nav-text">Product Catalog</span>
-                    <span class="tooltip">Product Catalog</span>
-                </a>
-            </div>
-        </div>
+       
     </nav>
 
     <!-- Footer -->
@@ -585,16 +622,12 @@
                         <i class="fas fa-bars text-slate-600"></i>
                     </button>
                     <div>
-                        <h1 class="font-display text-2xl font-bold text-slate-900">Commissions</h1>
-                        <p class="text-sm text-slate-500">Track your earnings and payouts</p>
+                        <h1 class="font-display text-2xl font-bold text-slate-900">All Orders</h1>
+                        <p class="text-sm text-slate-500">Manage and track all customer orders</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <select class="px-4 py-2 border border-slate-200 rounded-lg text-sm">
-                        <option>Q2 2026</option>
-                        <option>Q1 2026</option>
-                        <option>2026 YTD</option>
-                    </select>
+                    
                     <button class="relative p-2 text-slate-600 hover:text-blue-900 transition">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">8</span>
@@ -604,169 +637,131 @@
         </header>
 
         <div class="p-6">
-            <!-- Commission Summary Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                <div class="commission-card border-l-4 border-emerald-500">
-                    <p class="text-sm text-slate-500 mb-1">Q2 Earnings</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">£3,850</h3>
-                    <p class="text-xs text-emerald-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>15.3% vs Q1</p>
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                <div class="bg-white rounded-xl p-4 border border-slate-200">
+                    <p class="text-sm text-slate-500">Total Orders</p>
+                    <p class="text-2xl font-bold text-slate-900">{{ $totalOrders }}</p>
+                    <p class="text-xs text-slate-400 mt-1">This month</p>
                 </div>
-                <div class="commission-card border-l-4 border-blue-500">
-                    <p class="text-sm text-slate-500 mb-1">Pending Payout</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">£1,240</h3>
-                    <p class="text-xs text-blue-600 mt-1">Due Apr 30</p>
+                <div class="bg-white rounded-xl p-4 border border-slate-200">
+                    <p class="text-sm text-slate-500">Pending</p>
+                    <p class="text-2xl font-bold text-amber-600">{{ $pendingOrders }}</p>
+                    <p class="text-xs text-slate-400 mt-1">Needs action</p>
                 </div>
-                <div class="commission-card border-l-4 border-amber-500">
-                    <p class="text-sm text-slate-500 mb-1">YTD Total</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">£7,210</h3>
-                    <p class="text-xs text-emerald-600 mt-1">On track</p>
+                <div class="bg-white rounded-xl p-4 border border-slate-200">
+                    <p class="text-sm text-slate-500">Confirmed</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ $confirmedOrders }}</p>
+                    <p class="text-xs text-slate-400 mt-1">Ready to process</p>
                 </div>
-                <div class="commission-card border-l-4 border-purple-500">
-                    <p class="text-sm text-slate-500 mb-1">Effective Rate</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">3.2%</h3>
-                    <p class="text-xs text-slate-500 mt-1">of revenue</p>
+                <div class="bg-white rounded-xl p-4 border border-slate-200">
+                    <p class="text-sm text-slate-500">Processing</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ $processingOrders }}</p>
+                    <p class="text-xs text-slate-400 mt-1">In fulfillment</p>
                 </div>
-            </div>
-
-            <!-- Commission Breakdown -->
-            <div class="grid lg:grid-cols-3 gap-6 mb-6">
-                <div class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200">
-                    <h3 class="font-semibold text-slate-900 mb-4">Commission Breakdown by Order</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-left text-slate-500 border-b border-slate-200">
-                                    <th class="pb-3">Order ID</th>
-                                    <th class="pb-3">Customer</th>
-                                    <th class="pb-3 text-right">Revenue</th>
-                                    <th class="pb-3 text-right">Rate</th>
-                                    <th class="pb-3 text-right">Commission</th>
-                                    <th class="pb-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0891</td>
-                                    <td class="py-3">West End Catering</td>
-                                    <td class="py-3 text-right">£9,400</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£282</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0892</td>
-                                    <td class="py-3">London Bistro Ltd</td>
-                                    <td class="py-3 text-right">£4,250</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£128</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">Pending</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0888</td>
-                                    <td class="py-3">Highbury Gardens Hotel</td>
-                                    <td class="py-3 text-right">£15,200</td>
-                                    <td class="py-3 text-right">3.5%</td>
-                                    <td class="py-3 text-right font-semibold">£532</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0889</td>
-                                    <td class="py-3">Riverside Restaurant</td>
-                                    <td class="py-3 text-right">£6,750</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£203</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0885</td>
-                                    <td class="py-3">Riverside Restaurant</td>
-                                    <td class="py-3 text-right">£7,100</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£213</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="font-semibold">
-                                <tr>
-                                    <td class="py-3" colspan="4">Total Q2 Commissions</td>
-                                    <td class="py-3 text-right text-emerald-600">£3,850</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="bg-white rounded-xl p-6 border border-slate-200">
-                        <h3 class="font-semibold text-slate-900 mb-4">Commission Structure</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                                <span class="text-sm">Base Rate</span>
-                                <span class="font-semibold">3.0%</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                                <span class="text-sm">Platinum Tier Bonus</span>
-                                <span class="font-semibold text-emerald-600">+0.5%</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                                <span class="text-sm">Volume Bonus (>£10K)</span>
-                                <span class="font-semibold text-emerald-600">+0.3%</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                                <span class="text-sm font-medium">Max Rate</span>
-                                <span class="font-bold text-emerald-700">3.8%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-6 border border-slate-200">
-                        <h3 class="font-semibold text-slate-900 mb-4">Payout Schedule</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 text-xs">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium">Q1 2026 Payout</p>
-                                    <p class="text-xs text-slate-500">£3,360 • Paid Mar 31</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 text-xs">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium">Q2 2026 Payout</p>
-                                    <p class="text-xs text-slate-500">£3,850 • Due Apr 30</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-xs">
-                                    <i class="fas fa-hourglass"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-slate-400">Q3 2026 Payout</p>
-                                    <p class="text-xs text-slate-400">Pending • Due Jul 31</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-white rounded-xl p-4 border border-slate-200">
+                    <p class="text-sm text-slate-500">Delivered</p>
+                    <p class="text-2xl font-bold text-emerald-600">{{ $deliveredOrders }}</p>
+                    <p class="text-xs text-slate-400 mt-1">Completed</p>
                 </div>
             </div>
 
-            <!-- Commission Trend Chart -->
-            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                <h3 class="font-semibold text-slate-900 mb-4">Commission History</h3>
-                <div class="h-64">
-                    <canvas id="commissionChart"></canvas>
+           
+
+            <!-- Orders Table -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <div class="min-w-[1000px]">
+                        <!-- Header -->
+                        <div class="order-row bg-slate-50 font-semibold text-xs uppercase tracking-wider text-slate-500 border-b-2 border-slate-200">
+                            <div>Order ID</div>
+                            <div>Customer</div>
+                            <div>Date</div>
+                            <div>Amount</div>
+                            <div>Status</div>
+                            <div>Payment</div>
+                            <div>Action</div>
+                        </div>
+
+                         @foreach($orders as $order)
+                        <div class="order-row">
+                            <div>
+                                <p class="font-semibold text-blue-900">#SO-{{ $order->id }}</p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $order->items->count() }} items
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="font-medium text-slate-900">
+                                    {{ $order->user->name ?? 'N/A' }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    ID: {{ $order->user->id ?? '-' }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-slate-900">
+                                    {{ $order->created_at->format('M d, Y') }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $order->created_at->format('h:i A') }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="font-semibold text-slate-900">
+                                    £{{ number_format($order->total_price, 2) }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="status-badge status-{{ $order->status }}">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </div>
+
+                            <div>
+                                <p class="text-sm text-slate-600">
+                                    {{ $order->payment->status ?? 'No Payment' }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <button class="text-blue-900 hover:underline text-sm">
+                                    <a href="/checkout-sales/{{ $order->id }}">View</a>
+                                </button>
+                            </div>
+                        </div>
+                        @endforeach
+                       
+                    </div>
                 </div>
+
+                <!-- Pagination -->
+                {{-- <div class="flex items-center justify-between p-4 border-t border-slate-200">
+                    <p class="text-sm text-slate-500">Showing 8 of 156 orders</p>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50 disabled:opacity-50" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="px-4 py-2 bg-blue-900 text-white rounded-lg text-sm">1</button>
+                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">2</button>
+                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">3</button>
+                        <span class="px-2 text-slate-400">...</span>
+                        <button class="px-4 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">20</button>
+                        <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div> --}}
             </div>
         </div>
     </main>
 
     <script>
-// ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
+        // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
 
 // Initialize sidebar state from localStorage
 document.addEventListener('DOMContentLoaded', function() {
@@ -869,37 +864,6 @@ function logout() {
         window.location.href = 'index.html';
     }
 }
-
-
-
-        // Commission Chart
-        new Chart(document.getElementById('commissionChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026 (MTD)'],
-                datasets: [{
-                    label: 'Commissions Earned',
-                    data: [2850, 3120, 3360, 3850],
-                    backgroundColor: '#1e40af',
-                    borderRadius: 4
-                }, {
-                    label: 'Target',
-                    data: [3000, 3200, 3500, 4000],
-                    backgroundColor: '#e2e8f0',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'top' } },
-                scales: {
-                    y: {
-                        ticks: { callback: value => '£' + value.toLocaleString() }
-                    }
-                }
-            }
-        });
     </script>
 </body>
 </html>
