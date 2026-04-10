@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Sales Order | Metro Wholesale B2B Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -72,7 +75,7 @@
             background: white;
             border: 1px solid #e2e8f0;
             border-radius: 0.5rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             max-height: 300px;
             overflow-y: auto;
             z-index: 50;
@@ -104,9 +107,11 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #1e40af;
             border-radius: 4px;
@@ -114,8 +119,15 @@
 
         /* Animations */
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .animate-slide-in {
@@ -131,7 +143,7 @@
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 0.75rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             z-index: 100;
             transform: translateX(400px);
             transition: transform 0.3s ease;
@@ -144,8 +156,9 @@
 
 </head>
 <script>
-let orderLines = @json($cartData); // ✅ DB data
+    let orderLines = @json($cartData); // ✅ DB data
 </script>
+
 <body class="bg-slate-50">
 
     <!-- Navigation -->
@@ -154,7 +167,8 @@ let orderLines = @json($cartData); // ✅ DB data
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-4">
                     <a href="/main" class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center">
                             <i class="fas fa-building text-white"></i>
                         </div>
                         <div>
@@ -190,8 +204,15 @@ let orderLines = @json($cartData); // ✅ DB data
                     <p class="text-slate-500 mt-1">Create a new sales order for your business</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="text-sm text-slate-500">Order #:</span>
-                    <span class="font-mono font-semibold text-blue-900 bg-blue-50 px-3 py-1 rounded-lg">SO-2024-NEW</span>
+                    <!-- <span class="text-sm text-slate-500">Order #:</span> -->
+                    <a href="/main">
+
+                        <!-- <span class="font-mono font-semibold text-blue-900 bg-blue-50 px-3 py-1 rounded-lg"> Back</span> -->
+                        <button
+                            class="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition">
+                            Back
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -210,22 +231,25 @@ let orderLines = @json($cartData); // ✅ DB data
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Customer Name</label>
-                            <input type="text" value="{{ Auth::user()->name }}" 
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50" readonly>
+                            <input type="text" value="{{ Auth::user()->name }}"
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Customer ID</label>
-                            <input type="text" value="MET-78432" 
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50" readonly>
+                            <input type="text" value="MET-78432"
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Email</label>
-                            <input type="text" value="{{ Auth::user()->email }}" 
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50" readonly>
+                            <input type="text" value="{{ Auth::user()->email }}"
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50"
+                                readonly>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Required Delivery Date</label>
-                            <input type="date" id="delivery-date" 
+                            <input type="date" id="delivery-date"
                                 class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none">
                         </div>
                     </div>
@@ -243,7 +267,15 @@ let orderLines = @json($cartData); // ✅ DB data
 
                     <!-- Add Product Search -->
                     <div class="relative mb-6">
-                        
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
+                        <div class="relative">
+                            <input type="text" id="product-search" placeholder="Search by SKU, name, or category..."
+                                class="w-full px-4 py-3 pl-11 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none"
+                                oninput="searchProducts(this.value)">
+                            <i
+                                class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+
+                        </div>
 
                         <!-- Product Dropdown -->
                         <div id="product-dropdown" class="product-dropdown">
@@ -256,32 +288,61 @@ let orderLines = @json($cartData); // ✅ DB data
                         <table class="w-full">
                             <thead>
                                 <tr class="border-b-2 border-slate-100">
-                                    <th class="text-left py-3 px-2 text-xs font-semibold text-slate-500 uppercase">Product</th>
-                                    <th class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-32">Qty (Cases)</th>
-                                    <th class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">Unit Price</th>
-                                    <th class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">Line Total</th>
-                                    <th class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-16">Action</th>
+                                    <th class="text-left py-3 px-2 text-xs font-semibold text-slate-500 uppercase">
+                                        Product</th>
+                                    <th
+                                        class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-32">
+                                        Qty (Cases)</th>
+                                    <th
+                                        class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
+                                        Unit Price</th>
+                                    <th
+                                        class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
+                                        Line Total</th>
+                                    <th
+                                        class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-16">
+                                        Action</th>
                                 </tr>
                             </thead>
                             <tbody id="order-lines-body">
                                 <!-- Empty State -->
                                 <tr id="empty-state">
                                     <td colspan="5" class="py-12 text-center">
-                                        <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <div
+                                            class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                             <i class="fas fa-shopping-cart text-slate-400 text-2xl"></i>
                                         </div>
                                         <p class="text-slate-500 mb-2">No items added yet</p>
-                                        <p class="text-sm text-slate-400">Search for products above to add to your order</p>
+                                        <p class="text-sm text-slate-400">Search for products above to add to your order
+                                        </p>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-                   
+
+                </div>
+                <!-- Notes & Instructions -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <h2 class="font-display text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                        <i class="fas fa-sticky-note text-blue-900"></i>
+                        Order Notes
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Instructions</label>
+                            <textarea rows="2" placeholder="e.g., Deliver to rear entrance, use loading bay..."
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Internal Notes</label>
+                            <textarea rows="2" placeholder="Notes for your team (not visible to customer)..."
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                        </div>
+                    </div>
                 </div>
 
-               
             </div>
 
             <!-- Right Column: Order Summary -->
@@ -294,19 +355,23 @@ let orderLines = @json($cartData); // ✅ DB data
 
                         <!-- Coupon Code -->
                         <div class="mb-6 p-4 bg-slate-50 rounded-xl">
-                            <label class="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Coupon Code</label>
+                            <label
+                                class="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Coupon
+                                Code</label>
                             <div class="flex gap-2">
-                                <input type="text" id="coupon-input" placeholder="e.g., BULK10" 
+                                <input type="text" id="coupon-input" placeholder="e.g., BULK10"
                                     class="flex-1 px-3 py-2 text-sm border-2 border-slate-200 rounded-lg focus:border-blue-900 focus:outline-none uppercase">
-                                <button onclick="applyCoupon()" 
+                                <button onclick="applyCoupon()"
                                     class="px-4 py-2 bg-slate-800 text-white text-sm font-medium rounded-lg hover:bg-slate-700 transition">
                                     Apply
                                 </button>
                             </div>
                             <div id="coupon-message" class="text-xs mt-2"></div>
-                            <div id="active-coupon" class="hidden mt-2 flex items-center justify-between bg-green-50 px-3 py-2 rounded-lg">
+                            <div id="active-coupon"
+                                class="hidden mt-2 flex items-center justify-between bg-green-50 px-3 py-2 rounded-lg">
                                 <span class="text-xs text-green-700 font-medium" id="active-coupon-name"></span>
-                                <button onclick="removeCoupon()" class="text-xs text-red-600 hover:underline">Remove</button>
+                                <button onclick="removeCoupon()"
+                                    class="text-xs text-red-600 hover:underline">Remove</button>
                             </div>
                         </div>
 
@@ -357,7 +422,8 @@ let orderLines = @json($cartData); // ✅ DB data
                                 <span class="font-medium text-green-600" id="credit-available">£25,000</span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
-                                <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all" style="width: 0%"></div>
+                                <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all"
+                                    style="width: 0%"></div>
                             </div>
                         </div>
                     </div>
@@ -369,12 +435,12 @@ let orderLines = @json($cartData); // ✅ DB data
                             <i class="fas fa-check-circle mr-2"></i>
                             Place Sales Order
                         </button>
-                        <button onclick="saveDraft()" 
+                        <button onclick="saveDraft()"
                             class="w-full py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition">
                             <i class="fas fa-save mr-2"></i>
                             Save as Draft
                         </button>
-                        <button onclick="clearOrder()" 
+                        <button onclick="clearOrder()"
                             class="w-full py-3 bg-white text-red-600 border-2 border-red-200 rounded-xl font-medium hover:bg-red-50 transition">
                             <i class="fas fa-trash-alt mr-2"></i>
                             Clear Order
@@ -387,8 +453,10 @@ let orderLines = @json($cartData); // ✅ DB data
                             <i class="fas fa-headset"></i>
                             Need Help?
                         </h3>
-                        <p class="text-sm text-blue-100 mb-4">Contact your account manager for assistance with large orders or special pricing.</p>
-                        <a href="tel:02079460958" class="inline-flex items-center gap-2 text-sm font-medium hover:underline">
+                        <p class="text-sm text-blue-100 mb-4">Contact your account manager for assistance with large
+                            orders or special pricing.</p>
+                        <a href="tel:02079460958"
+                            class="inline-flex items-center gap-2 text-sm font-medium hover:underline">
                             <i class="fas fa-phone"></i>
                             020 7946 0958 ext. 204
                         </a>
@@ -406,25 +474,25 @@ let orderLines = @json($cartData); // ✅ DB data
         </div>
     </div>
 
-   <script>
+    <script>
 
-// ✅ render items
-function renderOrderLines() {
+        // ✅ render items
+        function renderOrderLines() {
 
-    const tbody = document.getElementById('order-lines-body');
+            const tbody = document.getElementById('order-lines-body');
 
-    if (orderLines.length === 0) {
-        tbody.innerHTML = `
+            if (orderLines.length === 0) {
+                tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center py-10">
                     No items in cart
                 </td>
             </tr>
         `;
-        return;
-    }
+                return;
+            }
 
-    tbody.innerHTML = orderLines.map((line, index) => `
+            tbody.innerHTML = orderLines.map((line, index) => `
        
 
 
@@ -463,149 +531,229 @@ function renderOrderLines() {
         
     `).join('');
 
-    document.getElementById('line-count').innerText = orderLines.length + " items";
-}
+            document.getElementById('line-count').innerText = orderLines.length + " items";
+        }
 
 
-function updateQty(index, change) {
+        function updateQty(index, change) {
 
-    let item = orderLines[index];
+            let item = orderLines[index];
 
-    if (change < 0 && item.qty <= 5) {
-        showToast('Minimum qty is 5');
-        return;
-    }
+            if (change < 0 && item.qty <= 5) {
+                showToast('Minimum qty is 5');
+                return;
+            }
 
-    item.qty += change;
-    item.lineTotal = item.qty * item.price;
+            item.qty += change;
+            item.lineTotal = item.qty * item.price;
 
-    // ✅ DB UPDATE CALL
-    fetch('/cart/update', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            cart_id: item.id,   // IMPORTANT
-            qty: item.qty
-        })
-    });
+            // ✅ DB UPDATE CALL
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    cart_id: item.id,   // IMPORTANT
+                    qty: item.qty
+                })
+            });
 
-    renderOrderLines();
-    updateSummary();
-}
-function setQty(index, value) {
+            renderOrderLines();
+            updateSummary();
+        }
+        function setQty(index, value) {
 
-    let item = orderLines[index];
+            let item = orderLines[index];
 
-    let newQty = parseInt(value) || 5;
-    if (newQty < 5) newQty = 5;
+            let newQty = parseInt(value) || 5;
+            if (newQty < 5) newQty = 5;
 
-    item.qty = newQty;
-    item.lineTotal = item.qty * item.price;
+            item.qty = newQty;
+            item.lineTotal = item.qty * item.price;
 
-    // ✅ DB update
-    fetch('/cart/update', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            cart_id: item.id,
-            qty: item.qty
-        })
-    });
+            // ✅ DB update
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    cart_id: item.id,
+                    qty: item.qty
+                })
+            });
 
-    renderOrderLines();
-    updateSummary();
-}
+            renderOrderLines();
+            updateSummary();
+        }
 
-// ✅ remove item
-function removeItem(index) {
+        // ✅ remove item
+        function removeItem(index) {
 
-    let item = orderLines[index]; // 👈 cart item
+            let item = orderLines[index]; // 👈 cart item
 
-    fetch('/cart/delete', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({
-            cart_id: item.id // 👈 IMPORTANT (cart table id)
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
+            fetch('/cart/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    cart_id: item.id // 👈 IMPORTANT (cart table id)
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
 
-        if (data.success) {
+                    if (data.success) {
 
-            // ✅ UI se remove
-            orderLines.splice(index, 1);
+                        // ✅ UI se remove
+                        orderLines.splice(index, 1);
+
+                        renderOrderLines();
+                        updateSummary();
+
+                        showToast('Item removed successfully ✅');
+                    }
+
+                })
+                .catch(() => {
+                    alert('Delete failed ❌');
+                });
+        }
+
+
+        // ✅ summary
+        function updateSummary() {
+
+            let total = 0;
+            let qty = 0;
+
+            orderLines.forEach(item => {
+                total += item.lineTotal;
+                qty += item.qty;
+            });
+
+            document.getElementById('subtotal').innerText = "£" + total;
+            document.getElementById('grand-total').innerText = "£" + total;
+            document.getElementById('total-items').innerText = qty + " items";
+
+            // enable button
+            document.getElementById('submit-btn').disabled = orderLines.length === 0;
+        }
+
+
+        // ✅ place order
+        function submitOrder() {
+
+            fetch('/place-order', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+                .then(() => {
+                    alert("Order Placed ✅");
+                    window.location.href = "/customer/orders";
+                })
+                .catch(() => {
+                    alert("Error ❌");
+                });
+
+        }
+
+
+        // ✅ page load
+        document.addEventListener('DOMContentLoaded', () => {
 
             renderOrderLines();
             updateSummary();
 
-            showToast('Item removed successfully ✅');
+        });
+        function searchProducts(query) {
+
+            const dropdown = document.getElementById('product-dropdown');
+
+            if (!query) {
+                dropdown.classList.remove('active');
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            fetch(`/products/search?q=${query}`)
+                .then(res => res.json())
+                .then(products => {
+
+                    if (products.length === 0) {
+                        dropdown.innerHTML = `<div class="p-3 text-sm text-slate-500">No products found</div>`;
+                        dropdown.classList.add('active');
+                        return;
+                    }
+
+                    dropdown.innerHTML = products.map(p => `
+                <div class="product-item flex items-center justify-between">
+
+                    <div class="flex items-center gap-3">
+                        <img src="/${p.image}" class="w-10 h-10 object-cover rounded-lg"/>
+                        <div>
+                            <p class="text-sm font-medium">${p.title}</p>
+                            <p class="text-xs text-slate-500">${p.sku_code}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-semibold">£${p.price}</span>
+                        <button onclick="quickAdd(${p.id})"
+                            class="px-4 py-2 bg-blue-900 text-white text-xs rounded-lg hover:bg-blue-800">
+                           + Add
+                        </button>
+                    </div>
+
+                </div>
+            `).join('');
+
+                    dropdown.classList.add('active');
+                });
         }
 
-    })
-    .catch(() => {
-        alert('Delete failed ❌');
-    });
-}
+        function quickAdd(productId) {
 
+            fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 5 // default MOQ
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
 
-// ✅ summary
-function updateSummary() {
+                    if (data.success) {
+                        window.location.reload();
+                        showToast('Added to cart ✅');
 
-    let total = 0;
-    let qty = 0;
+                        // OPTIONAL: reload lines
+                        location.reload(); // ya dynamic add kar sakte ho
+                    }
 
-    orderLines.forEach(item => {
-        total += item.lineTotal;
-        qty += item.qty;
-    });
-
-    document.getElementById('subtotal').innerText = "£" + total;
-    document.getElementById('grand-total').innerText = "£" + total;
-    document.getElementById('total-items').innerText = qty + " items";
-
-    // enable button
-    document.getElementById('submit-btn').disabled = orderLines.length === 0;
-}
-
-
-// ✅ place order
-function submitOrder() {
-
-    fetch('/place-order', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                });
         }
-    })
-    .then(() => {
-        alert("Order Placed ✅");
-        window.location.href = "/customer/orders";
-    })
-    .catch(() => {
-        alert("Error ❌");
-    });
 
-}
+        document.addEventListener('click', function (e) {
 
+            if (!e.target.closest('#product-search')) {
+                document.getElementById('product-dropdown').classList.remove('active');
+            }
 
-// ✅ page load
-document.addEventListener('DOMContentLoaded', () => {
-
-    renderOrderLines();
-    updateSummary();
-
-});
-
-</script>
+        });
+    </script>
 </body>
+
 </html>
