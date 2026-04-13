@@ -9,13 +9,14 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Payment;
 
+
 class OrderController extends Controller
 {
-    
+
     // 📦 PLACE ORDER
-   public function store(Request $request)
-{
-    $items = $request->items;
+    public function store(Request $request)
+    {
+        $items = $request->items;
 
         if (!$items || count($items) === 0) {
             return response()->json([
@@ -79,23 +80,38 @@ class OrderController extends Controller
         return redirect('/cart')->with('success', 'Items added to cart again!');
     }
     // 📋 MY ORDERS
-   public function index()
-{
-    $orders = Order::where('user_id', auth()->id())->latest()->get();
-    $categories = Category::all();
-    $products = Product::all(); // 👈 ADD THIS
+    public function index()
+    {
+        $orders = Order::where('user_id', auth()->id())->latest()->get();
+        $categories = Category::all();
+        $products = Product::all(); // 👈 ADD THIS
 
         return view('orders', compact('orders', 'categories', 'products'));
     }
 
-   public function myOrder()
-{
-    $orders = Order::where('user_id', auth()->id())->latest()->get();
-    $categories = Category::all();
-    $products = Product::all(); // 👈 ADD THIS
 
-    return view('customer.orders', compact('orders', 'categories', 'products'));
-}
+    public function myOrder()
+    {
+        $orders = Order::where('user_id', auth()->id())
+            ->latest()
+            ->paginate(10);
+
+        $totalOrders = Order::where('user_id', auth()->id())->count();
+        $totalSpent = Order::where('user_id', auth()->id())->sum('total_price');
+        $cartCount = Cart::where('user_id', auth()->id())->count();
+
+        $categories = Category::all();
+        $products = Product::all();
+
+        return view('customer.orders', compact(
+            'orders',
+            'categories',
+            'products',
+            'totalOrders',
+            'totalSpent',
+            'cartCount'
+        ));
+    }
 
     public function placeOrder()
     {
@@ -166,14 +182,14 @@ class OrderController extends Controller
         return view('customer.view-order', compact('order', 'orderData'));
     }
     public function invoice($id)
-{
-    $payment = Payment::with('order.items.product')
-        ->where('id', $id)
-        ->where('user_id', auth()->id())
-        ->firstOrFail();
+    {
+        $payment = Payment::with('order.items.product')
+            ->where('id', $id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
 
-    $order = $payment->order;
+        $order = $payment->order;
 
-    return view('customer.invoice', compact('payment', 'order'));
-}
+        return view('customer.invoice', compact('payment', 'order'));
+    }
 }
