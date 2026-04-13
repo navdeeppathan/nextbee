@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Coupon;
 
 class CartController extends Controller
 {
@@ -38,5 +39,54 @@ class CartController extends Controller
 
         return response()->json(['success' => true]);
     }
+    public function applyCoupon(Request $request)
+{
+    $request->validate([
+        'code' => 'required'
+    ]);
+
+    $coupon = Coupon::where('code', $request->code)
+        ->where('status', 1)
+        ->first();
+
+    if (!$coupon) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Invalid Coupon ❌'
+        ]);
+    }
+
+    // Expiry check
+    if ($coupon->expires_at && now()->gt($coupon->expires_at)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Coupon expired ❌'
+        ]);
+    }
+
+    // Cart total calculate
+    $cart = Cart::where('user_id', auth()->id())
+        ->with('product')
+        ->get();
+
+    $total = 0;
+
+    foreach ($cart as $item) {
+        $total += $item->product->price * $item->quantity;
+    }
+
+    // Minimum amount check
+    if ($coupon->min_amount && $total < $coupon->min_amount) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Minimum order £' . $coupon->min_amount
+        ]);
+    }
+
+    return response()->json([
+        'success' => true,
+        'coupon' => $coupon
+    ]);
+}
 
 }

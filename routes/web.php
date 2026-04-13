@@ -246,6 +246,7 @@ Route::post('/profile/password', [AuthController::class, 'changePassword'])->mid
 // })->middleware('auth');
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
+Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
 
 Route::get('/customer/payments', function () {
 

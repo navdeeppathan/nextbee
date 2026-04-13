@@ -113,7 +113,7 @@ class OrderController extends Controller
         ));
     }
 
-    public function placeOrder()
+    public function placeOrder(Request $request)
     {
         $items = Cart::where('user_id', auth()->id())
             ->with('product')
@@ -133,27 +133,36 @@ class OrderController extends Controller
         foreach ($items as $item) {
 
             $price = $item->product->price;
-
             $qty = max(5, $item->quantity);
 
+            // ✅ FIRST ADD TOTAL
             $total += $price * $qty;
 
             $order->items()->create([
                 'product_id' => $item->product_id,
                 'quantity' => $qty,
-                'price' => $price // ✅ MUST
+                'price' => $price
             ]);
         }
 
+        // ✅ APPLY DISCOUNT AFTER LOOP
+        $discount = $request->discount ?? 0;
+
+        $finalTotal = $total - $discount;
+
+        // safety
+        if ($finalTotal < 0)
+            $finalTotal = 0;
+
         $order->update([
-            'total_price' => $total
+            'total_price' => $finalTotal
         ]);
-        // ✅ PAYMENT SAVE
+
         Payment::create([
             'order_id' => $order->id,
             'user_id' => auth()->id(),
-            'amount' => $total,
-            'method' => 'UPI', // ya dynamic bana sakte ho
+            'amount' => $finalTotal,
+            'method' => 'UPI',
             'status' => 'Paid'
         ]);
 
