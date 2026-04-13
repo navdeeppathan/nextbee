@@ -517,10 +517,10 @@
                         </div>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-medium text-slate-900">£${line.price.toFixed(2)}</span>
+                        <span class="text-sm font-medium text-slate-900">£ ${Number(line.price).toFixed(2)}</span>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-bold text-blue-900">£${line.lineTotal.toFixed(2)}</span>
+                        <span class="text-sm font-bold text-blue-900">£ ${Number(line.lineTotal).toFixed(2)}</span>
                     </td>
                     <td class="py-4 px-2 text-center">
                         <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-600 transition w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
@@ -633,8 +633,8 @@
             let qty = 0;
 
             orderLines.forEach(item => {
-                total += item.lineTotal;
-                qty += item.qty;
+                total += Number(item.lineTotal);
+                qty += Number(item.qty);
             });
 
             document.getElementById('subtotal').innerText = "£" + total;
