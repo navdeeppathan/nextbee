@@ -1,7 +1,6 @@
 @extends('customer.dashboard')
 
 @section('page-title', 'Invoice')
-@section('page-subtitle', 'INV-{{ $payment->id }}')
 
 @section('content')
 

@@ -192,4 +192,34 @@ class OrderController extends Controller
 
         return view('customer.invoice', compact('payment', 'order'));
     }
+    public function dashboard()
+    {
+        $userId = auth()->id();
+
+
+
+        $orders = Order::with('items.product')
+            ->where('user_id', $userId)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $totalOrders = Order::where('user_id', auth()->id())->count();
+        $totalSpent = Order::where('user_id', auth()->id())->sum('total_price');
+        $cartCount = Cart::where('user_id', auth()->id())->count();
+
+        $categories = Category::all();
+        $products = Product::all();
+
+        return view('customer.dashboard-home', compact(
+            'orders',
+            'categories',
+            'products',
+            'totalOrders',
+            'totalSpent',
+            'cartCount'
+        ));
+
+
+    }
 }
