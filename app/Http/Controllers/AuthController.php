@@ -83,7 +83,9 @@ class AuthController extends Controller
             'delivery_address'=>$request->delivery_address,
             'primary_contact_name'=>$request->primary_contact_name,
             'preferred_delivery_days'=>$request->preferred_delivery_days,
-            'monthly_volume'=>$request->monthly_volume
+            'monthly_volume'=>$request->monthly_volume,
+             // ✅ DEFAULT PASSWORD
+            'password' => Hash::make('123456'),
         ]);
 
         // ❌ remove Auth::login($user);
@@ -148,5 +150,46 @@ class AuthController extends Controller
     {
         return view('auth.profile');
     }
+    public function updateProfile(Request $request)
+{
+    $user = auth()->user();
+
+    $request->validate([
+        'name' => 'required',
+        'phone' => 'nullable',
+    ]);
+
+    $user->update([
+        'name' => $request->name,
+        'phone' => $request->phone,
+    ]);
+
+    return back()->with('success', 'Profile updated ✅');
+}
+
+public function updateAddress(Request $request)
+{
+    $user = auth()->user();
+
+    $user->update([
+        'delivery_address' => $request->delivery_address
+    ]);
+
+    return back()->with('success', 'Address updated ✅');
+}
+public function changePassword(Request $request)
+{
+    $request->validate([
+        'password' => 'required|min:6|confirmed'
+    ]);
+
+    $user = auth()->user();
+
+    $user->update([
+        'password' => \Hash::make($request->password)
+    ]);
+
+    return back()->with('success', 'Password changed ✅');
+}
     
 }

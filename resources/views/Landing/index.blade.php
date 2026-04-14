@@ -333,7 +333,7 @@
                         <i class="fas fa-phone text-yellow-600"></i>
                         020 7946 0958
                     </a>
-                    <button onclick="openModal('register')"
+                    <button onclick="openModal('login')"
                         class="px-5 py-2.5 text-sm font-medium bg-blue-900 text-white rounded-full hover:bg-blue-800 transition shadow-lg">
                         Login / Registration
                     </button>
@@ -527,7 +527,7 @@
                                     class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
                                 </div>
                                 <div class="quick-add absolute bottom-4 left-4 right-4">
-                                    <button onclick="quickAdd('Coca Cola 330ml Cans (24 pack)')"
+                                    <button onclick="openModal('login')"
                                         class="w-full py-3 bg-white text-blue-900 rounded-xl font-medium shadow-lg hover:bg-blue-900 hover:text-white transition">
                                         Quick Add
                                     </button>

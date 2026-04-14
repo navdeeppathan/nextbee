@@ -252,19 +252,22 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 });
 
-Route::get('/customer/dashboard', function () {
-    return view('customer.dashboard');
-})->middleware('auth');
+Route::get('/customer/dashboard', [OrderController::class, 'dashboard'])->middleware('auth');
+// Route::get('/customer/dashboard', [OrderController::class, 'dashboard']);
 
 Route::get('/customer/profile', function () {
     return view('customer.profile');
 })->middleware('auth');
+Route::post('/profile/update', [AuthController::class, 'updateProfile'])->middleware('auth');
+Route::post('/profile/address', [AuthController::class, 'updateAddress'])->middleware('auth');
+Route::post('/profile/password', [AuthController::class, 'changePassword'])->middleware('auth');
 
 // Route::get('/customer/orders', function () {
 //     return view('customer.orders');
 // })->middleware('auth');
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
+Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
 
 Route::get('/customer/payments', function () {
 

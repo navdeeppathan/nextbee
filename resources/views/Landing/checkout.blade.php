@@ -387,13 +387,17 @@
                             </div>
 
                             <!-- Discount Row -->
+                            <!-- <div id="discount-row" class="flex justify-between text-sm hidden">
+                                <span class="text-green-600 font-medium">Discount</span>
+                                <span class="font-semibold text-green-600" id="discount-amount">-£0.00</span>
+                            </div> -->
                             <div id="discount-row" class="flex justify-between text-sm hidden">
                                 <span class="text-green-600 font-medium">Discount</span>
                                 <span class="font-semibold text-green-600" id="discount-amount">-£0.00</span>
                             </div>
 
                             <div class="flex justify-between text-sm">
-                                <span class="text-slate-600">VAT (20%)</span>
+                                <span class="text-slate-600">VAT (05%)</span>
                                 <span class="font-semibold text-slate-900" id="vat-amount">£0.00</span>
                             </div>
 
@@ -480,6 +484,7 @@
         function renderOrderLines() {
 
             const tbody = document.getElementById('order-lines-body');
+            document.getElementById('submit-btn').disabled = orderLines.length === 0;
 
             if (orderLines.length === 0) {
                 tbody.innerHTML = `
@@ -517,10 +522,10 @@
                         </div>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-medium text-slate-900">£${line.price.toFixed(2)}</span>
+                        <span class="text-sm font-medium text-slate-900">£ ${Number(line.price).toFixed(2)}</span>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-bold text-blue-900">£${line.lineTotal.toFixed(2)}</span>
+                        <span class="text-sm font-bold text-blue-900">£ ${Number(line.lineTotal).toFixed(2)}</span>
                     </td>
                     <td class="py-4 px-2 text-center">
                         <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-600 transition w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
@@ -625,7 +630,43 @@
                 });
         }
 
+        let appliedCoupon = null;
+        let discount = 0;
+        function applyCoupon() {
 
+            let code = document.getElementById('coupon-input').value;
+
+            fetch('/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ code })
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    if (!data.success) {
+                        showToast(data.message);
+                        return;
+                    }
+
+                    appliedCoupon = data.coupon;
+
+                    // ✅ FORCE FULL REFRESH
+                    renderOrderLines();
+
+                    setTimeout(() => {
+                        updateSummary();
+                    }, 50);
+
+                    document.getElementById('active-coupon').classList.remove('hidden');
+                    document.getElementById('active-coupon-name').innerText = appliedCoupon.code;
+
+                    showToast("Coupon Applied ✅");
+                });
+        }
         // ✅ summary
         function updateSummary() {
 
@@ -633,18 +674,51 @@
             let qty = 0;
 
             orderLines.forEach(item => {
-                total += item.lineTotal;
-                qty += item.qty;
+                total += Number(item.lineTotal);
+                qty += Number(item.qty);
             });
 
-            document.getElementById('subtotal').innerText = "£" + total;
-            document.getElementById('grand-total').innerText = "£" + total;
+            discount = 0;
+
+            if (appliedCoupon) {
+
+                if (appliedCoupon.type === 'percent') {
+                    discount = total * (appliedCoupon.value / 100);
+                } else {
+                    discount = appliedCoupon.value;
+                }
+
+                document.getElementById('discount-row').style.display = 'flex';
+                document.getElementById('discount-amount').innerText = "-£" + discount.toFixed(2);
+
+            } else {
+                document.getElementById('discount-row').style.display = 'none';
+            }
+
+            let afterDiscount = total - discount;
+            let vat = afterDiscount * 0.05;
+            let grandTotal = afterDiscount + vat;
+
+            document.getElementById('subtotal').innerText = "£" + total.toFixed(2);
+            document.getElementById('vat-amount').innerText = "£" + vat.toFixed(2);
+            document.getElementById('grand-total').innerText = "£" + grandTotal.toFixed(2);
             document.getElementById('total-items').innerText = qty + " items";
 
-            // enable button
+            // ✅ 🔥 THIS FIX
             document.getElementById('submit-btn').disabled = orderLines.length === 0;
         }
+        function removeCoupon() {
 
+            appliedCoupon = null;
+            discount = 0;
+
+            document.getElementById('active-coupon').classList.add('hidden');
+            document.getElementById('discount-row').classList.add('hidden');
+
+            showToast("Coupon Removed ❌");
+
+            updateSummary();
+        }
 
         // ✅ place order
         function submitOrder() {
@@ -654,6 +728,7 @@
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
+                
             })
                 .then(() => {
                     alert("Order Placed ✅");

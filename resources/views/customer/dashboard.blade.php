@@ -582,6 +582,8 @@
         </div>
     </header>
 
+    
+
     {{-- ══ MAIN CONTENT ══ --}}
     <main class="main-content">
         @yield('content')
