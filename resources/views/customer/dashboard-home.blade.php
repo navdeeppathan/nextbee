@@ -131,12 +131,16 @@
 
                             {{-- ✅ PAYMENT STATUS --}}
                             <td>
-                                @if($order->payment && $order->payment->status == 'pending')
+                                
+
+                                 @if($order->payment_status == 'pending')
                                     <span class="pill pill-yellow">Pending</span>
-                                @elseif($order->payment && $order->payment->status == 'paid')
-                                    <span class="pill pill-green">Paid</span>
-                                @else
-                                    <span class="pill pill-gray">N/A</span>
+
+                                @elseif($order->payment_status == 'partial')
+                                    <span class="pill pill-blue">Partial Payment</span>
+
+                                @elseif($order->payment_status == 'full')
+                                    <span class="pill pill-green">Full Payment</span>
                                 @endif
                             </td>
 
