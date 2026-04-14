@@ -39,7 +39,7 @@
             </div>
 
             <!-- Critical Alerts -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
                 <!-- Expiry Alerts -->
                 {{-- <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-6">
@@ -158,7 +158,7 @@
                 </div>
 
                 <!-- Delivery Status -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                {{-- <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 font-display">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -198,7 +198,7 @@
                             <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full">BREAK</span>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Quick Actions -->

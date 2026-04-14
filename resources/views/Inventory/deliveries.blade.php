@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delivery Management | NextBee B2B</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@extends('Inventory.layouts.app')
+
+@section('content')
     <style>
         :root {
             --navy: #0f172a;
@@ -466,122 +460,8 @@
             outline-offset: 2px;
         }
     </style>
-</head>
-<body>
-    <!-- Mobile Overlay -->
-    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="brand-container">
-                <div class="brand-icon">
-                    <i class="fas fa-building text-white text-lg"></i>
-                </div>
-                <div class="brand-text">
-                    <h1 class="font-display text-xl font-bold text-white tracking-tight">NextBee</h1>
-                    <p class="text-xs text-slate-400 font-medium">B2B Command Center</p>
-                </div>
-            </div>
-            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" title="Collapse menu">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
 
-        <nav class="sidebar-nav">
-            <div class="menu-section" id="section-operations">
-                <div class="section-header" onclick="toggleSection('section-operations')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Operations</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="/inventory/dashboard" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
-                        <span class="nav-text">Dashboard</span>
-                        <span class="tooltip">Dashboard</span>
-                    </a>
-                    <a href="/inventory-page" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-boxes"></i></span>
-                        <span class="nav-text">Inventory</span>
-                        <span class="nav-badge">47</span>
-                        <span class="tooltip">Inventory</span>
-                    </a>
-                    <a href="/deliveries" class="nav-item active">
-                        <span class="nav-icon"><i class="fas fa-truck"></i></span>
-                        <span class="nav-text">Deliveries</span>
-                        <span class="nav-badge warning">156</span>
-                        <span class="tooltip">Deliveries</span>
-                    </a>
-                    <a href="/drivers" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-id-card"></i></span>
-                        <span class="nav-text">Drivers</span>
-                        <span class="tooltip">Drivers</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="menu-section" id="section-management">
-                <div class="section-header" onclick="toggleSection('section-management')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Management</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="/customers" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-store"></i></span>
-                        <span class="nav-text">Customers</span>
-                        <span class="tooltip">Customers</span>
-                    </a>
-                    <a href="/returns" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
-                        <span class="nav-text">Returns</span>
-                        <span class="nav-badge warning">3</span>
-                        <span class="tooltip">Returns</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="menu-section" id="section-sales">
-                <div class="section-header" onclick="toggleSection('section-sales')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Sales Portal</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    {{-- <a href="/sales-dashboard" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
-                        <span class="nav-text">Sales Dashboard</span>
-                        <span class="tooltip">Sales Dashboard</span>
-                    </a> --}}
-                    <a href="/sales-orders-inventory" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-                        <span class="nav-text">Sales Orders</span>
-                        <span class="tooltip">Sales Orders</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="user-profile" onclick="openProfile()" title="View Profile">
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="Admin User" class="user-avatar">
-                <div class="user-info">
-                    <p class="user-name">Admin User</p>
-                    <p class="user-role">Operations Manager</p>
-                </div>
-            </div>
-            <form method="POST" action="{{ url('/logout') }}">
-                @csrf
-            <button 
-            type="submit" class="logout-btn" 
-            {{-- onclick="logout()" --}}
-             aria-label="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
-            </form>
-        </div>
-    </aside>
-
-    <main class="main-content">
         <!-- Header -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
             <div class="flex items-center justify-between px-6 py-4">
@@ -595,7 +475,11 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <button class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-semibold text-white transition">
+                    {{-- <button class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-semibold text-white transition">
+                        + New Route
+                    </button> --}}
+                    <button onclick="openCreateModal()" 
+                        class="bg-emerald-600 px-4 py-2 rounded-lg text-white">
                         + New Route
                     </button>
                     <button class="relative p-2 text-slate-600 hover:text-blue-900 transition" aria-label="Notifications">
@@ -627,30 +511,30 @@
                 
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <p class="text-2xl font-bold text-slate-900 font-display">23</p>
+                        <p class="text-2xl font-bold text-slate-900 font-display">{{$activeDrivers}}</p>
                         <p class="text-xs text-slate-500 uppercase font-medium mt-1">Active Drivers</p>
                     </div>
                     <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <p class="text-2xl font-bold text-slate-900 font-display">156</p>
+                        <p class="text-2xl font-bold text-slate-900 font-display">{{$totalStops}}</p>
                         <p class="text-xs text-slate-500 uppercase font-medium mt-1">Total Stops</p>
                     </div>
                     <div class="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                        <p class="text-2xl font-bold text-emerald-600 font-display">89</p>
+                        <p class="text-2xl font-bold text-emerald-600 font-display">{{$completedRoutes}}</p>
                         <p class="text-xs text-emerald-600 uppercase font-medium mt-1">Completed</p>
                     </div>
                     <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-                        <p class="text-2xl font-bold text-blue-600 font-display">42</p>
+                        <p class="text-2xl font-bold text-blue-600 font-display">{{$inPrgoressRoutes}}</p>
                         <p class="text-xs text-blue-600 uppercase font-medium mt-1">In Progress</p>
                     </div>
                     <div class="text-center p-4 bg-amber-50 rounded-xl border border-amber-200">
-                        <p class="text-2xl font-bold text-amber-600 font-display">25</p>
+                        <p class="text-2xl font-bold text-amber-600 font-display">{{$pendingRoutes}}</p>
                         <p class="text-xs text-amber-600 uppercase font-medium mt-1">Pending</p>
                     </div>
                 </div>
             </div>
 
             <!-- Routes Grid -->
-            <div class="grid lg:grid-cols-3 gap-6">
+            {{-- <div class="grid lg:grid-cols-3 gap-6">
                 
                 <!-- Route 1: Active -->
                 <div class="card overflow-hidden route-active">
@@ -819,6 +703,162 @@
                     </div>
                 </div>
 
+            </div> --}}
+
+            <div class="grid lg:grid-cols-3 gap-6">
+
+                @foreach($routes as $route)
+
+                <div class="card overflow-hidden 
+                    {{ $route->status == 'completed' ? 'route-completed' : ($route->status == 'in_progress' ? 'route-active' : 'route-pending') }}">
+
+                    <!-- HEADER -->
+                    <div class="p-6 border-b border-slate-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900">
+                                    {{ $route->route_code ?? 'N/A' }}
+                                </h3>
+                                <p class="text-xs text-slate-500">
+                                    {{ $route->area ?? 'No Area' }}
+                                </p>
+                            </div>
+
+                            <span class="px-2 py-1 text-xs font-bold rounded-full
+                                {{ $route->status == 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                                ($route->status == 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                                'bg-amber-100 text-amber-700') }}">
+                                {{ ucfirst(str_replace('_',' ',$route->status)) }}
+                            </span>
+                        </div>
+
+                        <!-- DRIVER -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                                {{ strtoupper(substr($route->driver->name ?? 'NA',0,2)) }}
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900">
+                                    {{ $route->driver->name ?? 'No Driver' }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $route->van_number ?? 'No Van' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- PROGRESS -->
+                        @php
+                            $percentage = $route->total_stops ? ($route->completed_stops / $route->total_stops)*100 : 0;
+                        @endphp
+
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span>
+                                Progress: {{ $route->completed_stops ?? 0 }}/{{ $route->total_stops ?? 0 }} stops
+                            </span>
+                            <span class="font-semibold
+                                {{ $route->status == 'completed' ? 'text-emerald-600' :
+                                ($route->status == 'in_progress' ? 'text-blue-600' :
+                                'text-amber-600') }}">
+                                {{ round($percentage) }}%
+                            </span>
+                        </div>
+
+                        <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="h-full 
+                                {{ $route->status == 'completed' ? 'bg-emerald-500' :
+                                ($route->status == 'in_progress' ? 'bg-blue-600' :
+                                'bg-amber-500') }}"
+                                style="width: {{ $percentage }}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STOPS -->
+                    <div class="p-4 space-y-2 max-h-64 overflow-y-auto">
+
+                        @forelse($route->stops as $index => $stop)
+
+                            @if($stop->status == 'completed')
+                                <!-- COMPLETED -->
+                                <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                                    <span class="text-emerald-600 text-lg">✓</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-900">
+                                            {{ $stop->customer_name }}
+                                        </p>
+                                        <p class="text-xs text-slate-500">
+                                            Delivered {{ $stop->completed_at ?? '' }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                            @elseif($stop->status == 'in_progress')
+                                <!-- CURRENT -->
+                                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <span class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs animate-pulse">●</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-900">
+                                            {{ $stop->customer_name }}
+                                        </p>
+                                        <p class="text-xs text-blue-600">
+                                            In Progress
+                                        </p>
+                                    </div>
+                                </div>
+
+                            @else
+                                <!-- PENDING -->
+                                <div class="flex items-center gap-3 p-3 bg-slate-100 rounded-lg border border-slate-200 opacity-50">
+                                    <span class="text-slate-400 text-xs font-bold">
+                                        {{ $index + 1 }}
+                                    </span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-slate-500">
+                                            {{ $stop->customer_name }}
+                                        </p>
+                                        <p class="text-xs text-slate-400">
+                                            Pending
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+
+                        @empty
+                            <p class="text-xs text-slate-400">No stops available</p>
+                        @endforelse
+
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <div class="p-4 border-t border-slate-200 bg-slate-50">
+                        <button onclick="openRoute({{ $route->route_id }})"
+                            class="w-full py-2 
+                            {{ $route->status == 'completed' ? 'bg-slate-200 text-slate-700' :
+                            ($route->status == 'in_progress' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                            'bg-amber-50 text-amber-700 border border-amber-200') }}
+                            rounded-lg text-sm font-semibold hover:opacity-90 transition">
+                            
+                            {{ $route->status == 'completed' ? 'View Report' :
+                            ($route->status == 'in_progress' ? 'View Details & Items' :
+                            'Monitor Loading') }}
+                        </button>
+
+                        <!-- DELETE -->
+                        <form method="POST" action="/routes/{{ $route->route_id }}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="mt-2 w-full bg-red-100 text-red-600 py-2 rounded-lg text-sm font-semibold">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+                @endforeach
+
             </div>
 
             <!-- Delivery Items Detail Modal -->
@@ -826,8 +866,8 @@
                 <div class="bg-white rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 shadow-2xl">
                     <div class="flex justify-between items-center mb-6">
                         <div>
-                            <h2 class="text-2xl font-bold text-slate-900">Route A-04 Delivery Details</h2>
-                            <p class="text-sm text-slate-500">Stop #3: Costcutter Highbury</p>
+                            <h2 id="modal-title" class="text-2xl font-bold"></h2>
+                            <p id="modal-area" class="text-sm text-slate-500"></p>
                         </div>
                         <button onclick="document.getElementById('delivery-detail').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
                     </div>
@@ -906,8 +946,57 @@
                 </div>
             </div>
         </div>
-    </main>
 
+        <div id="create-route-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    
+            <div class="bg-white p-6 rounded-xl w-full max-w-lg">
+                <h2 class="text-xl font-bold mb-4">Create New Route</h2>
+
+                <form method="POST" action="/routes">
+                    @csrf
+
+                    <!-- ROUTE CODE -->
+                    <input name="route_code" placeholder="Route Code"
+                        class="w-full border p-2 mb-3 rounded" required>
+
+                    <!-- AREA -->
+                    <input name="area" placeholder="Area"
+                        class="w-full border p-2 mb-3 rounded" required>
+
+                    <!-- DRIVER -->
+                    <select name="driver_id" class="w-full border p-2 mb-3 rounded">
+                        <option value="">Select Driver</option>
+                        @foreach(\App\Models\User::where('role', 'driver')->get() as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <!-- VAN -->
+                    <input name="van_number" placeholder="Van Number"
+                        class="w-full border p-2 mb-3 rounded">
+
+                    <!-- STATUS -->
+                    <select name="status" class="w-full border p-2 mb-3 rounded">
+                        <option value="pending">Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+
+                    <!-- BUTTONS -->
+                    <div class="flex gap-2 mt-4">
+                        <button class="bg-emerald-600 text-white px-4 py-2 rounded">
+                            Save
+                        </button>
+
+                        <button type="button" onclick="closeCreateModal()"
+                            class="bg-gray-200 px-4 py-2 rounded">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+  
     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
 
@@ -929,6 +1018,14 @@
                 }
             });
         });
+
+        function openCreateModal() {
+            document.getElementById('create-route-modal').classList.remove('hidden');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-route-modal').classList.add('hidden');
+        }
 
         function toggleSidebar() {
             if (window.innerWidth <= 1024) return;
@@ -1001,5 +1098,8 @@
             }
         }
     </script>
-</body>
-</html>
+
+    
+
+
+@endsection

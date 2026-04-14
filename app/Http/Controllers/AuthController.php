@@ -115,7 +115,7 @@ class AuthController extends Controller
                 
             }
             if (trim($user->role) == 'inventory_manager') {
-                return redirect('/inventory');
+                return redirect('/inventory-page');
                 
             }
 

@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasks & Follow-ups | Sales Rep Portal</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@extends('SalesRep.layouts.app')
+
+@section('content')
     <style>
        :root {
             --navy: #0f172a;
@@ -455,127 +449,8 @@
             outline-offset: 2px;
         }
     </style>
-</head>
-<body>
-  <!-- Mobile Overlay -->
-<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <!-- Header -->
-        <div class="sidebar-header">
-            <div class="brand-container">
-                <div class="brand-icon">
-                    <i class="fas fa-building text-white text-lg"></i>
-                </div>
-                <div class="brand-text">
-                    <h1 class="font-display text-xl font-bold text-white tracking-tight">METRO</h1>
-                    <p class="text-xs text-slate-400 font-medium">Sales Portal</p>
-                </div>
-            </div>
-            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" title="Collapse menu">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
 
-        <!-- Navigation -->
-        <nav class="sidebar-nav">
-            <!-- Main Section -->
-            <div class="menu-section" id="section-main">
-                <div class="section-header" onclick="toggleSection('section-main')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Main</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="/sales-dashboard" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
-                        <span class="nav-text">Dashboard</span>
-                        <span class="tooltip">Dashboard</span>
-                    </a>
-                    <a href="/sales-customers" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-users"></i></span>
-                        <span class="nav-text">My Customers</span>
-                        <span class="nav-badge">3</span>
-                        <span class="tooltip">My Customers</span>
-                    </a>
-                    <a href="/sales-orders" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-                        <span class="nav-text">All Orders</span>
-                        <span class="tooltip">All Orders</span>
-                    </a>
-                    <a href="/sales-tasks" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-tasks"></i></span>
-                        <span class="nav-text">Tasks</span>
-                        <span class="nav-badge warning">5</span>
-                        <span class="tooltip">Tasks</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Analytics Section -->
-            <div class="menu-section" id="section-analytics">
-                <div class="section-header" onclick="toggleSection('section-analytics')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Analytics</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="/sales-performance" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
-                        <span class="nav-text">Performance</span>
-                        <span class="tooltip">Performance</span>
-                    </a>
-                    <a href="/sales-commissions" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-pound-sign"></i></span>
-                        <span class="nav-text">Commissions</span>
-                        <span class="tooltip">Commissions</span>
-                    </a>
-                    <a href="/sales-target" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-bullseye"></i></span>
-                        <span class="nav-text">Targets</span>
-                        <span class="tooltip">Targets</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Tools Section -->
-            <div class="menu-section" id="section-tools">
-                <div class="section-header" onclick="toggleSection('section-tools')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Tools</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="sales_price_lists.html" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
-                        <span class="nav-text">Price Lists</span>
-                        <span class="tooltip">Price Lists</span>
-                    </a>
-                    <a href="sales_catalog.html" class="nav-item [ACTIVE_CLASS]">
-                        <span class="nav-icon"><i class="fas fa-box-open"></i></span>
-                        <span class="nav-text">Product Catalog</span>
-                        <span class="tooltip">Product Catalog</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Footer -->
-        <div class="sidebar-footer">
-            <div class="user-profile" onclick="openProfile()" title="View Profile">
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="Mike Thompson" class="user-avatar">
-                <div class="user-info">
-                    <p class="user-name">Mike Thompson</p>
-                    <p class="user-role">Senior Sales Rep</p>
-                </div>
-            </div>
-            <button class="logout-btn" onclick="logout()" aria-label="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
         <!-- Header -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
             <div class="flex items-center justify-between px-6 py-4">
@@ -609,28 +484,56 @@
                     <div class="grid grid-cols-4 gap-4">
                         <div class="bg-white rounded-xl p-4 border border-slate-200">
                             <p class="text-sm text-slate-500">Pending</p>
-                            <p class="text-2xl font-bold text-amber-600">5</p>
+                            <p class="text-2xl font-bold text-amber-600">{{ $tasks->where('status','pending')->count() }}</p>
                         </div>
                         <div class="bg-white rounded-xl p-4 border border-slate-200">
                             <p class="text-sm text-slate-500">Today</p>
-                            <p class="text-2xl font-bold text-blue-900">3</p>
+                            <p class="text-2xl font-bold text-blue-900">{{ $tasks->where('due_date','>=',today())->count() }}</p>
                         </div>
                         <div class="bg-white rounded-xl p-4 border border-slate-200">
                             <p class="text-sm text-slate-500">Overdue</p>
-                            <p class="text-2xl font-bold text-red-600">1</p>
+                            <p class="text-2xl font-bold text-red-600">{{ $tasks->where('due_date','<',now())->count() }}</p>
                         </div>
                         <div class="bg-white rounded-xl p-4 border border-slate-200">
                             <p class="text-sm text-slate-500">Completed</p>
-                            <p class="text-2xl font-bold text-emerald-600">12</p>
+                            <p class="text-2xl font-bold text-emerald-600">{{ $tasks->where('status','completed')->count() }}</p>
                         </div>
                     </div>
 
                     <!-- Filter Tabs -->
-                    <div class="bg-white rounded-xl p-2 border border-slate-200 flex gap-2">
+                    {{-- <div class="bg-white rounded-xl p-2 border border-slate-200 flex gap-2">
                         <button class="flex-1 py-2 px-4 rounded-lg text-sm font-medium bg-blue-900 text-white" onclick="filterTasks('all')">All Tasks</button>
                         <button class="flex-1 py-2 px-4 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50" onclick="filterTasks('calls')">Calls</button>
                         <button class="flex-1 py-2 px-4 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50" onclick="filterTasks('visits')">Visits</button>
                         <button class="flex-1 py-2 px-4 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50" onclick="filterTasks('followups')">Follow-ups</button>
+                    </div> --}}
+
+                    <div class="bg-white rounded-xl p-2 border border-slate-200 flex gap-2">
+
+                        <a href="?type=all"
+                            class="flex-1 py-2 px-4 rounded-lg text-sm font-medium 
+                            {{ request('type','all') == 'all' ? 'bg-blue-900 text-white' : 'text-slate-600 hover:bg-slate-50' }}">
+                            All Tasks
+                        </a>
+
+                        <a href="?type=call"
+                            class="flex-1 py-2 px-4 rounded-lg text-sm font-medium 
+                            {{ request('type') == 'call' ? 'bg-blue-900 text-white' : 'text-slate-600 hover:bg-slate-50' }}">
+                            Calls
+                        </a>
+
+                        <a href="?type=visit"
+                            class="flex-1 py-2 px-4 rounded-lg text-sm font-medium 
+                            {{ request('type') == 'visit' ? 'bg-blue-900 text-white' : 'text-slate-600 hover:bg-slate-50' }}">
+                            Visits
+                        </a>
+
+                        <a href="?type=follow_up"
+                            class="flex-1 py-2 px-4 rounded-lg text-sm font-medium 
+                            {{ request('type') == 'follow_up' ? 'bg-blue-900 text-white' : 'text-slate-600 hover:bg-slate-50' }}">
+                            Follow-ups
+                        </a>
+
                     </div>
 
                     <!-- High Priority Tasks -->
@@ -639,174 +542,198 @@
                             <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             High Priority
                         </h3>
+
                         <div class="space-y-3">
-                            <div class="task-card high" onclick="viewTask(1)">
+                            @forelse($tasks->where('priority','high')->where('status','!=','completed') as $task)
+
+                            <div class="task-card high" onclick="viewTask({{ $task->task_id }})">
                                 <div class="flex items-start justify-between mb-2">
+
                                     <div class="flex items-center gap-3">
-                                        <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900" onclick="event.stopPropagation()">
+                                        <input type="checkbox"
+                                            class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+                                            onclick="event.stopPropagation()">
+
                                         <div>
-                                            <h4 class="font-semibold text-slate-900">Call London Bistro - Urgent Order Discussion</h4>
-                                            <p class="text-sm text-slate-500">Customer reported 45% order reduction. Need to understand issues.</p>
+                                            <h4 class="font-semibold text-slate-900">
+                                                {{ $task->title }}
+                                            </h4>
+
+                                            <p class="text-sm text-slate-500">
+                                                {{ $task->description }}
+                                            </p>
                                         </div>
                                     </div>
+
                                     <span class="priority-badge priority-high">
-                                        <i class="fas fa-flag"></i>
-                                        High
+                                        <i class="fas fa-flag"></i> High
                                     </span>
                                 </div>
+
                                 <div class="flex items-center gap-4 text-sm text-slate-500 ml-8">
+
                                     <span class="flex items-center gap-1">
-                                        <i class="fas fa-phone text-blue-900"></i>
-                                        Call
+                                        @if($task->task_type == 'call')
+                                            <i class="fas fa-phone text-blue-900"></i> Call
+                                        @elseif($task->task_type == 'email')
+                                            <i class="fas fa-envelope text-blue-900"></i> Email
+                                        @elseif($task->task_type == 'visit')
+                                            <i class="fas fa-walking text-blue-900"></i> Visit
+                                        @else
+                                            <i class="fas fa-reply text-blue-900"></i> Follow-up
+                                        @endif
                                     </span>
+
                                     <span class="flex items-center gap-1">
                                         <i class="fas fa-building text-slate-400"></i>
-                                        London Bistro Ltd
+                                        {{ $task->customer_name }}
                                     </span>
+
                                     <span class="flex items-center gap-1 text-red-600">
                                         <i class="fas fa-clock"></i>
-                                        Today, 10:00 AM
+                                        {{ \Carbon\Carbon::parse($task->due_date)->format('d M, h:i A') }}
                                     </span>
+
                                 </div>
                             </div>
+
+                            @empty
+                                <p class="text-sm text-slate-400">No tasks</p>
+                            @endforelse
                         </div>
                     </div>
 
                     <!-- Medium Priority Tasks -->
                     <div>
                         <h3 class="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                            <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             Medium Priority
                         </h3>
+
                         <div class="space-y-3">
-                            <div class="task-card medium" onclick="viewTask(2)">
+                            @forelse($tasks->where('priority','medium')->where('status','!=','completed') as $task)
+
+                            <div class="task-card high" onclick="viewTask({{ $task->task_id }})">
                                 <div class="flex items-start justify-between mb-2">
+
                                     <div class="flex items-center gap-3">
-                                        <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900" onclick="event.stopPropagation()">
+                                        <input type="checkbox"
+                                            class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+                                            onclick="event.stopPropagation()">
+
                                         <div>
-                                            <h4 class="font-semibold text-slate-900">Follow up West End Catering - Price Negotiation</h4>
-                                            <p class="text-sm text-slate-500">Discuss volume discount for increased order commitment.</p>
+                                            <h4 class="font-semibold text-slate-900">
+                                                {{ $task->title }}
+                                            </h4>
+
+                                            <p class="text-sm text-slate-500">
+                                                {{ $task->description }}
+                                            </p>
                                         </div>
                                     </div>
-                                    <span class="priority-badge priority-medium">
-                                        <i class="fas fa-flag"></i>
-                                        Medium
+
+                                    <span class="priority-badge priority-high">
+                                        <i class="fas fa-flag"></i> High
                                     </span>
                                 </div>
+
                                 <div class="flex items-center gap-4 text-sm text-slate-500 ml-8">
+
                                     <span class="flex items-center gap-1">
-                                        <i class="fas fa-envelope text-blue-900"></i>
-                                        Email
+                                        @if($task->task_type == 'call')
+                                            <i class="fas fa-phone text-blue-900"></i> Call
+                                        @elseif($task->task_type == 'email')
+                                            <i class="fas fa-envelope text-blue-900"></i> Email
+                                        @elseif($task->task_type == 'visit')
+                                            <i class="fas fa-walking text-blue-900"></i> Visit
+                                        @else
+                                            <i class="fas fa-reply text-blue-900"></i> Follow-up
+                                        @endif
                                     </span>
+
                                     <span class="flex items-center gap-1">
                                         <i class="fas fa-building text-slate-400"></i>
-                                        West End Catering
+                                        {{ $task->customer_name }}
                                     </span>
-                                    <span class="flex items-center gap-1">
+
+                                    <span class="flex items-center gap-1 text-red-600">
                                         <i class="fas fa-clock"></i>
-                                        Today, 2:00 PM
+                                        {{ \Carbon\Carbon::parse($task->due_date)->format('d M, h:i A') }}
                                     </span>
+
                                 </div>
                             </div>
 
-                            <div class="task-card medium" onclick="viewTask(3)">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="flex items-center gap-3">
-                                        <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900" onclick="event.stopPropagation()">
-                                        <div>
-                                            <h4 class="font-semibold text-slate-900">Site Visit - The Crown Pub Product Sampling</h4>
-                                            <p class="text-sm text-slate-500">Present new beverage lineup and take feedback.</p>
-                                        </div>
-                                    </div>
-                                    <span class="priority-badge priority-medium">
-                                        <i class="fas fa-flag"></i>
-                                        Medium
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-4 text-sm text-slate-500 ml-8">
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-walking text-blue-900"></i>
-                                        Visit
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-building text-slate-400"></i>
-                                        The Crown Pub
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-clock"></i>
-                                        Today, 4:00 PM
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="task-card medium" onclick="viewTask(4)">
-                                <div class="flex items-start justify-between mb-2">
-                                    <div class="flex items-center gap-3">
-                                        <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900" onclick="event.stopPropagation()">
-                                        <div>
-                                            <h4 class="font-semibold text-slate-900">Check in with Riverside Restaurant</h4>
-                                            <p class="text-sm text-slate-500">15 days since last order. Verify if they need assistance.</p>
-                                        </div>
-                                    </div>
-                                    <span class="priority-badge priority-medium">
-                                        <i class="fas fa-flag"></i>
-                                        Medium
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-4 text-sm text-slate-500 ml-8">
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-phone text-blue-900"></i>
-                                        Call
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-building text-slate-400"></i>
-                                        Riverside Restaurant
-                                    </span>
-                                    <span class="flex items-center gap-1">
-                                        <i class="fas fa-clock"></i>
-                                        Tomorrow, 9:00 AM
-                                    </span>
-                                </div>
-                            </div>
+                            @empty
+                                <p class="text-sm text-slate-400">No tasks</p>
+                            @endforelse
                         </div>
                     </div>
 
                     <!-- Low Priority Tasks -->
                     <div>
                         <h3 class="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             Low Priority
                         </h3>
+
                         <div class="space-y-3">
-                            <div class="task-card low" onclick="viewTask(5)">
+                            @forelse($tasks->where('priority','low')->where('status','!=','completed') as $task)
+
+                            <div class="task-card high" onclick="viewTask({{ $task->task_id }})">
                                 <div class="flex items-start justify-between mb-2">
+
                                     <div class="flex items-center gap-3">
-                                        <input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900" onclick="event.stopPropagation()">
+                                        <input type="checkbox"
+                                            class="w-5 h-5 rounded border-slate-300 text-blue-900 focus:ring-blue-900"
+                                            onclick="event.stopPropagation()">
+
                                         <div>
-                                            <h4 class="font-semibold text-slate-900">Send price list to Northside Cafe</h4>
-                                            <p class="text-sm text-slate-500">New customer requested Q2 2026 pricing.</p>
+                                            <h4 class="font-semibold text-slate-900">
+                                                {{ $task->title }}
+                                            </h4>
+
+                                            <p class="text-sm text-slate-500">
+                                                {{ $task->description }}
+                                            </p>
                                         </div>
                                     </div>
-                                    <span class="priority-badge priority-low">
-                                        <i class="fas fa-flag"></i>
-                                        Low
+
+                                    <span class="priority-badge priority-high">
+                                        <i class="fas fa-flag"></i> High
                                     </span>
                                 </div>
+
                                 <div class="flex items-center gap-4 text-sm text-slate-500 ml-8">
+
                                     <span class="flex items-center gap-1">
-                                        <i class="fas fa-envelope text-blue-900"></i>
-                                        Email
+                                        @if($task->task_type == 'call')
+                                            <i class="fas fa-phone text-blue-900"></i> Call
+                                        @elseif($task->task_type == 'email')
+                                            <i class="fas fa-envelope text-blue-900"></i> Email
+                                        @elseif($task->task_type == 'visit')
+                                            <i class="fas fa-walking text-blue-900"></i> Visit
+                                        @else
+                                            <i class="fas fa-reply text-blue-900"></i> Follow-up
+                                        @endif
                                     </span>
+
                                     <span class="flex items-center gap-1">
                                         <i class="fas fa-building text-slate-400"></i>
-                                        Northside Cafe
+                                        {{ $task->customer_name }}
                                     </span>
-                                    <span class="flex items-center gap-1">
+
+                                    <span class="flex items-center gap-1 text-red-600">
                                         <i class="fas fa-clock"></i>
-                                        This Week
+                                        {{ \Carbon\Carbon::parse($task->due_date)->format('d M, h:i A') }}
                                     </span>
+
                                 </div>
                             </div>
+
+                            @empty
+                                <p class="text-sm text-slate-400">No tasks</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -814,7 +741,7 @@
                 <!-- Right Column: Calendar & Quick Actions -->
                 <div class="space-y-6">
                     <!-- Mini Calendar -->
-                    <div class="bg-white rounded-xl p-6 border border-slate-200">
+                    {{-- <div class="bg-white rounded-xl p-6 border border-slate-200">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="font-semibold text-slate-900">April 2026</h3>
                             <div class="flex gap-2">
@@ -865,33 +792,47 @@
                             <span class="calendar-day">29</span>
                             <span class="calendar-day">30</span>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Today's Schedule -->
                     <div class="bg-white rounded-xl p-6 border border-slate-200">
                         <h3 class="font-semibold text-slate-900 mb-4">Today's Schedule</h3>
+
                         <div class="space-y-4">
+
+                            @forelse($tasks->whereBetween('due_date', [now()->startOfDay(), now()->endOfDay()])->sortBy('due_date') as $task)
+
                             <div class="flex gap-3">
-                                <div class="w-16 text-sm text-slate-500 text-right pt-1">10:00</div>
-                                <div class="flex-1 pb-4 border-l-2 border-red-400 pl-4">
-                                    <p class="font-medium text-slate-900">Call London Bistro</p>
-                                    <p class="text-xs text-slate-500">Order reduction discussion</p>
+
+                                <!-- TIME -->
+                                <div class="w-16 text-sm text-slate-500 text-right pt-1">
+                                    {{ \Carbon\Carbon::parse($task->due_date)->format('H:i') }}
                                 </div>
-                            </div>
-                            <div class="flex gap-3">
-                                <div class="w-16 text-sm text-slate-500 text-right pt-1">14:00</div>
-                                <div class="flex-1 pb-4 border-l-2 border-amber-400 pl-4">
-                                    <p class="font-medium text-slate-900">Email West End</p>
-                                    <p class="text-xs text-slate-500">Price negotiation</p>
+
+                                <!-- CONTENT -->
+                                <div class="flex-1 pb-4 border-l-2 
+                                    {{ $task->priority == 'high' ? 'border-red-400' : 
+                                    ($task->priority == 'medium' ? 'border-amber-400' : 'border-emerald-400') }} 
+                                    pl-4">
+
+                                    <!-- TITLE -->
+                                    <p class="font-medium text-slate-900">
+                                        {{ $task->title }}
+                                    </p>
+
+                                    <!-- DESCRIPTION -->
+                                    <p class="text-xs text-slate-500">
+                                        {{ $task->description }}
+                                    </p>
+
                                 </div>
+
                             </div>
-                            <div class="flex gap-3">
-                                <div class="w-16 text-sm text-slate-500 text-right pt-1">16:00</div>
-                                <div class="flex-1 border-l-2 border-amber-400 pl-4">
-                                    <p class="font-medium text-slate-900">Site Visit - The Crown</p>
-                                    <p class="text-xs text-slate-500">Product sampling</p>
-                                </div>
-                            </div>
+
+                            @empty
+                                <p class="text-sm text-slate-400">No tasks for today</p>
+                            @endforelse
+
                         </div>
                     </div>
 
@@ -916,112 +857,167 @@
                 </div>
             </div>
         </div>
-    </main>
+
+        <div id="task-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div class="bg-white p-6 rounded-xl w-full max-w-lg">
+        <h2 class="text-xl font-bold mb-4">Create Task</h2>
+
+        <form method="POST" action="/tasks">
+            @csrf
+
+            <input name="title" placeholder="Title"
+                class="w-full border p-2 mb-3 rounded" required>
+
+            <textarea name="description" placeholder="Description"
+                class="w-full border p-2 mb-3 rounded"></textarea>
+
+            <input name="customer_name" placeholder="Customer"
+                class="w-full border p-2 mb-3 rounded">
+
+            <select name="task_type" class="w-full border p-2 mb-3 rounded">
+                <option value="call">Call</option>
+                <option value="email">Email</option>
+                <option value="visit">Visit</option>
+                <option value="follow_up">Follow Up</option>
+            </select>
+
+            <select name="priority" class="w-full border p-2 mb-3 rounded">
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+
+            <input type="datetime-local" name="due_date"
+                class="w-full border p-2 mb-3 rounded">
+
+            <div class="flex gap-2">
+                <button class="bg-blue-900 text-white px-4 py-2 rounded">
+                    Save
+                </button>
+
+                <button type="button" onclick="closeTaskModal()"
+                    class="bg-gray-200 px-4 py-2 rounded">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+    
 
     <script>
        // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
 
-// Initialize sidebar state from localStorage
-document.addEventListener('DOMContentLoaded', function() {
-    const sidebar = document.getElementById('sidebar');
-    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    
-    if (isCollapsed && window.innerWidth > 1024) {
-        sidebar.classList.add('collapsed');
-    }
-    
-    // Initialize section states from localStorage
-    const sections = ['section-main', 'section-analytics', 'section-tools'];
-    sections.forEach(sectionId => {
-        const isSectionCollapsed = localStorage.getItem(sectionId + '_collapsed') === 'true';
-        if (isSectionCollapsed) {
-            document.getElementById(sectionId).classList.add('collapsed');
+        // Initialize sidebar state from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            
+            if (isCollapsed && window.innerWidth > 1024) {
+                sidebar.classList.add('collapsed');
+            }
+            
+            // Initialize section states from localStorage
+            const sections = ['section-main', 'section-analytics', 'section-tools'];
+            sections.forEach(sectionId => {
+                const isSectionCollapsed = localStorage.getItem(sectionId + '_collapsed') === 'true';
+                if (isSectionCollapsed) {
+                    document.getElementById(sectionId).classList.add('collapsed');
+                }
+            });
+        });
+
+        // Toggle sidebar collapse (desktop only)
+        function toggleSidebar() {
+            if (window.innerWidth <= 1024) return;
+            
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Save state to localStorage
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
         }
-    });
-});
 
-// Toggle sidebar collapse (desktop only)
-function toggleSidebar() {
-    if (window.innerWidth <= 1024) return;
-    
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('collapsed');
-    
-    // Save state to localStorage
-    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-}
-
-// Toggle menu sections (accordion style)
-function toggleSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    const isCollapsed = section.classList.toggle('collapsed');
-    
-    // Save state to localStorage
-    localStorage.setItem(sectionId + '_collapsed', isCollapsed);
-    
-    // Update aria-expanded for accessibility
-    const header = section.querySelector('.section-header');
-    header.setAttribute('aria-expanded', !isCollapsed);
-}
-
-// ===== MOBILE SIDEBAR =====
-
-function openMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('mobileOverlay');
-    
-    sidebar.classList.add('mobile-open');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeMobileSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('mobileOverlay');
-    
-    sidebar.classList.remove('mobile-open');
-    overlay.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-// Close mobile sidebar on window resize to desktop
-window.addEventListener('resize', function() {
-    if (window.innerWidth > 1024) {
-        closeMobileSidebar();
-    }
-});
-
-// ===== KEYBOARD ACCESSIBILITY =====
-
-// Allow keyboard navigation for section headers
-document.querySelectorAll('.section-header').forEach(header => {
-    header.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            this.click();
+        // Toggle menu sections (accordion style)
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const isCollapsed = section.classList.toggle('collapsed');
+            
+            // Save state to localStorage
+            localStorage.setItem(sectionId + '_collapsed', isCollapsed);
+            
+            // Update aria-expanded for accessibility
+            const header = section.querySelector('.section-header');
+            header.setAttribute('aria-expanded', !isCollapsed);
         }
-    });
-});
 
-// Escape key to close mobile sidebar
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeMobileSidebar();
-    }
-});
+        function createTask() {
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
 
-// ===== COMMON FUNCTIONS =====
+        function closeTaskModal() {
+            document.getElementById('task-modal').classList.add('hidden');
+        }
 
-function openProfile() {
-    // Implement profile modal or navigation
-    console.log('Opening profile...');
-}
+        // ===== MOBILE SIDEBAR =====
 
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        window.location.href = 'index.html';
-    }
-}
+        function openMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close mobile sidebar on window resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                closeMobileSidebar();
+            }
+        });
+
+        // ===== KEYBOARD ACCESSIBILITY =====
+
+        // Allow keyboard navigation for section headers
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+
+        // Escape key to close mobile sidebar
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMobileSidebar();
+            }
+        });
+
+        // ===== COMMON FUNCTIONS =====
+
+        function openProfile() {
+            // Implement profile modal or navigation
+            console.log('Opening profile...');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
     </script>
-</body>
-</html>
+
+@endsection

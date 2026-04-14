@@ -1,18 +1,32 @@
-@extends('SalesRep.layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Rep Dashboard | Metro Wholesale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-            :root {
-                --navy: #0f172a;
-                --royal: #1e40af;
-                --gold: #d4af37;
-                --emerald: #059669;
-                --crimson: #dc2626;
-                --amber: #f59e0b;
-                --sidebar-width: 280px;
-                --sidebar-collapsed-width: 64px;
-                --transition-speed: 250ms;
-            }
+        :root {
+            --navy: #0f172a;
+            --royal: #1e40af;
+            --gold: #d4af37;
+            --emerald: #059669;
+            --crimson: #dc2626;
+            --amber: #f59e0b;
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 64px;
+            --transition-speed: 250ms;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -24,7 +38,7 @@
             font-family: 'Space Grotesk', sans-serif;
         }
 
-       /* ===== SIDEBAR STYLES ===== */
+        /* ===== SIDEBAR STYLES ===== */
         .sidebar {
             position: fixed;
             left: 0;
@@ -406,6 +420,102 @@
             visibility: visible;
         }
 
+        /* Cards */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Alert Badges */
+        .alert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .alert-danger {
+            background: #fef2f2;
+            color: var(--crimson);
+            border: 1px solid #fecaca;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fcd34d;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: var(--emerald);
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Customer Row */
+        .customer-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 120px;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s;
+        }
+
+        .customer-row:hover {
+            background: #f8fafc;
+        }
+
+        /* Trend Indicators */
+        .trend-up { color: var(--emerald); }
+        .trend-down { color: var(--crimson); }
+        .trend-flat { color: #64748b; }
+
+        /* Quick Actions */
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .quick-action:hover {
+            border-color: var(--royal);
+            transform: translateX(4px);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 1024px) {
             .sidebar {
@@ -447,200 +557,31 @@
         .logout-btn:focus-visible {
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
-        }   
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
+</head>
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
 
-        <!-- Header -->
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-            <div class="flex items-center justify-between px-6 py-4">
-                <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="lg:hidden p-2 hover:bg-slate-100 rounded-lg">
-                        <i class="fas fa-bars text-slate-600"></i>
-                    </button>
-                    <div>
-                        <h1 class="font-display text-2xl font-bold text-slate-900">Commissions</h1>
-                        <p class="text-sm text-slate-500">Track your earnings and payouts</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <select class="px-4 py-2 border border-slate-200 rounded-lg text-sm">
-                        <option>Q2 2026</option>
-                        <option>Q1 2026</option>
-                        <option>2026 YTD</option>
-                    </select>
-                    <button class="relative p-2 text-slate-600 hover:text-blue-900 transition">
-                        <i class="fas fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">8</span>
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <div class="p-6">
-            <!-- Commission Summary Cards -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                <div class="commission-card border-l-4 border-emerald-500">
-                    <p class="text-sm text-slate-500 mb-1">Q2 Earnings</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">£3,850</h3>
-                    <p class="text-xs text-emerald-600 mt-1"><i class="fas fa-arrow-up mr-1"></i>15.3% vs Q1</p>
-                </div>
-                <div class="commission-card border-l-4 border-blue-500">
-                    <p class="text-sm text-slate-500 mb-1">Pending Payout</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">£1,240</h3>
-                    <p class="text-xs text-blue-600 mt-1">Due Apr 30</p>
-                </div>
-                <div class="commission-card border-l-4 border-amber-500">
-                    <p class="text-sm text-slate-500 mb-1">YTD Total</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">£7,210</h3>
-                    <p class="text-xs text-emerald-600 mt-1">On track</p>
-                </div>
-                <div class="commission-card border-l-4 border-purple-500">
-                    <p class="text-sm text-slate-500 mb-1">Effective Rate</p>
-                    <h3 class="font-display text-3xl font-bold text-slate-900">3.2%</h3>
-                    <p class="text-xs text-slate-500 mt-1">of revenue</p>
-                </div>
-            </div>
-
-            <!-- Commission Breakdown -->
-            <div class="grid lg:grid-cols-3 gap-6 mb-6">
-                <div class="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200">
-                    <h3 class="font-semibold text-slate-900 mb-4">Commission Breakdown by Order</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-left text-slate-500 border-b border-slate-200">
-                                    <th class="pb-3">Order ID</th>
-                                    <th class="pb-3">Customer</th>
-                                    <th class="pb-3 text-right">Revenue</th>
-                                    <th class="pb-3 text-right">Rate</th>
-                                    <th class="pb-3 text-right">Commission</th>
-                                    <th class="pb-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0891</td>
-                                    <td class="py-3">West End Catering</td>
-                                    <td class="py-3 text-right">£9,400</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£282</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0892</td>
-                                    <td class="py-3">London Bistro Ltd</td>
-                                    <td class="py-3 text-right">£4,250</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£128</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">Pending</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0888</td>
-                                    <td class="py-3">Highbury Gardens Hotel</td>
-                                    <td class="py-3 text-right">£15,200</td>
-                                    <td class="py-3 text-right">3.5%</td>
-                                    <td class="py-3 text-right font-semibold">£532</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0889</td>
-                                    <td class="py-3">Riverside Restaurant</td>
-                                    <td class="py-3 text-right">£6,750</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£203</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                                <tr class="border-b border-slate-100">
-                                    <td class="py-3 font-medium text-blue-900">#SO-2026-0885</td>
-                                    <td class="py-3">Riverside Restaurant</td>
-                                    <td class="py-3 text-right">£7,100</td>
-                                    <td class="py-3 text-right">3.0%</td>
-                                    <td class="py-3 text-right font-semibold">£213</td>
-                                    <td class="py-3"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Paid</span></td>
-                                </tr>
-                            </tbody>
-                            <tfoot class="font-semibold">
-                                <tr>
-                                    <td class="py-3" colspan="4">Total Q2 Commissions</td>
-                                    <td class="py-3 text-right text-emerald-600">£3,850</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="bg-white rounded-xl p-6 border border-slate-200">
-                        <h3 class="font-semibold text-slate-900 mb-4">Commission Structure</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                                <span class="text-sm">Base Rate</span>
-                                <span class="font-semibold">3.0%</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                                <span class="text-sm">Platinum Tier Bonus</span>
-                                <span class="font-semibold text-emerald-600">+0.5%</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                                <span class="text-sm">Volume Bonus (>£10K)</span>
-                                <span class="font-semibold text-emerald-600">+0.3%</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                                <span class="text-sm font-medium">Max Rate</span>
-                                <span class="font-bold text-emerald-700">3.8%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-xl p-6 border border-slate-200">
-                        <h3 class="font-semibold text-slate-900 mb-4">Payout Schedule</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-700 text-xs">
-                                    <i class="fas fa-check"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium">Q1 2026 Payout</p>
-                                    <p class="text-xs text-slate-500">£3,360 • Paid Mar 31</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-700 text-xs">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium">Q2 2026 Payout</p>
-                                    <p class="text-xs text-slate-500">£3,850 • Due Apr 30</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 text-xs">
-                                    <i class="fas fa-hourglass"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-slate-400">Q3 2026 Payout</p>
-                                    <p class="text-xs text-slate-400">Pending • Due Jul 31</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Commission Trend Chart -->
-            <div class="bg-white rounded-xl p-6 border border-slate-200">
-                <h3 class="font-semibold text-slate-900 mb-4">Commission History</h3>
-                <div class="h-64">
-                    <canvas id="commissionChart"></canvas>
-                </div>
-            </div>
-        </div>
     
+    @include('SalesRep.layouts.sidebar')
 
-    <script>
+    <!-- Main Content -->
+    <main class="main-content">
+       {{-- @include('SalesRep.layouts.header') --}}
+
+        @yield('content')
+    </main>
+
+     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
-
+        
         // Initialize sidebar state from localStorage
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
@@ -685,7 +626,7 @@
         }
 
         // ===== MOBILE SIDEBAR =====
-
+        
         function openMobileSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('mobileOverlay');
@@ -711,8 +652,133 @@
             }
         });
 
-        // ===== KEYBOARD ACCESSIBILITY =====
+        // ===== NAVIGATION FUNCTIONS =====
+        
+        function viewCustomer(customerId) {
+            window.location.href = `sales_customer_detail.html?id=${customerId}`;
+        }
 
+        function viewOrder(orderId) {
+            window.location.href = `sales_order_detail.html?id=${orderId}`;
+        }
+
+        function scheduleCall(customerId) {
+            window.location.href = `sales_tasks.html?action=call&customer=${customerId}`;
+        }
+
+        function createOrder() {
+            window.location.href = 'sales_create_order.html';
+        }
+
+        function exportReport() {
+            alert('Exporting customer health report...');
+        }
+
+        function openMessages() {
+            alert('Opening message center...');
+        }
+
+        function openProfile() {
+            alert('Opening profile...');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ===== CHART CONFIGURATION =====
+        
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+                datasets: [{
+                    label: 'Actual Sales',
+                    data: [98000, 112000, 105000, 118000, 124000, 128450],
+                    borderColor: '#1e40af',
+                    backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3
+                }, {
+                    label: 'Target',
+                    data: [100000, 110000, 115000, 120000, 125000, 130000],
+                    borderColor: '#d4af37',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: {
+                            family: "'Inter', sans-serif",
+                            size: 13
+                        },
+                        bodyFont: {
+                            family: "'Inter', sans-serif",
+                            size: 12
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '£' + value.toLocaleString();
+                            },
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                family: "'Inter', sans-serif",
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+
+        // ===== KEYBOARD ACCESSIBILITY =====
+        
         // Allow keyboard navigation for section headers
         document.querySelectorAll('.section-header').forEach(header => {
             header.addEventListener('keydown', function(e) {
@@ -729,50 +795,6 @@
                 closeMobileSidebar();
             }
         });
-
-        // ===== COMMON FUNCTIONS =====
-
-        function openProfile() {
-            // Implement profile modal or navigation
-            console.log('Opening profile...');
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                window.location.href = 'index.html';
-            }
-        }
-
-
-
-        // Commission Chart
-        new Chart(document.getElementById('commissionChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026 (MTD)'],
-                datasets: [{
-                    label: 'Commissions Earned',
-                    data: [2850, 3120, 3360, 3850],
-                    backgroundColor: '#1e40af',
-                    borderRadius: 4
-                }, {
-                    label: 'Target',
-                    data: [3000, 3200, 3500, 4000],
-                    backgroundColor: '#e2e8f0',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'top' } },
-                scales: {
-                    y: {
-                        ticks: { callback: value => '£' + value.toLocaleString() }
-                    }
-                }
-            }
-        });
     </script>
-
-@endsection
+</body>
+</html>

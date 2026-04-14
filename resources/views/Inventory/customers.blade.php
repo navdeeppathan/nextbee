@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B2B Customers | NextBee B2B</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@extends('Inventory.layouts.app')
+
+@section('content')
     <style>
         :root {
             --navy: #0f172a;
@@ -590,130 +584,8 @@
             window.location.href = 'login.html';
         }
     }
-</script>
-</head>
-<body class="min-h-screen">
-  <!-- Mobile Overlay -->
-<div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
+    </script>
 
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <!-- Header -->
-    <div class="sidebar-header">
-        <div class="brand-container">
-            <div class="brand-icon">
-                <i class="fas fa-building text-white text-lg"></i>
-            </div>
-            <div class="brand-text">
-                <h1 class="font-display text-xl font-bold text-white tracking-tight">NextBee</h1>
-                <p class="text-xs text-slate-400 font-medium">B2B Command Center</p>
-            </div>
-        </div>
-        <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" title="Collapse menu">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="sidebar-nav">
-        <!-- Operations Section -->
-        <div class="menu-section" id="section-operations">
-            <div class="section-header" onclick="toggleSection('section-operations')" tabindex="0" role="button" aria-expanded="true">
-                <span class="section-label">Operations</span>
-                <i class="fas fa-chevron-down section-chevron"></i>
-            </div>
-            <div class="section-content">
-                <a href="/inventory/dashboard" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
-                    <span class="nav-text">Dashboard</span>
-                    <span class="tooltip">Dashboard</span>
-                </a>
-                <a href="/inventory-page" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-boxes"></i></span>
-                    <span class="nav-text">Inventory</span>
-                    <span class="nav-badge">47</span>
-                    <span class="tooltip">Inventory</span>
-                </a>
-                <a href="/deliveries" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-truck"></i></span>
-                    <span class="nav-text">Deliveries</span>
-                    <span class="nav-badge warning">156</span>
-                    <span class="tooltip">Deliveries</span>
-                </a>
-                <a href="/drivers" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-id-card"></i></span>
-                    <span class="nav-text">Drivers</span>
-                    <span class="tooltip">Drivers</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Management Section -->
-        <div class="menu-section" id="section-management">
-            <div class="section-header" onclick="toggleSection('section-management')" tabindex="0" role="button" aria-expanded="true">
-                <span class="section-label">Management</span>
-                <i class="fas fa-chevron-down section-chevron"></i>
-            </div>
-            <div class="section-content">
-                <a href="/customers" class="nav-item active">
-                    <span class="nav-icon"><i class="fas fa-store"></i></span>
-                    <span class="nav-text">Customers</span>
-                    <span class="tooltip">Customers</span>
-                </a>
-                <a href="/returns" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
-                    <span class="nav-text">Returns</span>
-                    <span class="nav-badge warning">3</span>
-                    <span class="tooltip">Returns</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Sales Portal Section -->
-        <div class="menu-section" id="section-sales">
-            <div class="section-header" onclick="toggleSection('section-sales')" tabindex="0" role="button" aria-expanded="true">
-                <span class="section-label">Sales Portal</span>
-                <i class="fas fa-chevron-down section-chevron"></i>
-            </div>
-            <div class="section-content">
-                {{-- <a href="/sales-dashboard" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
-                    <span class="nav-text">Sales Dashboard</span>
-                    <span class="tooltip">Sales Dashboard</span>
-                </a> --}}
-                <a href="/sales-orders-inventory" class="nav-item [ACTIVE_CLASS]">
-                    <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-                    <span class="nav-text">Sales Orders</span>
-                    <span class="tooltip">Sales Orders</span>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Footer -->
-    <div class="sidebar-footer">
-        <div class="user-profile" onclick="openProfile()" title="View Profile">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="Admin User" class="user-avatar">
-            <div class="user-info">
-                <p class="user-name">Admin User</p>
-                <p class="user-role">Operations Manager</p>
-            </div>
-        </div>
-        <form method="POST" action="{{ url('/logout') }}">
-                @csrf
-        <button 
-        type="submit"
-        class="logout-btn"
-         {{-- onclick="logout()"  --}}
-        aria-label="Logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </button>
-        </form>
-    </div>
-</aside>
-
-<main class="main-content">
     <!-- Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
         <div class="flex items-center justify-between px-6 py-4">
@@ -1239,50 +1111,50 @@
             </div>
         </div>
     </div>
-</main>
+
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
 
-    const search = document.getElementById("customerSearch");
-    const tier = document.getElementById("tierFilter");
-    const status = document.getElementById("statusFilter");
+        const search = document.getElementById("customerSearch");
+        const tier = document.getElementById("tierFilter");
+        const status = document.getElementById("statusFilter");
 
-    const cards = document.querySelectorAll("[data-name]");
+        const cards = document.querySelectorAll("[data-name]");
 
-    function filterCustomers() {
-        const searchVal = search.value.toLowerCase();
-        const tierVal = tier.value;
-        const statusVal = status.value;
+        function filterCustomers() {
+            const searchVal = search.value.toLowerCase();
+            const tierVal = tier.value;
+            const statusVal = status.value;
 
-        cards.forEach(card => {
-            const name = card.dataset.name || '';
-            const contact = card.dataset.contact || '';
-            const address = card.dataset.address || '';
-            const cardTier = card.dataset.tier || '';
-            const cardStatus = card.dataset.status || '';
+            cards.forEach(card => {
+                const name = card.dataset.name || '';
+                const contact = card.dataset.contact || '';
+                const address = card.dataset.address || '';
+                const cardTier = card.dataset.tier || '';
+                const cardStatus = card.dataset.status || '';
 
-            let matchSearch =
-                name.includes(searchVal) ||
-                contact.includes(searchVal) ||
-                address.includes(searchVal);
+                let matchSearch =
+                    name.includes(searchVal) ||
+                    contact.includes(searchVal) ||
+                    address.includes(searchVal);
 
-            let matchTier = !tierVal || cardTier === tierVal;
-            let matchStatus = !statusVal || cardStatus === statusVal;
+                let matchTier = !tierVal || cardTier === tierVal;
+                let matchStatus = !statusVal || cardStatus === statusVal;
 
-            if (matchSearch && matchTier && matchStatus) {
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
-        });
-    }
+                if (matchSearch && matchTier && matchStatus) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
 
-    search.addEventListener("input", filterCustomers);
-    tier.addEventListener("change", filterCustomers);
-    status.addEventListener("change", filterCustomers);
+        search.addEventListener("input", filterCustomers);
+        tier.addEventListener("change", filterCustomers);
+        status.addEventListener("change", filterCustomers);
 
-});
+    });
 </script>
-</body>
-</html>
+
+@endsection

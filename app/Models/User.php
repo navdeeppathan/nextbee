@@ -35,4 +35,11 @@ class User extends Authenticatable
     protected $casts = [
         'preferred_delivery_days' => 'array',
     ];
+
+
+
+    public function routes()
+    {
+        return $this->hasMany(Route::class, 'driver_id');
+    }
 }

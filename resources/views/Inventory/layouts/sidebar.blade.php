@@ -1,4 +1,4 @@
-<!-- Sidebar -->
+ <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <!-- Header -->
         <div class="sidebar-header">
@@ -25,28 +25,29 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="/inventory/dashboard" class="nav-item active">
+                    <a href="/inventory/dashboard" class="nav-item {{ request()->is('inventory/dashboard') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
                         <span class="nav-text">Dashboard</span>
                         <span class="tooltip">Dashboard</span>
                     </a>
-                    <a href="/inventory-page" class="nav-item">
+                    <a href="/inventory-page" class="nav-item {{ request()->is('inventory-page') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-boxes"></i></span>
                         <span class="nav-text">Inventory</span>
                         <span class="nav-badge">47</span>
                         <span class="tooltip">Inventory</span>
                     </a>
-                    <a href="/deliveries" class="nav-item">
+                    <a href="/deliveries" class="nav-item {{ request()->is('deliveries') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-truck"></i></span>
                         <span class="nav-text">Deliveries</span>
                         <span class="nav-badge warning">156</span>
                         <span class="tooltip">Deliveries</span>
                     </a>
-                    <a href="/drivers" class="nav-item">
+                    <a href="/drivers" class="nav-item {{ request()->is('drivers') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-id-card"></i></span>
                         <span class="nav-text">Drivers</span>
                         <span class="tooltip">Drivers</span>
                     </a>
+                    
                 </div>
             </div>
 
@@ -57,12 +58,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="/customers" class="nav-item">
+                    <a href="/customers" class="nav-item {{ request()->is('customers') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-store"></i></span>
                         <span class="nav-text">Customers</span>
                         <span class="tooltip">Customers</span>
                     </a>
-                    <a href="/returns" class="nav-item">
+                    <a href="/returns" class="nav-item {{ request()->is('returns') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                         <span class="nav-text">Returns</span>
                         <span class="nav-badge warning">3</span>
@@ -78,12 +79,12 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="/sales-dashboard" class="nav-item">
+                    {{-- <a href="/sales-dashboard" class="nav-item">
                         <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
                         <span class="nav-text">Sales Dashboard</span>
                         <span class="tooltip">Sales Dashboard</span>
-                    </a>
-                    <a href="/sales-order" class="nav-item">
+                    </a> --}}
+                    <a href="/sales-orders-inventory" class="nav-item {{ request()->is('sales-orders-inventory') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
                         <span class="nav-text">Sales Orders</span>
                         <span class="tooltip">Sales Orders</span>
@@ -97,15 +98,17 @@
             <div class="user-profile" onclick="openProfile()" title="View Profile">
                 <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="Admin User" class="user-avatar">
                 <div class="user-info">
-                    <p class="user-name">Admin User</p>
-                    <p class="user-role">Operations Manager</p>
+                    <p class="user-name">{{ Auth::user()->name }}</p>
+                    <p class="user-role">{{ Auth::user()->role }}</p>
                 </div>
             </div>
-             <form method="POST" action="{{ url('/logout') }}">
-                 @csrf
-                <button class="logout-btn" type="submit" aria-label="Logout">
-
-            {{-- <button class="logout-btn" onclick="logout()" aria-label="Logout"> --}}
+            <form method="POST" action="{{ url('/logout') }}">
+                @csrf
+            <button
+            type="submit"
+             class="logout-btn"
+             {{-- onclick="logout()"  --}}
+             aria-label="Logout">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </button>

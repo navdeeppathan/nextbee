@@ -476,7 +476,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-       @include('Inventory.layouts.header')
+       {{-- @include('Inventory.layouts.header') --}}
 
         @yield('content')
     </main>

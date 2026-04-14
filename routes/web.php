@@ -93,12 +93,26 @@ Route::get('/customers', function () {
     $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
     $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
     $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+    
     return view('Inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
-Route::get('/deliveries', function () {
-    return view('Inventory.deliveries');
-});
+use App\Http\Controllers\TaskController;
+
+Route::get('/sales-tasks', [TaskController::class, 'index']);
+Route::post('/tasks', [TaskController::class, 'store']);
+
+use App\Http\Controllers\RouteController;
+
+Route::get('/deliveries', [RouteController::class, 'index']);
+Route::post('/routes', [RouteController::class, 'store']);
+Route::get('/routes/{id}', [RouteController::class, 'show']);
+Route::put('/routes/{id}', [RouteController::class, 'update']);
+Route::delete('/routes/{id}', [RouteController::class, 'destroy']);
+
+// Route::get('/deliveries', function () {
+//     return view('Inventory.deliveries');
+// });
 
 Route::get('/drivers', function () {
     $drivers = User::where('role', 'driver')->get();
@@ -171,7 +185,14 @@ Route::get('/sales-customer_detail', function () {
 });
 
 Route::get('/sales-customers', function () {
-    return view('SalesRep.sales_customers');
+    $customers = User::where('role', 'customer')->whereNotNull('business_name')->get();
+    $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
+    $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
+    $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
+    $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
+    $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+    
+    return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
 
@@ -223,9 +244,9 @@ Route::get('/sales-target', function () {
     return view('SalesRep.sales_targets');
 });
 
-Route::get('/sales-tasks', function () {
-    return view('SalesRep.sales_tasks');
-});
+// Route::get('/sales-tasks', function () {
+//     return view('SalesRep.sales_tasks');
+// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');

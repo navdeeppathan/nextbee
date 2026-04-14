@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management | NextBee B2B</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+@extends('Inventory.layouts.app')
+
+@section('content')
     <style>
         :root {
             --navy: #0f172a;
@@ -483,135 +477,7 @@
             outline-offset: 2px;
         }
     </style>
-</head>
-<body>
-    <!-- Mobile Overlay -->
-    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileSidebar()"></div>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <!-- Header -->
-        <div class="sidebar-header">
-            <div class="brand-container">
-                <div class="brand-icon">
-                    <i class="fas fa-building text-white text-lg"></i>
-                </div>
-                <div class="brand-text">
-                    <h1 class="font-display text-xl font-bold text-white tracking-tight">NextBee</h1>
-                    <p class="text-xs text-slate-400 font-medium">B2B Command Center</p>
-                </div>
-            </div>
-            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" title="Collapse menu">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-
-        <!-- Navigation -->
-        <nav class="sidebar-nav">
-            <!-- Operations Section -->
-            <div class="menu-section" id="section-operations">
-                <div class="section-header" onclick="toggleSection('section-operations')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Operations</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="/inventory/dashboard" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
-                        <span class="nav-text">Dashboard</span>
-                        <span class="tooltip">Dashboard</span>
-                    </a>
-                    <a href="/inventory-page" class="nav-item active">
-                        <span class="nav-icon"><i class="fas fa-boxes"></i></span>
-                        <span class="nav-text">Inventory</span>
-                        <span class="nav-badge">47</span>
-                        <span class="tooltip">Inventory</span>
-                    </a>
-                    <a href="/deliveries" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-truck"></i></span>
-                        <span class="nav-text">Deliveries</span>
-                        <span class="nav-badge warning">156</span>
-                        <span class="tooltip">Deliveries</span>
-                    </a>
-                    <a href="/drivers" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-id-card"></i></span>
-                        <span class="nav-text">Drivers</span>
-                        <span class="tooltip">Drivers</span>
-                    </a>
-                    <a href="/order-logs" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-id-card"></i></span>
-                        <span class="nav-text">Order Logs</span>
-                        <span class="tooltip">Order Logs</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Management Section -->
-            <div class="menu-section" id="section-management">
-                <div class="section-header" onclick="toggleSection('section-management')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Management</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    <a href="/customers" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-store"></i></span>
-                        <span class="nav-text">Customers</span>
-                        <span class="tooltip">Customers</span>
-                    </a>
-                    <a href="/returns" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
-                        <span class="nav-text">Returns</span>
-                        <span class="nav-badge warning">3</span>
-                        <span class="tooltip">Returns</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Sales Portal Section -->
-            <div class="menu-section" id="section-sales">
-                <div class="section-header" onclick="toggleSection('section-sales')" tabindex="0" role="button" aria-expanded="true">
-                    <span class="section-label">Sales Portal</span>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </div>
-                <div class="section-content">
-                    {{-- <a href="/sales-dashboard" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
-                        <span class="nav-text">Sales Dashboard</span>
-                        <span class="tooltip">Sales Dashboard</span>
-                    </a> --}}
-                    <a href="/sales-orders-inventory" class="nav-item">
-                        <span class="nav-icon"><i class="fas fa-clipboard-list"></i></span>
-                        <span class="nav-text">Sales Orders</span>
-                        <span class="tooltip">Sales Orders</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Footer -->
-        <div class="sidebar-footer">
-            <div class="user-profile" onclick="openProfile()" title="View Profile">
-                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="Admin User" class="user-avatar">
-                <div class="user-info">
-                    <p class="user-name">Admin User</p>
-                    <p class="user-role">Operations Manager</p>
-                </div>
-            </div>
-            <form method="POST" action="{{ url('/logout') }}">
-                @csrf
-            <button
-            type="submit"
-             class="logout-btn"
-             {{-- onclick="logout()"  --}}
-             aria-label="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
-            </form>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
         <!-- Header -->
         <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
             <div class="flex items-center justify-between px-6 py-4">
@@ -1140,7 +1006,7 @@
 
             </div>
         </div>
-    </main>
+  
 
     <!-- Add Item Modal -->
     <div id="add-item-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
@@ -1387,54 +1253,54 @@
         </div>
     </div>
 
-<script>
-    let index = 0;
+    <script>
+        let index = 0;
 
-    function openLocationModal(productId) {
-        document.getElementById('locationModal').classList.remove('hidden');
-        document.getElementById('product_id').value = productId;
+        function openLocationModal(productId) {
+            document.getElementById('locationModal').classList.remove('hidden');
+            document.getElementById('product_id').value = productId;
 
-        document.getElementById('location-wrapper').innerHTML = '';
-        index = 0;
-        addRow();
-    }
+            document.getElementById('location-wrapper').innerHTML = '';
+            index = 0;
+            addRow();
+        }
 
-    function closeModal() {
-        document.getElementById('locationModal').classList.add('hidden');
-    }
+        function closeModal() {
+            document.getElementById('locationModal').classList.add('hidden');
+        }
 
-    function addRow() {
-        const wrapper = document.getElementById('location-wrapper');
+        function addRow() {
+            const wrapper = document.getElementById('location-wrapper');
 
-        wrapper.innerHTML += `
-            <div class="grid grid-cols-5 gap-2 mb-2">
+            wrapper.innerHTML += `
+                <div class="grid grid-cols-5 gap-2 mb-2">
 
-                <!-- Aisle Dropdown -->
-                <input name="locations[${index}][aisle]" 
-                    placeholder="Aisle" type="text" 
-                    class="border p-2 rounded">
+                    <!-- Aisle Dropdown -->
+                    <input name="locations[${index}][aisle]" 
+                        placeholder="Aisle" type="text" 
+                        class="border p-2 rounded">
 
-                <input name="locations[${index}][rack]" 
-                    placeholder="Rack" type="number" 
-                    class="border p-2 rounded">
+                    <input name="locations[${index}][rack]" 
+                        placeholder="Rack" type="number" 
+                        class="border p-2 rounded">
 
-                <input name="locations[${index}][basket]" 
-                    placeholder="Basket" type="number" 
-                    class="border p-2 rounded">
+                    <input name="locations[${index}][basket]" 
+                        placeholder="Basket" type="number" 
+                        class="border p-2 rounded">
 
-                <input name="locations[${index}][quantity]" 
-                    placeholder="Qty" type="number" 
-                    class="border p-2 rounded">
+                    <input name="locations[${index}][quantity]" 
+                        placeholder="Qty" type="number" 
+                        class="border p-2 rounded">
 
-                <input name="locations[${index}][expiry_date]" 
-                    placeholder="Expiry" type="date" 
-                    class="border p-2 rounded">
-            </div>
-        `;
+                    <input name="locations[${index}][expiry_date]" 
+                        placeholder="Expiry" type="date" 
+                        class="border p-2 rounded">
+                </div>
+            `;
 
-        index++;
-    }
-</script>
+            index++;
+        }
+    </script>
 
     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
@@ -1547,78 +1413,78 @@
     </script>
 
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {
 
-        const searchInput = document.getElementById("searchInput");
-        const categoryFilter = document.getElementById("categoryFilter");
-        const locationFilter = document.getElementById("locationFilter");
+            const searchInput = document.getElementById("searchInput");
+            const categoryFilter = document.getElementById("categoryFilter");
+            const locationFilter = document.getElementById("locationFilter");
 
-        const cards = document.querySelectorAll(".inventory-card");
+            const cards = document.querySelectorAll(".inventory-card");
 
-        function filterProducts() {
-            const search = searchInput.value.toLowerCase();
-            const category = categoryFilter.value.toLowerCase();
-            const location = locationFilter.value.toLowerCase();
+            function filterProducts() {
+                const search = searchInput.value.toLowerCase();
+                const category = categoryFilter.value.toLowerCase();
+                const location = locationFilter.value.toLowerCase();
 
-            cards.forEach(card => {
-                const name = card.dataset.name;
-                const sku = card.dataset.sku;
-                const cat = card.dataset.category;
-                const loc = card.dataset.location;
+                cards.forEach(card => {
+                    const name = card.dataset.name;
+                    const sku = card.dataset.sku;
+                    const cat = card.dataset.category;
+                    const loc = card.dataset.location;
 
-                let matchSearch =
-                    name.includes(search) ||
-                    sku.includes(search) ||
-                    loc.includes(search);
+                    let matchSearch =
+                        name.includes(search) ||
+                        sku.includes(search) ||
+                        loc.includes(search);
 
-                let matchCategory =
-                    category === "all categories" || cat.includes(category);
+                    let matchCategory =
+                        category === "all categories" || cat.includes(category);
 
-                let matchLocation =
-                    location === "all locations" || loc.includes(location);
+                    let matchLocation =
+                        location === "all locations" || loc.includes(location);
 
-                if (matchSearch && matchCategory && matchLocation) {
-                    card.style.display = "block";
-                } else {
-                    card.style.display = "none";
-                }
-            });
-        }
+                    if (matchSearch && matchCategory && matchLocation) {
+                        card.style.display = "block";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+            }
 
-        // Event listeners
-        searchInput.addEventListener("input", filterProducts);
-        categoryFilter.addEventListener("change", filterProducts);
-        locationFilter.addEventListener("change", filterProducts);
-    });
+            // Event listeners
+            searchInput.addEventListener("input", filterProducts);
+            categoryFilter.addEventListener("change", filterProducts);
+            locationFilter.addEventListener("change", filterProducts);
+        });
     </script>
 
     <script>
-    function openEditModal(btn) {
+        function openEditModal(btn) {
 
-        const modal = document.getElementById('update-item-modal');
-        modal.classList.remove('hidden');
+            const modal = document.getElementById('update-item-modal');
+            modal.classList.remove('hidden');
 
-        const id = btn.dataset.id;
+            const id = btn.dataset.id;
 
-        // SET FORM ACTION
-        const form = document.getElementById('editForm');
-        form.action = `/products/${id}`;
+            // SET FORM ACTION
+            const form = document.getElementById('editForm');
+            form.action = `/products/${id}`;
 
-        // PREFILL VALUES
-        document.getElementById('edit_title').value = btn.dataset.title;
-        document.getElementById('edit_sku').value = btn.dataset.sku;
-        document.getElementById('edit_category').value = btn.dataset.category;
-        document.getElementById('edit_moq').value = btn.dataset.moq;
-        document.getElementById('edit_shelf').value = btn.dataset.shelf;
-        document.getElementById('edit_aisle').value = btn.dataset.aisle;
-        document.getElementById('edit_rack').value = btn.dataset.rack;
-        document.getElementById('edit_basket').value = btn.dataset.basket;
-        document.getElementById('edit_quantity').value = btn.dataset.quantity;
-        document.getElementById('edit_price').value = btn.dataset.price;
-        document.getElementById('edit_description').value = btn.dataset.description;
-        document.getElementById('edit_type').value = btn.dataset.type;
-        document.getElementById('edit_brand').value = btn.dataset.brand;
-    }
+            // PREFILL VALUES
+            document.getElementById('edit_title').value = btn.dataset.title;
+            document.getElementById('edit_sku').value = btn.dataset.sku;
+            document.getElementById('edit_category').value = btn.dataset.category;
+            document.getElementById('edit_moq').value = btn.dataset.moq;
+            document.getElementById('edit_shelf').value = btn.dataset.shelf;
+            document.getElementById('edit_aisle').value = btn.dataset.aisle;
+            document.getElementById('edit_rack').value = btn.dataset.rack;
+            document.getElementById('edit_basket').value = btn.dataset.basket;
+            document.getElementById('edit_quantity').value = btn.dataset.quantity;
+            document.getElementById('edit_price').value = btn.dataset.price;
+            document.getElementById('edit_description').value = btn.dataset.description;
+            document.getElementById('edit_type').value = btn.dataset.type;
+            document.getElementById('edit_brand').value = btn.dataset.brand;
+        }
     </script>
-</body>
-</html>
+
+@endsection
