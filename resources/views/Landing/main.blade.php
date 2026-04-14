@@ -1326,28 +1326,61 @@
             updateOrderDisplay();
         }
 
-        // Add to Sales Order - Open Modal
-        function addToSalesOrder(name, sku, moq, price, id) {
-            tempProduct = {
-                name,
-                sku,
-                moq,
-                price,
-                id // 👈 IMPORTANT
-            };
+ function addToSalesOrder(name, sku, moq, price, id) {
 
-            document.getElementById('modal-product-name').textContent = name;
-            document.getElementById('modal-moq').textContent = moq;
-            document.getElementById('modal-qty').value = moq;
+    tempProduct = { name, sku, moq, price, id };
+
+    document.getElementById('modal-product-name').textContent = name;
+    document.getElementById('modal-moq').textContent = moq;
+    document.getElementById('modal-qty').value = moq;
+
+    // 🔥 BACKEND CHECK
+    fetch('/cart/check/' + id)
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.exists) {
+
+                // ✅ ONLY CURRENT
+                document.querySelectorAll('.order-option').forEach(el => {
+                    let val = el.querySelector('input').value;
+
+                    if (val === 'current') {
+                        el.style.display = 'block';
+                        el.classList.add('selected');
+                        el.querySelector('input').checked = true;
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+
+            } else {
+
+                // ✅ SHOW ALL
+                document.querySelectorAll('.order-option').forEach(el => {
+                    el.style.display = 'block';
+                    el.classList.remove('selected');
+                });
+
+                document.querySelector('input[value="new"]').checked = true;
+            }
 
             document.getElementById('order-modal').classList.add('active');
-        }
-
+        });
+}   
         // Close Order Modal
-        function closeOrderModal() {
-            document.getElementById('order-modal').classList.remove('active');
-            tempProduct = null;
-        }
+       function closeOrderModal() {
+    document.getElementById('order-modal').classList.remove('active');
+    tempProduct = null;
+
+    // ✅ RESET OPTIONS BACK
+    document.querySelectorAll('.order-option').forEach(el => {
+        el.style.display = 'block';
+        el.classList.remove('selected');
+    });
+
+    document.querySelector('input[value="new"]').checked = true;
+}
 
         // Adjust quantity
         function adjustQty(delta) {
@@ -1401,7 +1434,7 @@
 
                     if (data.success) {
                         closeOrderModal();
-                        showToast('Added to cart successfully ✅');
+                        showToast('Added to create Order successfully ✅');
 
                         // optional: panel me bhi dikhao
                         currentOrder.push({

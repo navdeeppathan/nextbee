@@ -704,9 +704,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                    </button> -->
+                                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                        </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1066,25 +1066,59 @@
 
         // Add to Sales Order - Open Modal
         function addToSalesOrder(name, sku, moq, price, id) {
-            tempProduct = {
-                name,
-                sku,
-                moq,
-                price,
-                id // 👈 IMPORTANT
-            };
+
+            tempProduct = { name, sku, moq, price, id };
 
             document.getElementById('modal-product-name').textContent = name;
             document.getElementById('modal-moq').textContent = moq;
             document.getElementById('modal-qty').value = moq;
 
-            document.getElementById('order-modal').classList.add('active');
-        }
+            // 🔥 BACKEND CHECK
+            fetch('/cart/check/' + id)
+                .then(res => res.json())
+                .then(data => {
 
+                    if (data.exists) {
+
+                        // ✅ ONLY CURRENT
+                        document.querySelectorAll('.order-option').forEach(el => {
+                            let val = el.querySelector('input').value;
+
+                            if (val === 'current') {
+                                el.style.display = 'block';
+                                el.classList.add('selected');
+                                el.querySelector('input').checked = true;
+                            } else {
+                                el.style.display = 'none';
+                            }
+                        });
+
+                    } else {
+
+                        // ✅ SHOW ALL
+                        document.querySelectorAll('.order-option').forEach(el => {
+                            el.style.display = 'block';
+                            el.classList.remove('selected');
+                        });
+
+                        document.querySelector('input[value="new"]').checked = true;
+                    }
+
+                    document.getElementById('order-modal').classList.add('active');
+                });
+        }
         // Close Order Modal
         function closeOrderModal() {
             document.getElementById('order-modal').classList.remove('active');
             tempProduct = null;
+
+            // ✅ RESET OPTIONS BACK
+            document.querySelectorAll('.order-option').forEach(el => {
+                el.style.display = 'block';
+                el.classList.remove('selected');
+            });
+
+            document.querySelector('input[value="new"]').checked = true;
         }
 
         // Adjust quantity

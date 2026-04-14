@@ -92,9 +92,11 @@ class OrderController extends Controller
 
     public function myOrder()
     {
-        $orders = Order::where('user_id', auth()->id())
-            ->latest()
-            ->paginate(10);
+        
+            $orders = Order::with(['items.product', 'payment'])
+    ->where('user_id', auth()->id())
+    ->latest()
+    ->paginate(10);
 
         $totalOrders = Order::where('user_id', auth()->id())->count();
         $totalSpent = Order::where('user_id', auth()->id())->sum('total_price');
@@ -113,63 +115,7 @@ class OrderController extends Controller
         ));
     }
 
-    public function placeOrder(Request $request)
-    {
-        $items = Cart::where('user_id', auth()->id())
-            ->with('product')
-            ->get();
 
-        if ($items->isEmpty()) {
-            return redirect('/cart')->with('error', 'Cart empty');
-        }
-
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'total_price' => 0
-        ]);
-
-        $total = 0;
-
-        foreach ($items as $item) {
-
-            $price = $item->product->price;
-            $qty = max(5, $item->quantity);
-
-            // ✅ FIRST ADD TOTAL
-            $total += $price * $qty;
-
-            $order->items()->create([
-                'product_id' => $item->product_id,
-                'quantity' => $qty,
-                'price' => $price
-            ]);
-        }
-
-        // ✅ APPLY DISCOUNT AFTER LOOP
-        $discount = $request->discount ?? 0;
-
-        $finalTotal = $total - $discount;
-
-        // safety
-        if ($finalTotal < 0)
-            $finalTotal = 0;
-
-        $order->update([
-            'total_price' => $finalTotal
-        ]);
-
-        Payment::create([
-            'order_id' => $order->id,
-            'user_id' => auth()->id(),
-            'amount' => $finalTotal,
-            'method' => 'UPI',
-            'status' => 'Paid'
-        ]);
-
-        Cart::where('user_id', auth()->id())->delete();
-
-        return redirect('/customer/orders')->with('success', 'Order placed ✅');
-    }
     public function view($id)
     {
         $order = Order::with('items.product')
@@ -208,10 +154,16 @@ class OrderController extends Controller
 
 
         $orders = Order::with('items.product')
-            ->where('user_id', $userId)
-            ->latest()
-            ->take(5)
-            ->get();
+    ->where('user_id', auth()->id())
+    ->where('status', '!=', 'draft')
+    ->latest()
+    ->get();
+
+$draftOrders = Order::with('items.product')
+    ->where('user_id', auth()->id())
+    ->where('status', 'draft')
+    ->latest()
+    ->get();
 
         $totalOrders = Order::where('user_id', auth()->id())->count();
         $totalSpent = Order::where('user_id', auth()->id())->sum('total_price');
@@ -222,6 +174,7 @@ class OrderController extends Controller
 
         return view('customer.dashboard-home', compact(
             'orders',
+            'draftOrders',
             'categories',
             'products',
             'totalOrders',
@@ -231,4 +184,249 @@ class OrderController extends Controller
 
 
     }
+
+    public function placeOrder(Request $request)
+    {
+        \Log::info($request->all());
+        $data = $request->all();
+
+        $delivery = $data['delivery_instructions'] ?? null;
+        $notes = $data['internal_notes'] ?? null;
+        $discount = $data['discount'] ?? 0;
+
+        $items = Cart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+
+        if ($items->isEmpty()) {
+            return response()->json(['error' => 'Cart empty']);
+        }
+
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'total_price' => 0,
+            'status' => 'created',
+            'delivery_instructions' => $delivery,
+            'internal_notes' => $notes
+        ]);
+
+        $total = 0;
+
+        foreach ($items as $item) {
+
+            $price = $item->product->price;
+            $qty = max(5, $item->quantity);
+
+            $total += $price * $qty;
+
+            $order->items()->create([
+                'product_id' => $item->product_id,
+                'quantity' => $qty,
+                'price' => $price
+            ]);
+        }
+
+        $finalTotal = $total - $discount;
+
+        if ($finalTotal < 0) {
+            $finalTotal = 0;
+        }
+
+        $order->update([
+            'total_price' => $finalTotal,
+            'discount' => $discount
+        ]);
+
+        Payment::create([
+            'order_id' => $order->id,
+            'user_id' => auth()->id(),
+            'amount' => $finalTotal,
+            'method' => 'UPI',
+            'status' => 'pending'
+        ]);
+
+        Cart::where('user_id', auth()->id())->delete();
+
+        return response()->json(['success' => true]);
+    }
+    public function saveDraft(Request $request)
+    {
+        $data = $request->all();
+
+        $delivery = $data['delivery_instructions'] ?? null;
+        $notes = $data['internal_notes'] ?? null;
+        $discount = $data['discount'] ?? 0;
+
+        $items = Cart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+
+        if ($items->isEmpty()) {
+            return response()->json(['success' => false]);
+        }
+
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'total_price' => 0,
+            'status' => 'draft',
+            'delivery_instructions' => $delivery,
+            'internal_notes' => $notes,
+            'discount' => $discount // ✅ ADD THIS
+        ]);
+
+        $total = 0;
+
+        foreach ($items as $item) {
+
+            $price = $item->product->price;
+            $qty = max(5, $item->quantity);
+
+            $total += $price * $qty;
+
+            $order->items()->create([
+                'product_id' => $item->product_id,
+                'quantity' => $qty,
+                'price' => $price
+            ]);
+        }
+
+        // ✅ FINAL TOTAL AFTER DISCOUNT
+        $finalTotal = $total - $discount;
+
+        if ($finalTotal < 0) {
+            $finalTotal = 0;
+        }
+
+        $order->update([
+            'total_price' => $finalTotal
+        ]);
+        Cart::where('user_id', auth()->id())->delete();
+
+
+        return response()->json(['success' => true]);
+    }
+
+    public function viewDraft($id)
+{
+    $order = Order::with('items.product')
+        ->where('id', $id)
+        ->where('user_id', auth()->id())
+        ->where('status', 'draft')
+        ->firstOrFail();
+
+    $cartData = $order->items->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->product->title,
+            'sku' => $item->product->sku_code,
+            'moq' => $item->product->moq,
+            'price' => $item->price,
+            'qty' => $item->quantity,
+            'lineTotal' => $item->price * $item->quantity
+        ];
+    });
+
+    return view('Landing.draftcheckout', compact('order', 'cartData'));
+}
+
+public function placeDraftOrder(Request $request, $id)
+{
+    $order = Order::with('items.product')
+        ->where('id', $id)
+        ->where('user_id', auth()->id())
+        ->where('status', 'draft')
+        ->firstOrFail();
+
+    $data = $request->all();
+
+    $delivery = $data['delivery_instructions'] ?? null;
+    $notes = $data['internal_notes'] ?? null;
+    $discount = $data['discount'] ?? 0;
+
+    $total = 0;
+
+    foreach ($order->items as $item) {
+
+        $price = $item->price;
+        $qty = $item->quantity;
+
+        $total += $price * $qty;
+    }
+
+    $finalTotal = $total - $discount;
+    if ($finalTotal < 0) $finalTotal = 0;
+
+    // ✅ UPDATE SAME ORDER
+    $order->update([
+        'status' => 'created',
+        'delivery_instructions' => $delivery,
+        'internal_notes' => $notes,
+        'discount' => $discount,
+        'total_price' => $finalTotal
+    ]);
+
+    // ✅ CREATE PAYMENT
+    Payment::create([
+        'order_id' => $order->id,
+        'user_id' => auth()->id(),
+        'amount' => 0,
+        // 'amount' => $finalTotal,
+        'method' => 'UPI',
+        'status' => 'pending'
+    ]);
+
+    return response()->json(['success' => true]);
+}
+public function addPayment(Request $request)
+{
+    $order = Order::findOrFail($request->order_id);
+
+    $amount = (float)$request->amount;
+
+    // ✅ total paid (ONLY DONE)
+    $totalPaid = Payment::where('order_id', $order->id)
+        ->where('status', 'done')
+        ->sum('amount');
+
+    $remaining = $order->total_price - $totalPaid;
+
+    if ($amount <= 0) {
+        return response()->json(['error' => 'Invalid amount']);
+    }
+
+    if ($amount > $remaining) {
+        return response()->json(['error' => 'Exceeds remaining']);
+    }
+
+    // ✅ NEW ENTRY (history)
+    Payment::create([
+        'order_id' => $order->id,
+        'user_id' => auth()->id(),
+        'amount' => $amount,
+        'method' => 'UPI',
+        'status' => 'done'
+    ]);
+
+    $finalPaid = $totalPaid + $amount;
+
+    // ✅ STATUS LOGIC
+    if ($finalPaid == 0) {
+        $status = 'pending';
+    } elseif ($finalPaid < $order->total_price) {
+        $status = 'partial';
+    } else {
+        $status = 'full';
+    }
+
+    $order->update([
+        'payment_status' => $status
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'paid' => $finalPaid,
+        'remaining' => $order->total_price - $finalPaid,
+        'status' => $status
+    ]);
+}
 }
