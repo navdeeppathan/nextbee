@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NextBee Wholesale | B2B Sales Order Portal</title>
+    <title>NextBee Wholesale | B2B Brands</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
@@ -624,151 +624,7 @@
         </div>
     </div>
 
-    <!-- ITEMS ON SEA SECTION (REPLACES HERO) -->
-    <section id="sea-items" class="sea-items-section pt-32 pb-12 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <div>
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-ship text-yellow-400 text-xl"></i>
-                        </div>
-                        <h1 class="font-display text-3xl md:text-4xl font-bold text-white">Items on Sea</h1>
-                    </div>
-                    <p class="text-slate-300">Incoming inventory from international suppliers - Pre-order available</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="text-right">
-                        <p class="text-sm text-slate-400">Total Containers</p>
-                        <p class="text-2xl font-bold text-white">12</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm text-slate-400">Est. Value</p>
-                        <p class="text-2xl font-bold text-yellow-400">£2.4M</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Sea Items Grid -->
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Container 1 -->
-                <div class="sea-card rounded-2xl p-5">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Container</p>
-
-                        </div>
-                        <span class="eta-badge text-white text-xs font-bold px-3 py-1 rounded-full">ETA 3 Days</span>
-                    </div>
-
-                    <div class="border-t border-white/10 pt-4">
-                        <p class="text-xs text-slate-400 mb-2">Key Items:</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Coca-Cola</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Red Bull</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Heinz</span>
-                        </div>
-                    </div>
-                    <button onclick="preorderContainer('MET-2024-089')"
-                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
-                        Pre-order Items
-                    </button>
-                </div>
-
-                <!-- Container 2 -->
-                <div class="sea-card rounded-2xl p-5">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Container</p>
-
-                        </div>
-                        <span class="eta-badge text-white text-xs font-bold px-3 py-1 rounded-full">ETA 7 Days</span>
-                    </div>
-
-                    <div class="border-t border-white/10 pt-4">
-                        <p class="text-xs text-slate-400 mb-2">Key Items:</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Barilla</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Evian</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Nestlé</span>
-                        </div>
-                    </div>
-                    <button onclick="preorderContainer('MET-2024-090')"
-                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
-                        Pre-order Items
-                    </button>
-                </div>
-
-                <!-- Container 3 -->
-                <div class="sea-card rounded-2xl p-5">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Container</p>
-                        </div>
-                        <span class="px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">ETA 12 Days</span>
-                    </div>
-
-                    <div class="border-t border-white/10 pt-4">
-                        <p class="text-xs text-slate-400 mb-2">Key Items:</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Pampers</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Cadbury</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Pringles</span>
-                        </div>
-                    </div>
-                    <button onclick="preorderContainer('MET-2024-091')"
-                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
-                        Pre-order Items
-                    </button>
-                </div>
-
-                <!-- Container 4 -->
-                <div class="sea-card rounded-2xl p-5">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-xs text-slate-400 uppercase tracking-wider">Container</p>
-
-                        </div>
-                        <span class="px-3 py-1 bg-purple-600 text-white text-xs font-bold rounded-full">ETA 18
-                            Days</span>
-                    </div>
-
-                    <div class="border-t border-white/10 pt-4">
-                        <p class="text-xs text-slate-400 mb-2">Key Items:</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Rice</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Spices</span>
-                            <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">Oils</span>
-                        </div>
-                    </div>
-                    <button onclick="preorderContainer('MET-2024-092')"
-                        class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition text-sm">
-                        Pre-order Items
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                <div class="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
-                    <div class="text-2xl font-bold text-yellow-400">£450K</div>
-                    <div class="text-sm text-slate-400">Pre-orders Available</div>
-                </div>
-                <div class="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
-                    <div class="text-2xl font-bold text-yellow-400">546</div>
-                    <div class="text-sm text-slate-400">SKUs Available</div>
-                </div>
-                <div class="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
-                    <div class="text-2xl font-bold text-yellow-400">15%</div>
-                    <div class="text-sm text-slate-400">Pre-order Discount</div>
-                </div>
-                <div class="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
-                    <div class="text-2xl font-bold text-yellow-400">48h</div>
-                    <div class="text-sm text-slate-400">Dispatch on Arrival</div>
-                </div>
-            </div>
-        </div>
-    </section>
     @php
         $categoryIcons = [
             'beverages' => '🥤',
@@ -785,7 +641,14 @@
         <!-- Sticky Category Navigation -->
         <div class="sticky-cat">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div>
+
+                    <p class="text-slate-500">
+                        Showing all products of {{ $brand }}
+                    </p>
+                </div>
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
+
                     <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium"
                         onclick="filterCategory('all', this)">
                         All Products
@@ -822,7 +685,7 @@
                         @php
                             $slug = \Illuminate\Support\Str::slug($product->category->name);
                         @endphp
-                        <div class="product-card bg-white rounded-2xl overflow-hidden product-item"
+                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
                             data-category="{{ $slug }}">
                             <div class="relative h-48 bg-gray-100 overflow-hidden">
                                 <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
@@ -841,9 +704,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                    class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                </button> -->
+                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                    </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1063,134 +926,9 @@
         </div>
     </div>
 
-    <!-- BRANDS SECTION -->
-    <section id="brands" class="py-16 bg-white border-t border-slate-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div class="text-center mb-12">
-                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">
-                    Featured Brands
-                </h2>
-                <p class="text-slate-600">
-                    Official distributor for leading FMCG brands
-                </p>
-            </div>
 
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
 
-                @php
-                    $brandColors = [
-                        'Coca-Cola' => 'text-red-600',
-                        'Pepsi' => 'text-blue-700',
-                        'Cadbury' => 'text-purple-700',
-                        'Kelloggs' => 'text-red-500',
-                        'Heinz' => 'text-blue-600',
-                        'Nestlé' => 'text-green-600',
-                    ];
-                @endphp
-
-                @foreach($brands as $brand)
-
-                    @php
-                        $color = $brandColors[$brand] ?? 'text-slate-700';
-                        $urlBrand = str_replace("'", "", $brand); // Kellogg's fix
-                    @endphp
-
-                    <a href="{{ url('/brand/' . $urlBrand) }}">
-
-                        <div
-                            class="flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition">
-
-                            <span class="font-bold text-xl {{ $color }}">
-                                {{ $brand }}
-                            </span>
-
-                        </div>
-
-                    </a>
-
-                @endforeach
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- SERVICES SECTION -->
-    <section id="services" class="py-16 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">Your B2B Services</h2>
-                <p class="text-slate-600">Wholesale solutions tailored for your business</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div
-                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
-                        <i class="fas fa-truck-fast"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Next-Day Delivery</h3>
-                    <p class="text-slate-600 mb-4">Order by 6PM for delivery across Greater London within 24 hours.
-                        Temperature-controlled vehicles for frozen goods.</p>
-                    <div class="flex items-center gap-2 text-sm text-blue-900">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Available on your account</span>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div
-                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
-                        <i class="fas fa-pound-sign"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Trade Credit: Net 30</h3>
-                    <p class="text-slate-600 mb-4">30-day payment terms approved. Credit limit: £25,000. Available
-                        balance: £18,450.</p>
-                    <div class="flex items-center gap-2 text-sm text-blue-900">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Active on your account</span>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div
-                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Dedicated Support</h3>
-                    <p class="text-slate-600 mb-4">Your account manager Sarah Johnson available 7 days. Direct line: 020
-                        7946 0958 ext. 204.</p>
-                    <div class="flex items-center gap-2 text-sm text-blue-900">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Priority support active</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA SECTION -->
-    <section class="cta-bg py-20 text-white relative">
-        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6 text-blue-600">
-                Need Help with Your Order?
-            </h2>
-
-            <p class="text-xl text-blue-600 mb-8">
-                Contact your account manager Sarah directly for assistance with large orders, special pricing, or
-                product sourcing.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="tel:02079460958"
-                    class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold rounded-full hover:bg-yellow-400 transition text-lg">
-                    <i class="fas fa-phone mr-2"></i> Call Sarah
-                </a>
-                <a href="/sales-order-page2"
-                    class="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition border border-blue-700 text-lg inline-flex items-center">
-                    <i class="fas fa-clipboard-list mr-2"></i> Create Sales Order
-                </a>
-            </div>
-        </div>
-    </section>
 
     <!-- FOOTER -->
     <footer class="bg-slate-900 text-slate-400 py-16">

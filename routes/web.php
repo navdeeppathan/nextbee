@@ -45,15 +45,38 @@ Route::post('/locations/store', [LocationController::class, 'store'])
 Route::get('/', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
-    return view('Landing.index', compact('categories', 'products'));
+    $brands = Product::whereNotNull('brand')
+    ->where('brand', '!=', '')
+    ->distinct()
+    ->pluck('brand');
+    return view('Landing.index', compact('categories', 'products', 'brands'));
 });
 
 Route::get('/main', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
-    return view('Landing.main', compact('categories', 'products'));
+     // 🔥 unique brands nikalo
+    $brands = Product::whereNotNull('brand')
+    ->where('brand', '!=', '')
+    ->distinct()
+    ->pluck('brand');
+    return view('Landing.main', compact('categories', 'products', 'brands'));
 });
 
+Route::get('/brand/{brand}', function ($brand) {
+
+    $brand = urldecode($brand);
+
+    // ✅ products with category
+    $products = Product::with('category')
+        ->where('brand', $brand)
+        ->get();
+
+    // ✅ sirf us brand ki categories
+     $categories = Category::all();
+
+    return view('Landing.productbrand', compact('products', 'brand', 'categories'));
+});
 
 Route::get('/inventory', function () {
 

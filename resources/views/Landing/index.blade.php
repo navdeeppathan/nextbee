@@ -512,9 +512,9 @@
                         @php
                             $slug = \Illuminate\Support\Str::slug($product->category->name);
                         @endphp
-                       
+
                         <div class="product-card bg-white rounded-2xl overflow-hidden product-item"
-                                data-category="{{ $slug }}">
+                            data-category="{{ $slug }}">
                             <div class="relative h-48 bg-gray-100 overflow-hidden">
                                 <!-- <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover"> -->
                                 <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
@@ -556,31 +556,53 @@
     <!-- BRANDS SECTION -->
     <section id="brands" class="py-16 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
             <div class="text-center mb-12">
-                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">Featured Brands</h2>
-                <p class="text-slate-600">Official distributor for leading FMCG brands</p>
+                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">
+                    Featured Brands
+                </h2>
+                <p class="text-slate-600">
+                    Official distributor for leading FMCG brands
+                </p>
             </div>
 
             <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
-                <div class="flex items-center justify-center h-20 bg-slate-50 rounded-xl">
-                    <span class="font-bold text-xl text-red-600">Coca-Cola</span>
-                </div>
-                <div class="flex items-center justify-center h-20 bg-slate-50 rounded-xl">
-                    <span class="font-bold text-xl text-blue-700">Pepsi</span>
-                </div>
-                <div class="flex items-center justify-center h-20 bg-slate-50 rounded-xl">
-                    <span class="font-bold text-xl text-purple-700">Cadbury</span>
-                </div>
-                <div class="flex items-center justify-center h-20 bg-slate-50 rounded-xl">
-                    <span class="font-bold text-xl text-red-500">Kellogg's</span>
-                </div>
-                <div class="flex items-center justify-center h-20 bg-slate-50 rounded-xl">
-                    <span class="font-bold text-xl text-blue-600">Heinz</span>
-                </div>
-                <div class="flex items-center justify-center h-20 bg-slate-50 rounded-xl">
-                    <span class="font-bold text-xl text-green-600">Nestlé</span>
-                </div>
+
+                @php
+                    $brandColors = [
+                        'Coca-Cola' => 'text-red-600',
+                        'Pepsi' => 'text-blue-700',
+                        'Cadbury' => 'text-purple-700',
+                        'Kelloggs' => 'text-red-500',
+                        'Heinz' => 'text-blue-600',
+                        'Nestlé' => 'text-green-600',
+                    ];
+                @endphp
+
+                @foreach($brands as $brand)
+
+                    @php
+                        $color = $brandColors[$brand] ?? 'text-slate-700';
+                        $urlBrand = str_replace("'", "", $brand); // Kellogg's fix
+                    @endphp
+
+                    <a onclick="openModal('login')">
+
+                        <div
+                            class="flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition">
+
+                            <span class="font-bold text-xl {{ $color }}">
+                                {{ $brand }}
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                @endforeach
+
             </div>
+
         </div>
     </section>
 
@@ -881,28 +903,28 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-@if(session('success'))
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: "{{ session('success') }}",
-        confirmButtonColor: '#3085d6'
-    });
-</script>
-@endif
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#3085d6'
+            });
+        </script>
+    @endif
 
-@if(session('error'))
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: "{{ session('error') }}",
-        confirmButtonColor: '#d33'
-    });
-</script>
-@endif
+    @if(session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#d33'
+            });
+        </script>
+    @endif
 
 
     <script>
@@ -1153,34 +1175,34 @@
             });
         });
 
-        
+
     </script>
-    
-<script>
-function filterCategory(category, btn) {
 
-    // active button
-    document.querySelectorAll('.category-btn').forEach(b => {
-        b.classList.remove('active');
-    });
-    btn.classList.add('active');
+    <script>
+        function filterCategory(category, btn) {
 
-    // filter products
-    document.querySelectorAll('.product-item').forEach(item => {
+            // active button
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
 
-        if (category === 'all') {
-            item.style.display = 'block';
-        } else {
-            if (item.dataset.category === category) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            // filter products
+            document.querySelectorAll('.product-item').forEach(item => {
+
+                if (category === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+
+            });
         }
-
-    });
-}
-</script>
+    </script>
 
 </body>
 
