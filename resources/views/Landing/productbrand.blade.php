@@ -746,6 +746,58 @@
         </div>
     </section>
 
+      <section id="brands" class="py-16 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center mb-12">
+                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">
+                    Featured Brands
+                </h2>
+                <p class="text-slate-600">
+                    Official distributor for leading FMCG brands
+                </p>
+            </div>
+
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
+
+                @php
+                    $brandColors = [
+                        'Coca-Cola' => 'text-red-600',
+                        'Pepsi' => 'text-blue-700',
+                        'Cadbury' => 'text-purple-700',
+                        'Kelloggs' => 'text-red-500',
+                        'Heinz' => 'text-blue-600',
+                        'Nestlé' => 'text-green-600',
+                    ];
+                @endphp
+
+                @foreach($brands as $brand)
+
+                    @php
+                        $color = $brandColors[$brand] ?? 'text-slate-700';
+                        $urlBrand = str_replace("'", "", $brand); // Kellogg's fix
+                    @endphp
+
+                    <a href="{{ url('/brand/' . $urlBrand) }}">
+
+                        <div
+                            class="flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition">
+
+                            <span class="font-bold text-xl {{ $color }}">
+                                {{ $brand }}
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                @endforeach
+
+            </div>
+
+        </div>
+    </section>
+
     <!-- SALES ORDER SLIDE PANEL -->
     <div class="sales-order-panel" id="sales-order-panel">
         <div class="p-6 border-b border-slate-200 bg-slate-50">

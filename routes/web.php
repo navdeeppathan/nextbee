@@ -75,8 +75,30 @@ Route::get('/brand/{brand}', function ($brand) {
 
     // ✅ sirf us brand ki categories
     $categories = Category::all();
+    $brands = Product::whereNotNull('brand')
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
 
-    return view('Landing.productbrand', compact('products', 'brand', 'categories'));
+    return view('Landing.productbrand', compact('products', 'brand', 'categories' , 'brands'));
+});
+
+Route::get('/brands/{brand}', function ($brand) {
+
+    $brand = urldecode($brand);
+
+    // ✅ products with category
+    $products = Product::with('category')
+        ->where('brand', $brand)
+        ->get();
+
+    // ✅ sirf us brand ki categories
+    $categories = Category::all();
+    $brands = Product::whereNotNull('brand')
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
+    return view('Landing.brand', compact('products', 'brand', 'categories', 'brands'));
 });
 
 Route::get('/inventory', function () {
@@ -292,11 +314,11 @@ Route::post('/profile/password', [AuthController::class, 'changePassword'])->mid
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
 Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
-Route::get('/cart/check/{id}', function($id) {
+Route::get('/cart/check/{id}', function ($id) {
 
     $exists = Cart::where('product_id', $id)
-                ->where('user_id', auth()->id())
-                ->exists();
+        ->where('user_id', auth()->id())
+        ->exists();
 
     return response()->json([
         'exists' => $exists
@@ -330,8 +352,8 @@ Route::get('/order-remaining/{id}', function ($id) {
         ->sum('amount');
 
     return response()->json([
-        'total' => (float)$order->total_price,
-        'paid' => (float)$paid,
+        'total' => (float) $order->total_price,
+        'paid' => (float) $paid,
         'remaining' => max(0, $order->total_price - $paid)
     ]);
 });
