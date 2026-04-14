@@ -722,6 +722,29 @@
             updateSummary();
         }
 
+        // ✅ SAVE while typing
+        document.getElementById('delivery_instructions').addEventListener('input', function () {
+            localStorage.setItem('delivery_instructions', this.value);
+        });
+
+        document.getElementById('internal_notes').addEventListener('input', function () {
+            localStorage.setItem('internal_notes', this.value);
+        });
+
+        // ✅ LOAD saved data
+        document.addEventListener('DOMContentLoaded', () => {
+
+            renderOrderLines();
+            updateSummary();
+
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('delivery-date').value = today;
+
+            // 🔥 LOAD textarea data
+            document.getElementById('delivery_instructions').value = localStorage.getItem('delivery_instructions') || '';
+            document.getElementById('internal_notes').value = localStorage.getItem('internal_notes') || '';
+        });
+
         function submitOrder() {
 
             let delivery = document.getElementById('delivery_instructions').value;
@@ -733,7 +756,7 @@
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }, // ✅ comma yaha important hai
 
-               body: new URLSearchParams({
+                body: new URLSearchParams({
                     delivery_instructions: delivery,
                     internal_notes: notes,
                     discount: discount
@@ -742,6 +765,8 @@
                 .then(() => {
                     alert("Order Placed ✅");
                     window.location.href = "/customer/orders";
+                    localStorage.removeItem('delivery_instructions');
+                    localStorage.removeItem('internal_notes');
                 })
                 .catch(() => {
                     alert("Error ❌");
@@ -764,7 +789,7 @@
                     internal_notes: notes,
                     discount: discount
 
-                    
+
                 })
             })
                 .then(() => {
@@ -864,14 +889,14 @@
 
         document.addEventListener('DOMContentLoaded', () => {
 
-    renderOrderLines();
-    updateSummary();
+            renderOrderLines();
+            updateSummary();
 
-    // ✅ TODAY DATE AUTO SET
-    let today = new Date().toISOString().split('T')[0];
-    document.getElementById('delivery-date').value = today;
+            // ✅ TODAY DATE AUTO SET
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('delivery-date').value = today;
 
-});
+        });
     </script>
 </body>
 
