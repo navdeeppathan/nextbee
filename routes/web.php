@@ -241,12 +241,14 @@ Route::get('/sales-customer_detail', function () {
 });
 
 Route::get('/sales-customers', function () {
-    $customers = User::where('role', 'customer')->whereNotNull('business_name')->get();
+    $customers = User::with('orders')->where('role', 'customer')->whereNotNull('business_name')->get();
     $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
     $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
     $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
     $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
     $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+
+     
 
     return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
