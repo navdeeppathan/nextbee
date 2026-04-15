@@ -833,7 +833,7 @@
 
                             <div class="flex gap-2">
                                 <button class="text-blue-900 hover:underline text-sm">
-                                   <a href="/checkout-sales/{{ $order->id }}">View </a>
+                                   <a href="/checkout-inventory/{{ $order->id }}">View </a>
                                 </button>
 
                                 <button onclick="openLogs({{ $order->id }})"

@@ -636,8 +636,12 @@
                     <p class="text-xs text-red-600 uppercase font-medium mt-1">Inactive</p>
                 </div>
                 <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-                    <p class="text-2xl font-bold text-blue-600 font-display">{{ $churnRiskCustomers }}</p>
-                    <p class="text-xs text-blue-600 uppercase font-medium mt-1">Churn Risk</p>
+                    <p class="text-2xl font-bold text-blue-600 font-display">{{ $blockedCustomers }}</p>
+                    <p class="text-xs text-blue-600 uppercase font-medium mt-1">Blocked</p>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+                    <p class="text-2xl font-bold text-blue-600 font-display">{{ $suspendedCustomers }}</p>
+                    <p class="text-xs text-blue-600 uppercase font-medium mt-1">Suspended</p>
                 </div>
             </div>
 
@@ -657,8 +661,44 @@
                     <option value="">All Status</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
-                    <option value="churn">Churn Risk</option>
+                    {{-- <option value="churn">Churn Risk</option> --}}
                 </select>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <div class="flex flex-wrap gap-2">
+
+                <button class="tab-btn active px-4 py-2 rounded-lg bg-slate-900 text-white text-sm"
+                    data-status="">
+                    All ({{ $totalCustomers }})
+                </button>
+
+                <button class="tab-btn px-4 py-2 rounded-lg bg-emerald-100 text-emerald-700 text-sm"
+                    data-status="active">
+                    Active ({{ $activeCustomers }})
+                </button>
+
+                <button class="tab-btn px-4 py-2 rounded-lg bg-red-100 text-red-700 text-sm"
+                    data-status="inactive">
+                    Inactive ({{ $inactiveCustomers }})
+                </button>
+
+                <button class="tab-btn px-4 py-2 rounded-lg bg-amber-100 text-amber-700 text-sm"
+                    data-status="pending">
+                    Pending ({{ $pendingCustomers }})
+                </button>
+
+                <button class="tab-btn px-4 py-2 rounded-lg bg-blue-100 text-blue-700 text-sm"
+                    data-status="blocked">
+                    Blocked ({{ $blockedCustomers }})
+                </button>
+
+                <button class="tab-btn px-4 py-2 rounded-lg bg-yellow-100 text-yellow-700 text-sm"
+                    data-status="suspended">
+                    Suspended ({{ $suspendedCustomers }})
+                </button>
+
             </div>
         </div>
 
@@ -858,15 +898,35 @@
                         </div>
 
                         <!-- ACTIONS -->
-                        <div class="flex gap-2">
+                        <div class="grid md:grid-cols-2 gap-2">
                             <button onclick="window.location='{{ route('customers.show', $customer->id) }}'" class="flex-1 cursor-pointer py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
                                 View Profile
                             </button>
+                            <button 
+                                onclick='openEditCustomerModal({!! json_encode($customer) !!})'
+                                class="flex-1 py-2 bg-yellow-500 text-white rounded-lg text-sm font-semibold">
+                                Edit
+                            </button>
+                            
 
                             {{-- <button class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
                                 Quick Order
                             </button> --}}
                         </div>
+
+                        <form action="{{ route('user.updateStatus', $customer->id) }}" method="POST" class="grid md:grid-cols-2 gap-2">
+                                @csrf
+                                
+                                <button name="status" value="blocked"
+                                    class="px-4 py-1 bg-red-600 text-white rounded">
+                                    Block User
+                                </button>
+
+                                <button name="status" value="suspended"
+                                    class="px-4 py-1 bg-yellow-500 text-white rounded">
+                                    Suspend User
+                                </button>
+                        </form>
 
                         <div class="flex gap-2">
                             <form action="{{ route('send.pricelist', $customer->id) }}" method="POST" enctype="multipart/form-data">
@@ -1181,6 +1241,149 @@
                 </form>
             </div>
         </div>
+
+        <div id="edit-customer-modal" class="hidden fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-200 shadow-2xl">
+
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-slate-900">Edit Customer</h2>
+                    <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+                </div>
+
+                <form id="editCustomerForm" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+
+                    <input type="hidden" id="edit_id">
+
+                    <!-- Business Name -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Business Name</label>
+                        <input type="text" name="business_name" id="edit_business_name" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                    </div>
+
+                    <!-- Grid -->
+                    <div class="grid md:grid-cols-2 gap-4">
+
+                        <!-- Business Type -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Business Type</label>
+                            <select name="business_type" id="edit_business_type" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                                <option value="convenience_store">Convenience Store</option>
+                                <option value="supermarket">Supermarket</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="cafe">Cafe</option>
+                                <option value="hotel">Hotel</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Monthly Volume -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Estimated Monthly Volume (£)</label>
+                            <input type="number" name="monthly_volume" id="edit_monthly_volume" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                        </div>
+
+                        <!-- Invoice Days -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Invoice Payment Terms</label>
+                            <input type="number" name="invoice_pay_days" id="edit_invoice_days" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                        </div>
+
+                        <!-- Credit -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Credit Limit (£)</label>
+                            <input type="number" name="credit_limit" id="edit_credit_limit" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                        </div>
+
+                        <!-- Tier -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Customer Tier</label>
+                            <select name="tier" id="edit_tier" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                                <option value="silver">Silver</option>
+                                <option value="gold">Gold</option>
+                                <option value="platinum">Platinum</option>
+                            </select>
+                        </div>
+
+                        <!-- Sales Rep -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Sales Representative</label>
+                            <select name="sales_assigned" id="edit_sales_assigned" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                                <option value="">Select Sales Rep</option>
+                                @foreach($saleReps as $user)
+                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- Address -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Delivery Address</label>
+                        <textarea name="delivery_address" id="edit_delivery_address" class="w-full border border-slate-300 rounded-lg px-4 py-3"></textarea>
+                    </div>
+
+                    <!-- Contact -->
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Primary Contact</label>
+                            <input type="text" name="primary_contact_name" id="edit_contact" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Phone</label>
+                            <input type="text" name="phone" id="edit_phone" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email</label>
+                        <input type="email" name="email" id="edit_email" class="w-full border border-slate-300 rounded-lg px-4 py-3">
+                    </div>
+
+                    <!-- Delivery Days -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Preferred Delivery Days</label>
+                        <div class="flex gap-2 flex-wrap">
+                            @foreach(['Mon','Tue','Wed','Thu','Fri','Sat'] as $day)
+                                <label class="flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-lg">
+                                    <input type="checkbox" name="preferred_delivery_days[]" value="{{ $day }}" class="edit-day">
+                                    <span>{{ $day }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">
+                            Status
+                        </label>
+                        <select name="status" id="edit_status"
+                            class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:border-blue-500 outline-none">
+
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="pending">Pending</option>
+                            <option value="blocked">Blocked</option>
+                            <option value="suspended">Suspended</option>
+
+                        </select>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-4 pt-4">
+                        <button type="button" onclick="closeEditModal()" class="flex-1 py-3 border rounded-lg">Cancel</button>
+                        <button type="submit" class="flex-1 py-3 bg-blue-600 text-white rounded-lg">Update Customer</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
     </div>
 
 
@@ -1225,6 +1428,63 @@
         tier.addEventListener("change", filterCustomers);
         status.addEventListener("change", filterCustomers);
 
+        
+
+    });
+
+    function openEditCustomerModal(customer) {
+
+        document.getElementById('edit-customer-modal').classList.remove('hidden');
+
+        document.getElementById('edit_id').value = customer.id;
+        document.getElementById('edit_business_name').value = customer.business_name || '';
+        document.getElementById('edit_business_type').value = customer.business_type || '';
+        document.getElementById('edit_monthly_volume').value = customer.monthly_volume || '';
+        document.getElementById('edit_invoice_days').value = customer.invoice_pay_days || '';
+        document.getElementById('edit_credit_limit').value = customer.credit_limit || '';
+        document.getElementById('edit_tier').value = customer.tier || '';
+        document.getElementById('edit_sales_assigned').value = customer.sales_assigned || '';
+        document.getElementById('edit_delivery_address').value = customer.delivery_address || '';
+        document.getElementById('edit_contact').value = customer.primary_contact_name || '';
+        document.getElementById('edit_phone').value = customer.phone || '';
+        document.getElementById('edit_email').value = customer.email || '';
+
+        // ✅ Delivery Days Checkbox
+        document.querySelectorAll('.edit-day').forEach(cb => {
+            cb.checked = customer.preferred_delivery_days?.includes(cb.value);
+        });
+
+        // Form action
+        document.getElementById('editCustomerForm').action = `/customer/${customer.id}/update`;
+    }
+
+    function closeEditModal() {
+        document.getElementById('edit-customer-modal').classList.add('hidden');
+    }
+
+    const tabs = document.querySelectorAll(".tab-btn");
+
+    tabs.forEach(tab => {
+        tab.addEventListener("click", function () {
+
+            // active class reset
+            tabs.forEach(t => t.classList.remove("active", "bg-slate-900", "text-white"));
+
+            // active highlight
+            this.classList.add("active", "bg-slate-900", "text-white");
+
+            const status = this.dataset.status;
+
+            document.querySelectorAll("[data-name]").forEach(card => {
+                const cardStatus = card.dataset.status;
+
+                if (!status || cardStatus === status) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
     });
 </script>
 

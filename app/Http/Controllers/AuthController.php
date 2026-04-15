@@ -105,6 +105,51 @@ class AuthController extends Controller
         // ✅ direct login page
         return redirect()->back()->with('success', 'Register success, please login');
     }
+
+    public function updateCustomer(Request $request, $id)
+    {
+        $customer = User::where('role', 'customer')->findOrFail($id);
+
+        $request->validate([
+            'business_name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $customer->id,
+            'business_type' => 'nullable',
+            'delivery_address' => 'nullable',
+            'primary_contact_name' => 'nullable',
+            'preferred_delivery_days' => 'nullable|array',
+            'phone' => 'nullable',
+            'monthly_volume' => 'nullable',
+            'sales_assigned' => 'nullable',
+            'credit_limit' => 'nullable',
+            'invoice_pay_days' => 'nullable',
+            'tier' => 'nullable',
+            'status' => 'nullable' // 👈 useful if you update active/inactive
+        ]);
+
+        $customer->update([
+            'name' => $request->name ?? $request->business_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'business_name' => $request->business_name,
+            'business_type' => $request->business_type,
+            'delivery_address' => $request->delivery_address,
+            'primary_contact_name' => $request->primary_contact_name,
+
+            // 🔥 IMPORTANT (store as JSON)
+            'preferred_delivery_days' => $request->preferred_delivery_days ?? [],
+
+            'monthly_volume' => $request->monthly_volume,
+            'sales_assigned' => $request->sales_assigned,
+            'credit_limit' => $request->credit_limit,
+            'invoice_pay_days' => $request->invoice_pay_days,
+            'tier' => $request->tier,
+
+            // optional
+            'status' => $request->status ?? $customer->status,
+        ]);
+
+        return redirect()->back()->with('success', 'Customer updated successfully ✅');
+    }
     // LOGIN
     public function login(Request $request)
     {
@@ -269,6 +314,20 @@ class AuthController extends Controller
         ]);
 
         return back()->with('success', 'Sales representative updated successfully!');
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!in_array($request->status, ['blocked', 'suspended', 'active'])) {
+            return back()->with('error', 'Invalid status');
+        }
+
+        $user->status = $request->status;
+        $user->save();
+
+        return back()->with('success', 'User status updated successfully');
     }
     
 }
