@@ -23,7 +23,11 @@ use Carbon\Carbon;
 
 use App\Models\Payment;
 
+// web.php
+Route::put('/orderdata/{id}/update-notes', [OrderController::class, 'updateNotes'])
+    ->name('order.updateNotes');
 
+    
 Route::get('/login', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
@@ -33,6 +37,9 @@ Route::get('/login', function () {
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
 Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
 
+
+Route::post('/send-pricelist/{id}', [AuthController::class, 'sendPriceList'])
+    ->name('send.pricelist');
 
 use App\Http\Controllers\LocationController;
 use App\Models\Order;
@@ -172,16 +179,16 @@ Route::get('/sales-orders', function () {
 
 Route::get('/sales-orders-inventory', function () {
     $orders = Order::with(['user', 'payment'])
-    ->where('status', '!=', 'pending')
+    ->where('status', '!=', 'draft')
     ->get();
     
-    $totalOrders = Order::where('status', 'confirm')
+    $totalOrders = Order::where('status', 'accepted')
         ->whereMonth('created_at', Carbon::now()->month)
         ->whereYear('created_at', Carbon::now()->year)
         ->count();
-    $confirmedOrders = Order::where('status', 'confirm')->count();    
-    $pendingOrders = Order::where('status', 'pending')->count();
-    $processingOrders = Order::where('status', 'processing')->count();
+    $confirmedOrders = Order::where('status', 'accepted')->count();    
+    $pendingOrders = Order::where('status', 'created')->count();
+    $processingOrders = Order::where('status', 'ready for delivery')->count();
     $deliveredOrders = Order::where('status', 'delivered')->count();
 
    
@@ -197,6 +204,7 @@ Route::get('/order/logs/{order_id}', function ($order_id) {
 
     return response()->json($logs);
 });
+
 
 //sales folder
 Route::get('/sales-commissions', function () {
@@ -218,24 +226,29 @@ Route::get('/sales-customers', function () {
     return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
+Route::get('/sales/customers/{id}', [AuthController::class, 'showCustomer'])->name('customers.show');
+Route::post('/customer/{id}/assign-sales', [AuthController::class, 'updateSalesAssign'])
+    ->name('customer.assign.sales');
 
 Route::get('/sales-order-detail', function () {
     return view('SalesRep.sales_order_detail');
 });
+
+
 
 Route::get('/sales-order-page2', function () {
     return view('SalesRep.sales_order_page');
 });
 
 Route::get('/sales-orders2', function () {
-    $orders= Order::with(['user', 'payment'])->get();
-    $totalOrders = Order::where('status', 'confirm')
+    $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->get();
+    $totalOrders = Order::where('status', 'accepted')
         ->whereMonth('created_at', Carbon::now()->month)
         ->whereYear('created_at', Carbon::now()->year)
         ->count();
-    $confirmedOrders = Order::where('status', 'confirm')->count();    
-    $pendingOrders = Order::where('status', 'pending')->count();
-    $processingOrders = Order::where('status', 'processing')->count();
+    $confirmedOrders = Order::where('status', 'accepted')->count();    
+    $pendingOrders = Order::where('status', 'created')->count();
+    $processingOrders = Order::where('status', 'ready for delivery')->count();
     $deliveredOrders = Order::where('status', 'delivered')->count();
 
     return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));

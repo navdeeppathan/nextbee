@@ -231,4 +231,22 @@ class OrderController extends Controller
 
 
     }
+
+    public function updateNotes(Request $request, $id)
+    {
+        // dd($request->all());
+        $request->validate([
+            'delivery_instruction' => 'nullable|string|max:500',
+            'order_note' => 'nullable|string|max:500',
+        ]);
+
+        $order = Order::where('id', $id)->firstOrFail();
+
+        $order->update($request->only([
+            'delivery_instruction',
+            'order_note'
+        ]));
+
+        return redirect()->back()->with('success', 'Order updated successfully ✅');
+    }
 }

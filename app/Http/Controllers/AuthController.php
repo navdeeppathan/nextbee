@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendPriceList;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -51,7 +54,9 @@ class AuthController extends Controller
             'phone'=>$request->phone,
             'licence_no'=>$request->licence_no,
             'licence_expiry'=>$request->licence_expiry,
-            'assigned_vehicle'=>$request->assigned_vehicle
+            'assigned_vehicle'=>$request->assigned_vehicle,
+            'password' => Hash::make('123456'),
+
         ]);
 
         // ❌ remove Auth::login($user);
@@ -71,6 +76,10 @@ class AuthController extends Controller
             'preferred_delivery_days' => 'nullable|array',
             'phone'=>'nullable',
             'monthly_volume'=>'nullable',
+            'sales_assigned'=>'nullable',
+            'credit_limit' => 'nullable',
+            'invoice_pay_days' => 'nullable',
+            'tier' => 'nullable',
         ]);
 
         User::create([
@@ -86,6 +95,10 @@ class AuthController extends Controller
             'monthly_volume'=>$request->monthly_volume,
              // ✅ DEFAULT PASSWORD
             'password' => Hash::make('123456'),
+            'sales_assigned'=>$request->sales_assigned,
+            'credit_limit'=>$request->credit_limit,
+            'invoice_pay_days'=>$request->invoice_pay_days,
+            'tier'=>$request->tier
         ]);
 
         // ❌ remove Auth::login($user);
@@ -151,45 +164,111 @@ class AuthController extends Controller
         return view('auth.profile');
     }
     public function updateProfile(Request $request)
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    $request->validate([
-        'name' => 'required',
-        'phone' => 'nullable',
-    ]);
+        $request->validate([
+            'name' => 'required',
+            'phone' => 'nullable',
+        ]);
 
-    $user->update([
-        'name' => $request->name,
-        'phone' => $request->phone,
-    ]);
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+        ]);
 
-    return back()->with('success', 'Profile updated ✅');
-}
+        return back()->with('success', 'Profile updated ✅');
+    }
 
-public function updateAddress(Request $request)
-{
-    $user = auth()->user();
+    public function updateAddress(Request $request)
+    {
+        $user = auth()->user();
 
-    $user->update([
-        'delivery_address' => $request->delivery_address
-    ]);
+        $user->update([
+            'delivery_address' => $request->delivery_address
+        ]);
 
-    return back()->with('success', 'Address updated ✅');
-}
-public function changePassword(Request $request)
-{
-    $request->validate([
-        'password' => 'required|min:6|confirmed'
-    ]);
+        return back()->with('success', 'Address updated ✅');
+    }
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6|confirmed'
+        ]);
 
-    $user = auth()->user();
+        $user = auth()->user();
 
-    $user->update([
-        'password' => \Hash::make($request->password)
-    ]);
+        $user->update([
+            'password' => \Hash::make($request->password)
+        ]);
 
-    return back()->with('success', 'Password changed ✅');
-}
+        return back()->with('success', 'Password changed ✅');
+    }
+
+   public function sendPriceList(Request $request, $id)
+    {
+        $request->validate([
+            'pricelist' => 'required|file|mimes:pdf,xlsx,csv|max:2048'
+        ]);
+
+        $customer = User::findOrFail($id);
+
+        // 📁 File name generate
+        $fileName = time() . '_' . $request->file('pricelist')->getClientOriginalName();
+
+        // 📁 Move to public/pricelists
+        $request->file('pricelist')->move(public_path('pricelists'), $fileName);
+
+        $filePath = public_path('pricelists/' . $fileName);
+
+        // 📧 Send email with attachment
+        Mail::to($customer->email)
+            ->send(new SendPriceList($customer, $filePath));
+
+        return back()->with('success', 'Price list uploaded & sent successfully!');
+    }
+
+
+    public function showCustomer($id)
+    {
+        $customer = User::where('role', 'customer')
+            ->whereNotNull('business_name')
+            ->findOrFail($id);
+        
+        $orders = Order::with(['items', 'payment'])
+            ->where('user_id', $customer->id)
+            ->latest()
+            ->get();
+
+        $monthlyAverageOrder = $orders->avg('total_price');
+        $orderFrequency = $orders->count();
+        $lastOrder = $orders->first();
+
+        return view('SalesRep.showcustomer', compact(
+            'customer',
+            'orders',
+            'monthlyAverageOrder',
+            'orderFrequency',
+            'lastOrder'
+        ));
+    }
+
+    public function updateSalesAssign(Request $request, $id)
+    {
+        
+
+        $request->validate([
+            'sales_assigned' => 'required|exists:users,id'
+        ]);
+
+        $customer = User::where('role', 'customer')->findOrFail($id);
+
+        // ✅ Update only this field
+        $customer->update([
+            'sales_assigned' => $request->sales_assigned
+        ]);
+
+        return back()->with('success', 'Sales representative updated successfully!');
+    }
     
 }

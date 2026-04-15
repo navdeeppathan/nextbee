@@ -24,7 +24,11 @@ class User extends Authenticatable
         'primary_contact_name',
         'preferred_delivery_days',
         'monthly_volume',
-        'status'
+        'status',
+        'sales_assigned',
+        'credit_limit',
+        'invoice_pay_days',
+        'tier'
     ];
 
     protected $hidden = [

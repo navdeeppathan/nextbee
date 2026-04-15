@@ -771,7 +771,7 @@
                                         </h3>
 
                                         <span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded">
-                                            GOLD
+                                            {{ $customer->tier ? strtoupper($customer->tier): 'GOLD' }}
                                         </span>
 
                                         <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded">
@@ -843,15 +843,30 @@
                         </div>
 
                         <!-- ACTIONS -->
-                        {{-- <div class="flex gap-2">
-                            <button class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
+                        <div class="flex gap-2">
+                            <button onclick="window.location='{{ route('customers.show', $customer->id) }}'" class="flex-1 cursor-pointer py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold">
                                 View Profile
                             </button>
 
-                            <button class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
+                            {{-- <button class="flex-1 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
                                 Quick Order
-                            </button>
-                        </div> --}}
+                            </button> --}}
+                        </div>
+
+                        <div class="flex gap-2">
+                            <form action="{{ route('send.pricelist', $customer->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+
+                                <input type="file" name="pricelist"
+                                    class="block w-full text-sm border border-slate-300 rounded-lg p-2"
+                                    required>
+
+                                <button type="submit"
+                                    class="w-full mt-2 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700">
+                                    Upload & Send Price List
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                 </div>
@@ -1025,6 +1040,45 @@
                             <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Estimated Monthly Volume (£)</label>
                             <input type="number" name="monthly_volume" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="5000">
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Invoice Payment Terms (Days)</label>
+                            <input type="number" name="invoice_pay_days" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="7">
+                        </div><div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Credit Limit (£)</label>
+                            <input type="number" name="credit_limit" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100" placeholder="5000">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Customer Tier</label>
+                            <select name="tier" class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
+                                <option value="silver">Silver</option>
+                                <option value="gold">Gold</option>
+                                <option value="platinum">Platinum</option>
+                             
+                            </select>
+                        </div>
+                        @php
+                            $saleReps = \App\Models\User::where('role', 'sale_rep')->get();
+                        @endphp
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">
+                                Sales Representative
+                            </label>
+
+                            <select name="sales_assigned"
+                                class="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none">
+
+                                <option value="">Select Sales Rep</option>
+
+                                @foreach($saleReps as $user)
+                                    <option value="{{ $user->id }}">
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        </div>
                     </div>
 
                     <div>
@@ -1102,6 +1156,8 @@
                             @endforeach
                         </div>
                     </div>
+
+                    
 
                     <div class="flex gap-4 pt-4">
                         <button type="button" onclick="document.getElementById('add-customer-modal').classList.add('hidden')" class="flex-1 py-3 border border-slate-300 rounded-lg text-slate-700 font-semibold hover:bg-slate-100 transition">Cancel</button>

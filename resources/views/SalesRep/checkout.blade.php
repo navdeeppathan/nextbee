@@ -262,10 +262,17 @@
                             Order Lines
                         </h2>
                         <span class="text-sm text-slate-500" id="line-count">0 items</span>
+                        <select onchange="updateStatus(this.value)" class="border px-3 py-2 rounded-lg text-sm">
+                            <option value="created" {{ $order->status == 'created' ? 'selected' : '' }}>Created</option>
+                            <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                            <option value="ready for delivery" {{ $order->status == 'ready for delivery' ? 'selected' : '' }}>Ready For Delivery</option>
+                            <option value="out for delivery" {{ $order->status == 'out for delivery' ? 'selected' : '' }}>Out For Delivery</option>
+                            <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                        </select>
                     </div>
 
                     <!-- Add Product Search -->
-                    <div class="relative mb-6">
+                    {{-- <div class="relative mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
                         <div class="relative">
                             <input type="text" id="product-search" placeholder="Search by SKU, name, or category..."
@@ -280,7 +287,7 @@
                         <div id="product-dropdown" class="product-dropdown">
                             <!-- Products will be populated here -->
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Order Lines Table -->
                     <div class="overflow-x-auto">
@@ -335,18 +342,36 @@
                         <i class="fas fa-sticky-note text-blue-900"></i>
                         Order Notes
                     </h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Instructions</label>
-                            <textarea rows="2" placeholder="e.g., Deliver to rear entrance, use loading bay..."
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                    <form method="POST" action="{{ route('order.updateNotes', $order->id) }}">
+                        @csrf
+                        @method('PUT')
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Delivery Instructions
+                                </label>
+                                <textarea name="delivery_instruction" rows="2"
+                                    placeholder="e.g., Deliver to rear entrance..."
+                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{ old('delivery_instruction', $order->delivery_instruction) }}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">
+                                    Internal Notes
+                                </label>
+                                <textarea name="order_note" rows="2"
+                                    placeholder="Notes for your team..."
+                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{ old('order_note', $order->order_note) }}</textarea>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Internal Notes</label>
-                            <textarea rows="2" placeholder="Notes for your team (not visible to customer)..."
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
-                        </div>
-                    </div>
+
+                        <button type="submit" id="accpt_btn"
+                            class="w-full mt-4 py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Accept Order
+                        </button>
+                    </form>
                 </div>
 
             </div>
@@ -360,7 +385,7 @@
                         <h2 class="font-display text-lg font-semibold text-slate-900 mb-4">Order Summary</h2>
 
                         <!-- Coupon Code -->
-                        <div class="mb-6 p-4 bg-slate-50 rounded-xl">
+                        {{-- <div class="mb-6 p-4 bg-slate-50 rounded-xl">
                             <label
                                 class="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Coupon
                                 Code</label>
@@ -379,7 +404,7 @@
                                 <button onclick="removeCoupon()"
                                     class="text-xs text-red-600 hover:underline">Remove</button>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <!-- Totals -->
                         <div class="space-y-3 border-t border-slate-100 pt-4">
@@ -421,11 +446,11 @@
                         <div class="mt-4 p-3 bg-slate-50 rounded-lg">
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="text-slate-600">Credit Limit</span>
-                                <span class="font-medium text-slate-900">£25,000</span>
+                                <span class="font-medium text-slate-900">£{{ $order->user->credit_limit ?? 0 }}</span>
                             </div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="text-slate-600">Available</span>
-                                <span class="font-medium text-green-600" id="credit-available">£25,000</span>
+                                <span class="font-medium text-green-600" id="credit-available">£{{ $order->user->credit_limit ?? 0 }}</span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
                                 <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all"
@@ -433,8 +458,8 @@
                             </div>
                         </div>
                     </div>
-
                     
+
 
                     <!-- Help Card -->
                     <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl p-6 text-white">
@@ -463,7 +488,10 @@
         </div>
     </div>
 
+    
     <script>
+
+        
 
         // ✅ render items
         function renderOrderLines() {
@@ -509,34 +537,27 @@
                         <span class="text-sm font-medium text-slate-900">${line.totalQuantity}</span>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-medium text-slate-900">£${line.price.toFixed(2)}</span>
+                        <span class="text-sm font-medium text-slate-900">£${Number(line.price || 0).toFixed(2)}</span>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-bold text-blue-900">£${line.lineTotal.toFixed(2)}</span>
+                        <span class="text-sm font-bold text-blue-900">£${Number(line.lineTotal || 0).toFixed(2)}</span>
                     </td>
                     <!-- ✅ NEW STATUS COLUMN -->
                     <td class="py-4 px-2 text-center">
                         <span class="px-3 py-1 text-xs rounded-full font-semibold ${
-                            order.status === 'confirm' ? 'bg-green-100 text-green-700' :
-                            order.status === 'cancel' ? 'bg-red-100 text-red-700' :
-                            'bg-yellow-100 text-yellow-700'
+                            order.status === 'accepted' ? 'bg-green-100 text-green-700' :
+                            order.status === 'ready for delivery' ? 'bg-yellow-100 text-yellow-700' :
+                            order.status === 'out for delivery' ? 'bg-blue-100 text-blue-700' :
+                            order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'
                         }">
-                            ${order.status ?? 'pending'}
+                            ${order.status ?? 'created'}
                         </span>
                     </td>
                     <td class="py-4 px-2 text-center">
                         <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-600 transition w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
                             <i class="fas fa-trash-alt"></i>
                         </button>
-                        <select onchange="updateStatus(this.value)" 
-                            class="border px-3 py-2 rounded-lg text-sm">
-                            <option value="pending">Pending</option>
-                            <option value="confirm">Confirm</option>
-                            <option value="delivery">Delivery</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="processing">Processing</option>
-                            <option value="cancel">Cancel</option>
-                        </select>
+                       
                     </td>
                 </tr>
         
@@ -576,8 +597,6 @@
             renderOrderLines();
             updateSummary();
         }
-
-        
 
 
         function updateStatus(status) {
