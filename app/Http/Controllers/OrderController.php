@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
@@ -95,11 +96,16 @@ class OrderController extends Controller
 
         $orders = Order::with(['items.product', 'payment'])
             ->where('user_id', auth()->id())
+            ->where('is_active', 1) // ✅ IMPORTANT
             ->latest()
             ->paginate(10);
 
-        $totalOrders = Order::where('user_id', auth()->id())->count();
-        $totalSpent = Order::where('user_id', auth()->id())->sum('total_price');
+        $totalOrders = Order::where('user_id', auth()->id())
+            ->where('is_active', 1)
+            ->count();
+        $totalSpent = Order::where('user_id', auth()->id())
+            ->where('is_active', 1)
+            ->sum('total_price');
         $cartCount = Cart::where('user_id', auth()->id())->count();
 
         $categories = Category::all();
@@ -151,23 +157,34 @@ class OrderController extends Controller
     {
         $userId = auth()->id();
 
-
-
+        // ✅ ACTIVE ORDERS
         $orders = Order::with('items.product')
-            ->where('user_id', auth()->id())
-            ->where('status', '!=', 'draft')
+            ->where('user_id', $userId)
+            ->where('is_active', 1) // ✅ IMPORTANT
+            ->whereIn('status', [
+                'draft',
+                'created',
+                'accepted',
+                'ready_for_delivery',
+                'out_for_delivery'
+            ])
             ->latest()
             ->get();
 
+        // ✅ DELIVERED ORDERS
         $draftOrders = Order::with('items.product')
-            ->where('user_id', auth()->id())
-            ->where('status', 'draft')
+            ->where('user_id', $userId)
+            ->where('status', 'delivered')
             ->latest()
             ->get();
 
-        $totalOrders = Order::where('user_id', auth()->id())->count();
-        $totalSpent = Order::where('user_id', auth()->id())->sum('total_price');
-        $cartCount = Cart::where('user_id', auth()->id())->count();
+        $totalOrders = Order::where('user_id', $userId)
+            ->where('is_active', 1)
+            ->count();
+        $totalSpent = Order::where('user_id', $userId)
+            ->where('is_active', 1)
+            ->sum('total_price');
+        $cartCount = Cart::where('user_id', $userId)->count();
 
         $categories = Category::all();
         $products = Product::all();
@@ -181,8 +198,6 @@ class OrderController extends Controller
             'totalSpent',
             'cartCount'
         ));
-
-
     }
 
 
@@ -332,7 +347,8 @@ class OrderController extends Controller
         $order = Order::with('items.product')
             ->where('id', $id)
             ->where('user_id', auth()->id())
-            ->where('status', 'draft')
+            ->whereIn('status', ['draft', 'created', 'accepted'])
+            ->where('is_active', 1)
             ->firstOrFail();
 
         $cartData = $order->items->map(function ($item) {
@@ -352,50 +368,56 @@ class OrderController extends Controller
 
     public function placeDraftOrder(Request $request, $id)
     {
-        $order = Order::with('items.product')
-            ->where('id', $id)
+        $order = Order::where('id', $id)
             ->where('user_id', auth()->id())
-            ->where('status', 'draft')
+            ->whereIn('status', ['draft', 'created', 'accepted'])
+            ->where('is_active', 1)
             ->firstOrFail();
 
-        $data = $request->all();
+        $delivery = $request->delivery_instructions;
+        $notes = $request->internal_notes;
+        $discount = $request->discount ?? 0;
 
-        $delivery = $data['delivery_instructions'] ?? null;
-        $notes = $data['internal_notes'] ?? null;
-        $discount = $data['discount'] ?? 0;
+        $total = $order->items->sum(fn($i) => $i->price * $i->quantity);
+        $finalTotal = max(0, $total - $discount);
 
-        $total = 0;
+        // ✅ DRAFT → SAME UPDATE
+        if ($order->status == 'draft') {
 
-        foreach ($order->items as $item) {
+            $order->update([
+                'status' => 'created',
+                'delivery_instructions' => $delivery,
+                'internal_notes' => $notes,
+                'discount' => $discount,
+                'total_price' => $finalTotal
+            ]);
 
-            $price = $item->price;
-            $qty = $item->quantity;
-
-            $total += $price * $qty;
+            return response()->json(['success' => true]);
         }
 
-        $finalTotal = $total - $discount;
-        if ($finalTotal < 0)
-            $finalTotal = 0;
+        // ✅ OLD INACTIVE
+        $order->update(['is_active' => 0]);
 
-        // ✅ UPDATE SAME ORDER
-        $order->update([
+        // ✅ NEW ORDER
+        $newOrder = Order::create([
+            'user_id' => auth()->id(),
+            'total_price' => $finalTotal,
             'status' => 'created',
             'delivery_instructions' => $delivery,
             'internal_notes' => $notes,
             'discount' => $discount,
-            'total_price' => $finalTotal
+            'parent_order_id' => $order->parent_order_id ?? $order->id,
+            'is_active' => 1
         ]);
 
-        // ✅ CREATE PAYMENT
-        Payment::create([
-            'order_id' => $order->id,
-            'user_id' => auth()->id(),
-            'amount' => 0,
-            // 'amount' => $finalTotal,
-            'method' => 'UPI',
-            'status' => 'pending'
-        ]);
+        // ✅ COPY ITEMS
+        foreach ($order->items as $item) {
+            $newOrder->items()->create([
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price
+            ]);
+        }
 
         return response()->json(['success' => true]);
     }
@@ -451,5 +473,54 @@ class OrderController extends Controller
             'status' => $status
         ]);
 
+    }
+
+    public function addItem(Request $request)
+    {
+        $order = Order::where('id', $request->order_id)
+            ->where('user_id', auth()->id())
+            ->whereIn('status', ['draft', 'created', 'accepted'])
+            ->where('is_active', 1)
+            ->firstOrFail();
+
+        $product = Product::findOrFail($request->product_id);
+
+        $order->items()->create([
+            'product_id' => $product->id,
+            'quantity' => 5,
+            'price' => $product->price
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    public function updateItem(Request $request)
+    {
+        $item = OrderItem::findOrFail($request->item_id);
+
+        $order = $item->order;
+
+        if (!in_array($order->status, ['draft', 'created', 'accepted']) || !$order->is_active) {
+            return response()->json(['error' => 'Not allowed']);
+        }
+
+        $item->update([
+            'quantity' => max(5, $request->qty)
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    public function deleteItem(Request $request)
+    {
+        $item = OrderItem::findOrFail($request->item_id);
+
+        $order = $item->order;
+
+        if (!in_array($order->status, ['draft', 'created', 'accepted']) || !$order->is_active) {
+            return response()->json(['error' => 'Not allowed']);
+        }
+
+        $item->delete();
+
+        return response()->json(['success' => true]);
     }
 }

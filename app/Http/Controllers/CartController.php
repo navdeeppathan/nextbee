@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Coupon;
+use App\Models\Order;
 
 class CartController extends Controller
 {
@@ -39,13 +40,65 @@ class CartController extends Controller
 
         return response()->json(['success' => true]);
     }
-    public function applyCoupon(Request $request)
+//     public function applyCoupon(Request $request)
+// {
+//     $request->validate([
+//         'code' => 'required'
+//     ]);
+
+//     $coupon = Coupon::where('code', $request->code)
+//         ->where('status', 1)
+//         ->first();
+
+//     if (!$coupon) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Invalid Coupon ❌'
+//         ]);
+//     }
+
+//     // Expiry check
+//     if ($coupon->expires_at && now()->gt($coupon->expires_at)) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Coupon expired ❌'
+//         ]);
+//     }
+
+//     // Cart total calculate
+//     $cart = Cart::where('user_id', auth()->id())
+//         ->with('product')
+//         ->get();
+
+//     $total = 0;
+
+//     foreach ($cart as $item) {
+//         $total += $item->product->price * $item->quantity;
+//     }
+
+//     // Minimum amount check
+//     if ($coupon->min_amount && $total < $coupon->min_amount) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Minimum order £' . $coupon->min_amount
+//         ]);
+//     }
+
+//     return response()->json([
+//         'success' => true,
+//         'coupon' => $coupon
+//     ]);
+// }
+
+
+public function applyCoupon(Request $request)
 {
     $request->validate([
         'code' => 'required'
     ]);
 
-    $coupon = Coupon::where('code', $request->code)
+    // ✅ FIX 1: case-insensitive
+    $coupon = Coupon::where('code', strtoupper(trim($request->code)))
         ->where('status', 1)
         ->first();
 
@@ -56,7 +109,7 @@ class CartController extends Controller
         ]);
     }
 
-    // Expiry check
+    // ✅ Expiry check
     if ($coupon->expires_at && now()->gt($coupon->expires_at)) {
         return response()->json([
             'success' => false,
@@ -64,18 +117,34 @@ class CartController extends Controller
         ]);
     }
 
-    // Cart total calculate
-    $cart = Cart::where('user_id', auth()->id())
-        ->with('product')
-        ->get();
+    // 🔥 IMPORTANT LOGIC (CART + ORDER BOTH)
 
     $total = 0;
 
-    foreach ($cart as $item) {
-        $total += $item->product->price * $item->quantity;
+    // ✅ 1. CHECK ACTIVE ORDER FIRST
+    $order = Order::where('user_id', auth()->id())
+        ->where('is_active', 1)
+        ->latest()
+        ->first();
+
+    if ($order && $order->items->count() > 0) {
+
+        // 👉 ORDER TOTAL
+        $total = $order->items->sum(fn($i) => $i->price * $i->quantity);
+
+    } else {
+
+        // 👉 CART TOTAL
+        $cart = Cart::where('user_id', auth()->id())
+            ->with('product')
+            ->get();
+
+        foreach ($cart as $item) {
+            $total += $item->product->price * $item->quantity;
+        }
     }
 
-    // Minimum amount check
+    // ✅ Minimum check
     if ($coupon->min_amount && $total < $coupon->min_amount) {
         return response()->json([
             'success' => false,
@@ -85,8 +154,11 @@ class CartController extends Controller
 
     return response()->json([
         'success' => true,
-        'coupon' => $coupon
+        'coupon' => [
+            'code' => $coupon->code,
+            'type' => $coupon->type,
+            'value' => $coupon->value
+        ]
     ]);
 }
-
 }

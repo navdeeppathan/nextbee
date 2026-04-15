@@ -509,5 +509,8 @@ Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware(
 Route::post('/save-draft', [OrderController::class, 'saveDraft'])->middleware('auth');
 Route::get('/invoice/{id}', [OrderController::class, 'invoice'])->middleware('auth');
 
-Route::get('/draft/{id}', [OrderController::class, 'viewDraft']);
+Route::get('/orderstatus/{id}', [OrderController::class, 'viewDraft']);
 Route::post('/draft/place/{id}', [OrderController::class, 'placeDraftOrder']);
+Route::post('/order/add-item', [OrderController::class, 'addItem']);
+Route::post('/order/update-item', [OrderController::class, 'updateItem']);
+Route::post('/order/delete-item', [OrderController::class, 'deleteItem']);
