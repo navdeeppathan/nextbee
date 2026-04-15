@@ -459,7 +459,7 @@
                     <a href="/checkout"
                         class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
                         <i class="fas fa-clipboard-list"></i>
-                        Create Sales Order
+                        Sales Order
                     </a>
                 </div>
 
@@ -615,7 +615,7 @@
                 <a href="#services" class="block text-2xl font-medium text-slate-800"
                     onclick="toggleMobileMenu()">Services</a>
                 <a href="/sales-order-page2" onclick="toggleMobileMenu();"
-                    class="block text-2xl font-medium text-blue-900">Create Sales Order</a>
+                    class="block text-2xl font-medium text-blue-900"> Sales Order</a>
                 <hr class="border-slate-200">
                 <a href="#" class="block text-lg font-medium text-slate-600">My Profile</a>
                 <a href="#" class="block text-lg font-medium text-slate-600">Order History</a>
@@ -841,9 +841,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                    class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                </button> -->
+                                                                    class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -989,10 +989,13 @@
                     </button>
                 </div>
                 <p class="text-sm text-slate-500 mt-1" id="modal-product-name">Product Name</p>
+
             </div>
 
             <div class="p-6">
                 <div class="mb-6">
+                    <div id="cart-message" class="mb-4 hidden p-3 rounded-lg text-sm"></div>
+
                     <label class="block text-sm font-medium text-slate-700 mb-2">Quantity (cases)</label>
                     <div class="flex items-center gap-3">
                         <button onclick="adjustQty(-1)"
@@ -1005,10 +1008,10 @@
                             <i class="fas fa-plus text-slate-600"></i>
                         </button>
                     </div>
+
                     <p class="text-xs text-slate-500 mt-2">Minimum Order Quantity: <span id="modal-moq">5</span> cases
                     </p>
                 </div>
-
                 <p class="text-sm font-medium text-slate-700 mb-3">How would you like to add this item?</p>
 
                 <div class="space-y-3">
@@ -1186,7 +1189,7 @@
                 </a>
                 <a href="/sales-order-page2"
                     class="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition border border-blue-700 text-lg inline-flex items-center">
-                    <i class="fas fa-clipboard-list mr-2"></i> Create Sales Order
+                    <i class="fas fa-clipboard-list mr-2"></i> Sales Order
                 </a>
             </div>
         </div>
@@ -1326,61 +1329,86 @@
             updateOrderDisplay();
         }
 
- function addToSalesOrder(name, sku, moq, price, id) {
+        function addToSalesOrder(name, sku, moq, price, id) {
 
-    tempProduct = { name, sku, moq, price, id };
+            tempProduct = { name, sku, moq, price, id };
 
-    document.getElementById('modal-product-name').textContent = name;
-    document.getElementById('modal-moq').textContent = moq;
-    document.getElementById('modal-qty').value = moq;
+            document.getElementById('modal-product-name').textContent = name;
+            document.getElementById('modal-moq').textContent = moq;
+            document.getElementById('modal-qty').value = moq;
 
-    // 🔥 BACKEND CHECK
-    fetch('/cart/check/' + id)
-        .then(res => res.json())
-        .then(data => {
+            // 🔥 BACKEND CHECK
+            fetch('/cart/check/' + id)
+                .then(res => res.json())
+                .then(data => {
 
-            if (data.exists) {
+                    const options = document.querySelectorAll('.order-option');
+                    const messageBox = document.getElementById('cart-message');
 
-                // ✅ ONLY CURRENT
-                document.querySelectorAll('.order-option').forEach(el => {
-                    let val = el.querySelector('input').value;
-
-                    if (val === 'current') {
-                        el.style.display = 'block';
-                        el.classList.add('selected');
-                        el.querySelector('input').checked = true;
-                    } else {
+                    // 🔄 RESET
+                    options.forEach(el => {
                         el.style.display = 'none';
+                        el.classList.remove('selected');
+                    });
+
+                    messageBox.classList.add('hidden');
+                    messageBox.innerHTML = "";
+
+                    // ✅ CASE 1: PRODUCT ALREADY IN CART
+                    if (data.exists) {
+
+                        // 👉 only show current draft
+                        document.querySelector('[value="current"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="current"]').checked = true;
+
+                        // 👉 MESSAGE SHOW IN MODAL
+                        messageBox.classList.remove('hidden');
+                        messageBox.className = "mb-4 p-3 rounded-lg bg-yellow-50 text-yellow-800";
+
+                        messageBox.innerHTML = `
+                <b>Already in Sales Order</b><br>
+                This item is already added to your Sales Order.<br>
+                You can add more quantity to the current draft.
+            `;
+
                     }
+
+                    // ✅ CASE 2: CART EMPTY
+                    else if (!data.hasCartItems) {
+
+                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
+
+                        document.querySelector('[value="new"]').checked = true;
+
+                    }
+
+                    // ✅ CASE 3: CART HAS ITEMS (but this product not)
+                    else {
+
+                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
+                        // document.querySelector('[value="current"]').closest('.order-option').style.display = 'block';
+
+                        document.querySelector('[value="new"]').checked = true;
+                    }
+
+                    document.getElementById('order-modal').classList.add('active');
                 });
-
-            } else {
-
-                // ✅ SHOW ALL
-                document.querySelectorAll('.order-option').forEach(el => {
-                    el.style.display = 'block';
-                    el.classList.remove('selected');
-                });
-
-                document.querySelector('input[value="new"]').checked = true;
-            }
-
-            document.getElementById('order-modal').classList.add('active');
-        });
-}   
+        }
         // Close Order Modal
-       function closeOrderModal() {
-    document.getElementById('order-modal').classList.remove('active');
-    tempProduct = null;
+        function closeOrderModal() {
+            document.getElementById('order-modal').classList.remove('active');
+            tempProduct = null;
 
-    // ✅ RESET OPTIONS BACK
-    document.querySelectorAll('.order-option').forEach(el => {
-        el.style.display = 'block';
-        el.classList.remove('selected');
-    });
+            // ✅ RESET OPTIONS BACK
+            document.querySelectorAll('.order-option').forEach(el => {
+                el.style.display = 'block';
+                el.classList.remove('selected');
+            });
 
-    document.querySelector('input[value="new"]').checked = true;
-}
+            document.querySelector('input[value="new"]').checked = true;
+        }
 
         // Adjust quantity
         function adjustQty(delta) {

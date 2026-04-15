@@ -62,28 +62,28 @@
                 <thead>
                     <tr>
                         <th>Order ID</th>
-                        <th>Product</th>
+                        <!-- <th>Product</th> -->
                         <th>Quantity</th>
                         <th>Amount</th>
                         <th>Date</th>
                         <th>Payment</th>
                         <th>Status</th>
-                        <th></th>
+                        <th>View</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($orders as $order)
                         <tr>
-                            <td>#{{ $order->id }}</td>
                             <td>
+                                #{{ $order->parent_order_id  }}
+                            </td>
+                            <!-- <td>
                                 @foreach($order->items as $item)
                                     {{ $item->product->title ?? 'Product' }} <br>
                                 @endforeach
-                            </td>
+                            </td> -->
                             <td>
-                                @foreach($order->items as $item)
-                                    {{ $item->quantity }} <br>
-                                @endforeach
+                                {{ $order->items->sum('quantity') }}
                             </td>
                             <td>£{{ $order->total_price }}</td>
                             <td>{{ $order->created_at->format('d M Y') }}</td>
@@ -125,7 +125,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="/order/{{ $order->id }}">
+                                <a href="/order/{{ $order->parent_order_id }}">
                                     <button class="px-3 py-1 bg-blue-900 text-white rounded">
                                         View Order
                                     </button>

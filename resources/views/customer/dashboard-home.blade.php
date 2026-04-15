@@ -83,11 +83,11 @@
             <div style="display:flex; gap:8px; padding:6px; border-radius:12px; width:fit-content;">
 
                 <button onclick="showTab('orders')" id="ordersTab" class="tab-btn active">
-                    📦 Orders
+                    📦 Active
                 </button>
 
                 <button onclick="showTab('drafts')" id="draftsTab" class="tab-btn">
-                    📝 Draft Orders
+                    📝 Orders
                 </button>
 
             </div>
@@ -100,29 +100,28 @@
                 <thead>
                     <tr>
                         <th>Order ID</th>
-                        <th>Product</th>
+                        <!-- <th>Product</th> -->
                         <th>Quantity</th>
                         <th>Amount</th>
                         <th>Date</th>
                         <th>Payment</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($orders as $order)
                         <tr>
-                            <td>#{{ $order->id }}</td>
-
                             <td>
-                                @foreach($order->items as $item)
-                                    {{ $item->product->title ?? 'Product' }} <br>
-                                @endforeach
+                                #{{ $order->parent_order_id  }}
                             </td>
 
+
+
                             <td>
-                                @foreach($order->items as $item)
-                                    {{ $item->quantity }} <br>
-                                @endforeach
+
+                                {{ $order->items->sum('quantity') }}
+
                             </td>
 
                             <td>£{{ $order->total_price }}</td>
@@ -131,9 +130,9 @@
 
                             {{-- ✅ PAYMENT STATUS --}}
                             <td>
-                                
 
-                                 @if($order->payment_status == 'pending')
+
+                                @if($order->payment_status == 'pending')
                                     <span class="pill pill-yellow">Pending</span>
 
                                 @elseif($order->payment_status == 'partial')
@@ -150,6 +149,14 @@
                                     {{ ucfirst($order->status) }}
                                 </span>
                             </td>
+                            <td>
+                                @if(in_array($order->status, ['draft', 'created', 'accepted']))
+                                    <a href="{{ url('/orderstatus/' . $order->id) }}"
+                                        class="px-3 py-1 bg-blue-900 text-white rounded-lg text-xs">
+                                        Edit
+                                    </a>
+                                @endif
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -162,7 +169,7 @@
                 <thead>
                     <tr>
                         <th>Order ID</th>
-                        <th>Product</th>
+                        <!-- <th>Product</th> -->
                         <th>Quantity</th>
                         <th>Amount</th>
                         <th>Date</th>
@@ -173,38 +180,43 @@
                 <tbody>
                     @foreach($draftOrders as $order)
                         <tr>
-                            <td>#{{ $order->id }}</td>
-
                             <td>
-                                @foreach($order->items as $item)
-                                    {{ $item->product->title ?? 'Product' }} <br>
-                                @endforeach
+                                #{{ $order->parent_order_id ?? $order->id }}
                             </td>
 
+                            <!-- <td>
+                                        @foreach($order->items as $item)
+                                            {{ $item->product->title ?? 'Product' }} <br>
+                                        @endforeach
+                                    </td> -->
+
                             <td>
-                                @foreach($order->items as $item)
-                                    {{ $item->quantity }} <br>
-                                @endforeach
+                                {{ $order->items->sum('quantity') }}
+
                             </td>
 
                             <td>£{{ $order->total_price }}</td>
 
                             <td>{{ $order->created_at->format('d M Y') }}</td>
 
-                            {{-- ❌ NO PAYMENT --}}
                             <td>
-                                <span class="pill pill-gray">No Payment</span>
+
+
+                                @if($order->payment_status == 'pending')
+                                    <span class="pill pill-yellow">Pending</span>
+
+                                @elseif($order->payment_status == 'partial')
+                                    <span class="pill pill-blue">Partial Payment</span>
+
+                                @elseif($order->payment_status == 'full')
+                                    <span class="pill pill-green">Full Payment</span>
+                                @endif
                             </td>
 
                             <td>
-                                <span class="pill pill-yellow">Draft</span>
+                                <span class="pill pill-yellow">Delivered</span>
                             </td>
-                            <td>
-                                <a href="{{ url('/draft/' . $order->id) }}"
-                                    class="px-3 py-1 bg-blue-900 text-white rounded-lg text-xs">
-                                    View
-                                </a>
-                            </td>
+
                         </tr>
                     @endforeach
                 </tbody>

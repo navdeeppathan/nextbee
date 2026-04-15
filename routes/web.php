@@ -59,6 +59,7 @@ Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
 
 Route::get('/', function () {
+    
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
     $brands = Product::whereNotNull('brand')
@@ -83,37 +84,45 @@ Route::get('/brand/{brand}', function ($brand) {
 
     $brand = urldecode($brand);
 
-    // ✅ products with category
-    $products = Product::with('category')
-        ->where('brand', $brand)
-        ->get();
+    // ✅ ALL PRODUCTS (IMPORTANT)
+    $products = Product::with('category')->get();
 
-    // ✅ sirf us brand ki categories
+    // ✅ selected brand alag se
+    $brandProducts = Product::where('brand', $brand)->pluck('id')->toArray();
+
     $categories = Category::all();
+
     $brands = Product::whereNotNull('brand')
         ->where('brand', '!=', '')
         ->distinct()
         ->pluck('brand');
 
-    return view('Landing.productbrand', compact('products', 'brand', 'categories' , 'brands'));
+    return view('Landing.productbrand', compact(
+        'products',
+        'brandProducts',
+        'brand',
+        'categories',
+        'brands'
+    ));
 });
 
 Route::get('/brands/{brand}', function ($brand) {
 
-    $brand = urldecode($brand);
+  $brand = urldecode($brand);
 
-    // ✅ products with category
-    $products = Product::with('category')
-        ->where('brand', $brand)
-        ->get();
+    // ✅ ALL PRODUCTS (IMPORTANT)
+    $products = Product::with('category')->get();
 
-    // ✅ sirf us brand ki categories
+    // ✅ selected brand alag se
+    $brandProducts = Product::where('brand', $brand)->pluck('id')->toArray();
+
     $categories = Category::all();
+
     $brands = Product::whereNotNull('brand')
         ->where('brand', '!=', '')
         ->distinct()
         ->pluck('brand');
-    return view('Landing.brand', compact('products', 'brand', 'categories', 'brands'));
+    return view('Landing.brand', compact('products', 'brandProducts', 'brand', 'categories', 'brands'));
 });
 
 Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
@@ -362,17 +371,19 @@ Route::post('/profile/password', [AuthController::class, 'changePassword'])->mid
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
 Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
-Route::get('/cart/check/{id}', function ($id) {
+Route::get('/cart/check/{id}', function($id) {
 
-    $exists = Cart::where('product_id', $id)
-        ->where('user_id', auth()->id())
+    $exists = Cart::where('user_id', auth()->id())
+        ->where('product_id', $id)
         ->exists();
 
+    $hasCartItems = Cart::where('user_id', auth()->id())->exists();
+
     return response()->json([
-        'exists' => $exists
+        'exists' => $exists,
+        'hasCartItems' => $hasCartItems
     ]);
 });
-
 Route::get('/customer/payments', function () {
 
     $payments = Payment::where('user_id', auth()->id())
@@ -521,7 +532,7 @@ Route::post('/order/update-status', function (Request $req) {
 
     return response()->json(['success' => true]);
 });
-Route::post('/order-item/add', [OrderController::class, 'addItem']);
+Route::post('/order-item/add', [OrderController::class, 'addItem2']);
 
 
 Route::post('/order-item/delete', function (Request $req) {
@@ -547,5 +558,8 @@ Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware(
 Route::post('/save-draft', [OrderController::class, 'saveDraft'])->middleware('auth');
 Route::get('/invoice/{id}', [OrderController::class, 'invoice'])->middleware('auth');
 
-Route::get('/draft/{id}', [OrderController::class, 'viewDraft']);
+Route::get('/orderstatus/{id}', [OrderController::class, 'viewDraft']);
 Route::post('/draft/place/{id}', [OrderController::class, 'placeDraftOrder']);
+Route::post('/order/add-item', [OrderController::class, 'addItem']);
+Route::post('/order/update-item', [OrderController::class, 'updateItem']);
+Route::post('/order/delete-item', [OrderController::class, 'deleteItem']);

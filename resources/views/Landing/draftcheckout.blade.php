@@ -267,7 +267,7 @@
 
                     <!-- Add Product Search -->
                     <div class="relative mb-6">
-                        <!-- <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
                         <div class="relative">
                             <input type="text" id="product-search" placeholder="Search by SKU, name, or category..."
                                 class="w-full px-4 py-3 pl-11 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none"
@@ -275,7 +275,7 @@
                             <i
                                 class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
 
-                        </div> -->
+                        </div>
 
                         <!-- Product Dropdown -->
                         <div id="product-dropdown" class="product-dropdown">
@@ -558,14 +558,14 @@
             item.lineTotal = item.qty * item.price;
 
             // ✅ DB UPDATE CALL
-            fetch('/cart/update', {
+            fetch('/order/update-item', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    cart_id: item.id,   // IMPORTANT
+                    item_id: item.id,
                     qty: item.qty
                 })
             });
@@ -584,14 +584,14 @@
             item.lineTotal = item.qty * item.price;
 
             // ✅ DB update
-            fetch('/cart/update', {
+            fetch('/order/update-item', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    cart_id: item.id,
+                    item_id: item.id,
                     qty: item.qty
                 })
             });
@@ -603,16 +603,16 @@
         // ✅ remove item
         function removeItem(index) {
 
-            let item = orderLines[index]; // 👈 cart item
+            let item = orderLines[index];
 
-            fetch('/cart/delete', {
+            fetch('/order/delete-item', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    cart_id: item.id // 👈 IMPORTANT (cart table id)
+                    item_id: item.id
                 })
             })
                 .then(res => res.json())
@@ -620,7 +620,6 @@
 
                     if (data.success) {
 
-                        // ✅ UI se remove
                         orderLines.splice(index, 1);
 
                         renderOrderLines();
@@ -725,44 +724,46 @@
             updateSummary();
         }
 
-       function submitOrder() {
+        function submitOrder() {
 
-    let delivery = document.getElementById('delivery_instructions').value;
-    let notes = document.getElementById('internal_notes').value;
+            let delivery = document.getElementById('delivery_instructions').value;
+            let notes = document.getElementById('internal_notes').value;
 
-    fetch('/draft/place/{{ $order->id }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: new URLSearchParams({
-            delivery_instructions: delivery,
-            internal_notes: notes,
-            discount: discount
-        })
-    })
-    .then(() => {
-        alert("Order Placed from Draft ✅");
-        window.location.href = "/customer/orders";
-    });
-}
+            fetch('/draft/place/{{ $order->id }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: new URLSearchParams({
+                    delivery_instructions: delivery,
+                    internal_notes: notes,
+                    discount: discount
+                })
+            })
+                .then(() => {
+                    alert("Order Placed from Draft ✅");
+                     localStorage.removeItem('delivery_instructions');
+                    localStorage.removeItem('internal_notes');
+                    window.location.href = "/customer/orders";
+                });
+        }
 
-function updateDraft() {
+        function updateDraft() {
 
-    let delivery = document.getElementById('delivery_instructions').value;
-    let notes = document.getElementById('internal_notes').value;
+            let delivery = document.getElementById('delivery_instructions').value;
+            let notes = document.getElementById('internal_notes').value;
 
-    fetch('/draft/update/{{ $order->id }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: new URLSearchParams({
-            delivery_instructions: delivery,
-            internal_notes: notes
-        })
-    });
-}
+            fetch('/draft/update/{{ $order->id }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: new URLSearchParams({
+                    delivery_instructions: delivery,
+                    internal_notes: notes
+                })
+            });
+        }
         function saveDraft() {
 
             let delivery = document.getElementById('delivery_instructions').value;
@@ -779,7 +780,7 @@ function updateDraft() {
                     internal_notes: notes,
                     discount: discount
 
-                    
+
                 })
             })
                 .then(() => {
@@ -844,7 +845,7 @@ function updateDraft() {
 
         function quickAdd(productId) {
 
-            fetch('/cart/add', {
+            fetch('/order/add-item', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -852,21 +853,12 @@ function updateDraft() {
                 },
                 body: JSON.stringify({
                     product_id: productId,
-                    quantity: 5 // default MOQ
-                })
+                    order_id: {{ $order->id }}
+        })
             })
-                .then(res => res.json())
-                .then(data => {
+                .then(() => location.reload());
 
-                    if (data.success) {
-                        window.location.reload();
-                        showToast('Added to cart ✅');
 
-                        // OPTIONAL: reload lines
-                        location.reload(); // ya dynamic add kar sakte ho
-                    }
-
-                });
         }
 
         document.addEventListener('click', function (e) {
@@ -879,14 +871,14 @@ function updateDraft() {
 
         document.addEventListener('DOMContentLoaded', () => {
 
-    renderOrderLines();
-    updateSummary();
+            renderOrderLines();
+            updateSummary();
 
-    // ✅ TODAY DATE AUTO SET
-    let today = new Date().toISOString().split('T')[0];
-    document.getElementById('delivery-date').value = today;
+            // ✅ TODAY DATE AUTO SET
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('delivery-date').value = today;
 
-});
+        });
     </script>
 </body>
 

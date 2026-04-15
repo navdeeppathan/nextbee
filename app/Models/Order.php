@@ -17,8 +17,11 @@ class Order extends Model
         'status',
         'discount',
         'delivery_instructions',   // ✅ ADD THIS
-        'internal_notes'  ,         // ✅ ADD THIS
-         'payment_status' 
+        'internal_notes',         // ✅ ADD THIS
+        'payment_status',
+        'parent_order_id',   // 🔥 ADD THIS
+        'is_active'          // 🔥 ADD THIS
+
     ];
     public function items()
     {
