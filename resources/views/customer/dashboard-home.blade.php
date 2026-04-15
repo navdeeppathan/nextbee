@@ -185,10 +185,10 @@
                             </td>
 
                             <!-- <td>
-                                        @foreach($order->items as $item)
-                                            {{ $item->product->title ?? 'Product' }} <br>
-                                        @endforeach
-                                    </td> -->
+                                                @foreach($order->items as $item)
+                                                    {{ $item->product->title ?? 'Product' }} <br>
+                                                @endforeach
+                                            </td> -->
 
                             <td>
                                 {{ $order->items->sum('quantity') }}

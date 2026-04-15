@@ -30,6 +30,9 @@ Route::put('/orderdata/{id}/update-notes', [OrderController::class, 'updateNotes
 
     
 Route::get('/login', function () {
+
+  
+
      $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
     $brands = Product::whereNotNull('brand')
@@ -56,6 +59,10 @@ Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
 
 Route::get('/', function () {
+        if (auth()->check()) {
+        return redirect('/main'); // ✅ LOGIN HAI → MAIN
+    }
+
     
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
@@ -75,7 +82,7 @@ Route::get('/main', function () {
         ->distinct()
         ->pluck('brand');
     return view('Landing.main', compact('categories', 'products', 'brands'));
-});
+})->middleware('auth');
 
 Route::get('/brand/{brand}', function ($brand) {
 

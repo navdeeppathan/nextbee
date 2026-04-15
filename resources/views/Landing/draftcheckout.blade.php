@@ -172,12 +172,27 @@
                             <i class="fas fa-building text-white"></i>
                         </div>
                         <div>
-                            <h1 class="font-display text-xl font-bold text-slate-900">METRO</h1>
+                            <h1 class="font-display text-xl font-bold text-slate-900">NextBee</h1>
                             <p class="text-xs text-slate-500">B2B WHOLESALE</p>
                         </div>
                     </a>
                     <span class="text-slate-300">|</span>
                     <span class="text-lg font-semibold text-slate-800">Create Sales Order</span>
+                    <div class="hidden lg:flex items-center gap-8">
+                        <a href="/main"
+                            class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Home</a>
+                        <a href="#products"
+                            class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Products</a>
+                        <a href="#brands"
+                            class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Brands</a>
+                        <a href="#services"
+                            class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Services</a>
+                        <a href="/checkout"
+                            class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
+                            <i class="fas fa-clipboard-list"></i>
+                            Sales Order
+                        </a>
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-4">
@@ -742,7 +757,7 @@
             })
                 .then(() => {
                     alert("Order Placed from Draft ✅");
-                     localStorage.removeItem('delivery_instructions');
+                    localStorage.removeItem('delivery_instructions');
                     localStorage.removeItem('internal_notes');
                     window.location.href = "/customer/orders";
                 });
