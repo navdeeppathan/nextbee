@@ -254,6 +254,57 @@
                     </div>
                 </div>
 
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                    <h2 class="font-display text-lg font-semibold mb-4">
+                        Allocate Product from Location
+                    </h2>
+
+                    <!-- Product Dropdown -->
+                    <div class="mb-4">
+                        <label class="text-sm font-medium">Select Product</label>
+                        <select id="product-select" class="w-full border px-3 py-2 rounded-lg">
+                            <option value="">Select Product</option>
+                            @foreach($order->items as $item)
+                                <option value="{{ $item->product_id }}">
+                                    {{ $item->product->title }} (Qty: {{ $item->quantity }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Location Dropdown -->
+                    <div class="mb-4">
+                        <label class="text-sm font-medium">Select Location</label>
+                        <select id="location-select" class="w-full border px-3 py-2 rounded-lg">
+                            <option value="">Select Location</option>
+                        </select>
+                    </div>
+
+                    <!-- Qty Section -->
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="text-xs text-slate-500">Total Qty</label>
+                            <input type="number" id="total-qty" disabled class="w-full border px-3 py-2 rounded-lg">
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-slate-500">Used Qty</label>
+                            <input type="number" id="used-qty" class="w-full border px-3 py-2 rounded-lg">
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-slate-500">Remaining</label>
+                            <input type="number" id="remaining-qty" disabled class="w-full border px-3 py-2 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- Save -->
+                    <button onclick="saveLocationQty()"
+                        class="w-full bg-blue-600 text-white py-2 rounded-lg">
+                        Save Allocation
+                    </button>
+                </div>
+
                 <!-- Order Lines Section -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                     <div class="flex items-center justify-between mb-4">
@@ -263,7 +314,7 @@
                         </h2>
                         <span class="text-sm text-slate-500" id="line-count">0 items</span>
                         <span class="px-3 py-1 text-xs rounded-full font-semibold 
-                            {{ $order->status == 'created' ? 'bg-red-100 text-yellow-300' : 'bg-green-100 text-green-800' }}">
+                            {{ $order->status == 'created' ? 'bg-red-100 text-black-300' : 'bg-green-100 text-green-800' }}">
                             {{ $order->status }}
                         </span>
                         <select onchange="updateStatus(this.value)" class="border px-3 py-2 rounded-lg text-sm">
@@ -278,7 +329,7 @@
 
                     <!-- Add Product Search -->
                     
-                    <div class="relative mb-6">
+                    {{-- <div class="relative mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
                         <div class="relative">
                             <input type="text" id="product-search" placeholder="Search by SKU, name, or category..."
@@ -293,7 +344,7 @@
                         <div id="product-dropdown" class="product-dropdown">
                             <!-- Products will be populated here -->
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Order Lines Table -->
                     <div class="overflow-x-auto">
@@ -526,6 +577,83 @@
     <script>
 
         
+        // load locations when product selected
+        document.getElementById('product-select').addEventListener('change', function () {
+
+            let productId = this.value;
+
+            fetch(`/product-locations/${productId}`)
+                .then(res => res.json())
+                .then(locations => {
+
+                    let dropdown = document.getElementById('location-select');
+
+                    dropdown.innerHTML = '<option value="">Select Location</option>';
+
+                    locations.forEach(loc => {
+                        dropdown.innerHTML += `
+                            <option value="${loc.id}" data-qty="${loc.quantity}">
+                                Aisle ${loc.aisle} - Rack ${loc.rack} (Qty: ${loc.quantity})
+                            </option>
+                        `;
+                    });
+                });
+        });
+
+
+        // when location selected
+        document.getElementById('location-select').addEventListener('change', function () {
+
+            let selected = this.options[this.selectedIndex];
+            let qty = selected.getAttribute('data-qty');
+
+            document.getElementById('total-qty').value = qty;
+            document.getElementById('used-qty').value = '';
+            document.getElementById('remaining-qty').value = qty;
+        });
+
+
+        // auto remaining calc
+        document.getElementById('used-qty').addEventListener('input', function () {
+
+            let used = parseInt(this.value) || 0;
+            let total = parseInt(document.getElementById('total-qty').value) || 0;
+
+            let remaining = total - used;
+
+            document.getElementById('remaining-qty').value = remaining >= 0 ? remaining : 0;
+        });
+
+
+        // save
+        function saveLocationQty() {
+
+            let locationId = document.getElementById('location-select').value;
+            let usedQty = document.getElementById('used-qty').value;
+
+            fetch('/location/update-qty', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    location_id: locationId,
+                    used_qty: usedQty
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert('Location updated ✅');
+                    window.location.reload();
+                }
+
+            });
+        }
 
         // ✅ render items
         function renderOrderLines() {

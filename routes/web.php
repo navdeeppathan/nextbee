@@ -11,7 +11,10 @@ use App\Http\Controllers\RouteController;
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register-driver', [AuthController::class, 'registerDriver'])->name('register-driver');
 Route::post('/register-customer', [AuthController::class, 'registerCustomer'])->name('register-customer');
-
+Route::put('/customer/{id}/update', [AuthController::class, 'updateCustomer'])
+    ->name('customer.update');
+Route::post('/user/{id}/status', [AuthController::class, 'updateStatus'])
+    ->name('user.updateStatus');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 use App\Http\Controllers\ProductController;
@@ -215,6 +218,25 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
     
 });
 
+Route::get('/product-locations/{productId}', function ($productId) {
+    return \App\Models\Location::where('product_id', $productId)->get();
+});
+
+Route::post('/location/update-qty', function (\Illuminate\Http\Request $req) {
+    $location = \App\Models\Location::find($req->location_id);
+
+    if (!$location) return response()->json(['error' => 'Not found']);
+
+    if ($req->used_qty > $location->quantity) {
+        return response()->json(['error' => 'Not enough stock', 'stock' => $location->quantity, 'used' => $req->used_qty]);
+    }
+
+    $location->quantity -= $req->used_qty;
+    $location->save();
+
+    return response()->json(['success' => true]);
+});
+
     Route::get('/order/logs/{order_id}', function ($order_id) {
 
         $logs = \App\Models\OrderLog::where('order_id', $order_id)
@@ -242,9 +264,11 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
         $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
         $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
         $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
-        $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+        $blockedCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'blocked')->count();
+        $suspendedCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'suspended')->count();
 
-        return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
+
+        return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'blockedCustomers', 'suspendedCustomers'));
     });
 
     Route::get('/sales/customers/{id}', [AuthController::class, 'showCustomer'])->name('customers.show');
@@ -413,6 +437,29 @@ Route::get('/checkout-sales/{order_id}', function ($order_id) {
     return view('SalesRep.checkout', compact('orderData', 'order'));
 });
 
+Route::get('/checkout-inventory/{order_id}', function ($order_id) {
+
+
+    $order = Order::with('items.product.locations')
+        ->where('id', $order_id)
+        ->firstOrFail();
+
+    $orderData = $order->items->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->product->title,
+            'sku' => $item->product->sku_code,
+            'price' => $item->product->price,
+            'totalQuantity' => $item->product->locations()->sum('quantity'),
+            'moq' => 1,
+            'qty' => $item->quantity,
+            'lineTotal' => $item->product->price * $item->quantity
+        ];
+    });
+
+    return view('Inventory.checkout', compact('orderData', 'order'));
+});
+
 Route::get('/checkout', function () {
 
     $cartItems = \App\Models\Cart::with('product')
@@ -474,7 +521,7 @@ Route::post('/order/update-status', function (Request $req) {
 
     return response()->json(['success' => true]);
 });
-
+Route::post('/order-item/add', [OrderController::class, 'addItem']);
 
 
 Route::post('/order-item/delete', function (Request $req) {

@@ -499,7 +499,7 @@
                     <button onclick="document.getElementById('add-item-modal').classList.remove('hidden')" 
                             class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-semibold text-white transition flex items-center gap-2">
                         <i class="fas fa-plus"></i>
-                        <span class="hidden sm:inline">Add Item</span>
+                        <span class="hidden sm:inline">Add Product</span>
                     </button>
                     <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-sm font-bold text-slate-700 border-2 border-white shadow">
                         AD
@@ -856,12 +856,13 @@
                                     data-price="{{ $product->price }}"
                                     data-description="{{ $product->description }}"
                                     data-brand="{{ $product->brand }}"
+                                    data-product_type="{{ $product->product_type }}"
 
                                     class="w-full py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold">
                                         Edit Product
                                     </button>
 
-                                    <button  onclick="openLocationModal({{ $product->id }})" class="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-semibold text-white transition">Add Location</button>
+                                    <button  onclick="openLocationModal({{ $product->id }})" class="w-full py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-semibold text-white transition">Add Items</button>
 
 
                                     {{-- <button class="w-full py-2 bg-emerald-100 text-emerald-700 border rounded-lg text-sm font-semibold">
@@ -1166,7 +1167,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Product Brand</label>
-                    <input type="text" name="brand" id="edit_brand" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Nestle">
+                    <input type="text" name="brand"  id="edit_brand" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Nestle">
                 </div>
 
                 <div class="border-t border-slate-200 pt-6">
@@ -1471,19 +1472,28 @@
             form.action = `/products/${id}`;
 
             // PREFILL VALUES
-            document.getElementById('edit_title').value = btn.dataset.title;
-            document.getElementById('edit_sku').value = btn.dataset.sku;
-            document.getElementById('edit_category').value = btn.dataset.category;
-            document.getElementById('edit_moq').value = btn.dataset.moq;
-            document.getElementById('edit_shelf').value = btn.dataset.shelf;
-            document.getElementById('edit_aisle').value = btn.dataset.aisle;
-            document.getElementById('edit_rack').value = btn.dataset.rack;
-            document.getElementById('edit_basket').value = btn.dataset.basket;
-            document.getElementById('edit_quantity').value = btn.dataset.quantity;
-            document.getElementById('edit_price').value = btn.dataset.price;
-            document.getElementById('edit_description').value = btn.dataset.description;
-            document.getElementById('edit_type').value = btn.dataset.type;
-            document.getElementById('edit_brand').value = btn.dataset.brand;
+            // document.getElementById('edit_title').value = btn.dataset.title;
+            // document.getElementById('edit_sku').value = btn.dataset.sku;
+            // document.getElementById('edit_category').value = btn.dataset.category;
+            // document.getElementById('edit_moq').value = btn.dataset.moq;
+            // document.getElementById('edit_shelf').value = btn.dataset.shelf;
+            // document.getElementById('edit_aisle').value = btn.dataset.aisle;
+            // document.getElementById('edit_rack').value = btn.dataset.rack;
+            // document.getElementById('edit_basket').value = btn.dataset.basket;
+            // document.getElementById('edit_quantity').value = btn.dataset.quantity;
+            // document.getElementById('edit_price').value = btn.dataset.price;
+            // document.getElementById('edit_description').value = btn.dataset.description;
+            // document.getElementById('edit_type').value = btn.dataset.type;
+            // document.getElementById('edit_brand').value = btn.dataset.brand;
+
+            document.getElementById('edit_title').value = btn.dataset.title || '';
+            document.getElementById('edit_sku').value = btn.dataset.sku || '';
+            document.getElementById('edit_category').value = btn.dataset.category || '';
+            document.getElementById('edit_moq').value = btn.dataset.moq || '';
+            document.getElementById('edit_price').value = btn.dataset.price || '';
+            document.getElementById('edit_description').value = btn.dataset.description || '';
+            document.getElementById('edit_type').value = btn.dataset.product_type || '';
+            document.getElementById('edit_brand').value = btn.dataset.brand || '';
         }
     </script>
 

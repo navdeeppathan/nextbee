@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Payment;
@@ -451,5 +452,47 @@ class OrderController extends Controller
             'status' => $status
         ]);
 
+    }
+
+
+    public function addItem(Request $request)
+    {
+        $order = Order::findOrFail($request->order_id);
+        $product = Product::findOrFail($request->product_id);
+
+        // ✅ check if already exists
+        $existing = OrderItem::where('order_id', $order->id)
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($existing) {
+            $existing->quantity += $request->quantity;
+            $existing->price = $product->price;
+            $existing->save();
+        } else {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+                'quantity' => $request->quantity,
+                'price' => $product->price,
+            ]);
+        }
+
+        // 🔥 update order total
+        $this->updateOrderTotal($order->id);
+
+        return response()->json(['success' => true]);
+    }
+    private function updateOrderTotal($orderId)
+    {
+        $order = Order::with('items')->find($orderId);
+
+        $total = $order->items->sum(function ($item) {
+            return $item->quantity * $item->price;
+        });
+
+        $order->update([
+            'total_price' => $total
+        ]);
     }
 }
