@@ -4,7 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Models\Category;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\RouteController;
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
@@ -29,9 +30,13 @@ Route::put('/orderdata/{id}/update-notes', [OrderController::class, 'updateNotes
 
     
 Route::get('/login', function () {
-    $categories = Category::all();
+     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
-    return view('Landing.index', compact('categories', 'products'));
+    $brands = Product::whereNotNull('brand')
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
+    return view('Landing.index', compact('categories', 'products', 'brands'));
 });
 
 Route::post('/admin/products/store', [ProductController::class, 'store'])->name('products.store');
@@ -108,206 +113,206 @@ Route::get('/brands/{brand}', function ($brand) {
     return view('Landing.brand', compact('products', 'brand', 'categories', 'brands'));
 });
 
-Route::get('/inventory', function () {
+Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
-    return view('Inventory.layouts.app');
-});
+    Route::get('/inventory', function () {
 
-Route::get('/inventory/dashboard', function () {
-
-    $totalSkus = Product::count();
-    $categories = Category::count();
-    $expiringsoon = Product::where('shelf_life', '<', 3)->count();
-    $lowstock = Product::where('quantity', '<', 10)->count();
-
-
-
-    $criticalExpiry = Product::all()->filter(function ($product) {
-
-        $expiry = Carbon::parse($product->created_at)
-            ->addDays($product->shelf_life);
-
-        return $expiry->between(now(), now()->addDays(8));
+        return view('Inventory.layouts.app');
     });
 
-    return view('Inventory.index', compact('totalSkus', 'categories', 'expiringsoon', 'lowstock', 'criticalExpiry'));
+    Route::get('/inventory/dashboard', function () {
 
-});
+        $totalSkus = Product::count();
+        $categories = Category::count();
+        $expiringsoon = Product::where('shelf_life', '<', 3)->count();
+        $lowstock = Product::where('quantity', '<', 10)->count();
+        $criticalExpiry = Product::all()->filter(function ($product) {
 
-Route::get('/sales', function () {
-    return view('SalesRep.sales_dashboard');
-});
+            $expiry = Carbon::parse($product->created_at)
+                ->addDays($product->shelf_life);
 
+            return $expiry->between(now(), now()->addDays(8));
+        });
 
-Route::get('/customers', function () {
-    $customers = User::where('role', 'customer')->whereNotNull('business_name')->get();
-    $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
-    $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
-    $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
-    $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
-    $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+        return view('Inventory.index', compact('totalSkus', 'categories', 'expiringsoon', 'lowstock', 'criticalExpiry'));
 
-    return view('Inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
-});
+    });
 
-use App\Http\Controllers\TaskController;
+    Route::get('/customers', function () {
+        $customers = User::where('role', 'customer')->whereNotNull('business_name')->get();
+        $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
+        $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
+        $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
+        $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
+        $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
 
-Route::get('/sales-tasks', [TaskController::class, 'index']);
-Route::post('/tasks', [TaskController::class, 'store']);
+        return view('Inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
+    });
 
-use App\Http\Controllers\RouteController;
+    Route::get('/deliveries', [RouteController::class, 'index']);
+    Route::post('/routes', [RouteController::class, 'store']);
+    Route::get('/routes/{id}', [RouteController::class, 'show']);
+    Route::put('/routes/{id}', [RouteController::class, 'update']);
+    Route::delete('/routes/{id}', [RouteController::class, 'destroy']);
 
-Route::get('/deliveries', [RouteController::class, 'index']);
-Route::post('/routes', [RouteController::class, 'store']);
-Route::get('/routes/{id}', [RouteController::class, 'show']);
-Route::put('/routes/{id}', [RouteController::class, 'update']);
-Route::delete('/routes/{id}', [RouteController::class, 'destroy']);
+    // Route::get('/deliveries', function () {
+    //     return view('Inventory.deliveries');
+    // });
 
-// Route::get('/deliveries', function () {
-//     return view('Inventory.deliveries');
-// });
+    Route::get('/drivers', function () {
+        $drivers = User::where('role', 'driver')->get();
+        $totalDrivers = User::where('role', 'driver')->count();
+        return view('Inventory.drivers', compact('drivers', 'totalDrivers'));
+    });
 
-Route::get('/drivers', function () {
-    $drivers = User::where('role', 'driver')->get();
-    $totalDrivers = User::where('role', 'driver')->count();
-    return view('Inventory.drivers', compact('drivers', 'totalDrivers'));
-});
+    Route::get('/inventory-page', function () {
+        $categories = Category::all();
+        $products = Product::all();
 
-Route::get('/inventory-page', function () {
-    $categories = Category::all();
-    $products = Product::all();
+        return view('Inventory.inventory', compact('categories', 'products'));
+    });
 
-    return view('Inventory.inventory', compact('categories', 'products'));
-});
+    Route::get('/returns', function () {
+        return view('Inventory.returns');
+    });
 
-Route::get('/returns', function () {
-    return view('Inventory.returns');
-});
+    Route::get('/sales-dashboard', function () {
+        return view('Inventory.sales_dashboard');
+    });
 
-Route::get('/sales-dashboard', function () {
-    return view('Inventory.sales_dashboard');
-});
+    Route::get('/sales-order', function () {
+        return view('Inventory.sales_order_detail');
+    });
 
-Route::get('/sales-order', function () {
-    return view('Inventory.sales_order_detail');
-});
+    Route::get('/sales-order-page', function () {
+        return view('Inventory.sales_order_page');
+    });
 
-Route::get('/sales-order-page', function () {
-    return view('Inventory.sales_order_page');
-});
+    Route::get('/sales-orders', function () {
+        return view('Inventory.sales_orders');
+    });
 
-Route::get('/sales-orders', function () {
-    return view('Inventory.sales_orders');
-});
-
-Route::get('/sales-orders-inventory', function () {
-    $orders = Order::with(['user', 'payment'])
-    ->where('status', '!=', 'draft')
-    ->get();
-    
-    $totalOrders = Order::where('status', 'accepted')
-        ->whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)
-        ->count();
-    $confirmedOrders = Order::where('status', 'accepted')->count();    
-    $pendingOrders = Order::where('status', 'created')->count();
-    $processingOrders = Order::where('status', 'ready for delivery')->count();
-
-   
-    $deliveredOrders = Order::where('status', 'delivered')->count();
-
-
-    return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
-});
-
-Route::get('/order/logs/{order_id}', function ($order_id) {
-
-    $logs = \App\Models\OrderLog::where('order_id', $order_id)
-        ->latest()
-        ->with('user') // optional if relation
+    Route::get('/sales-orders-inventory', function () {
+        $orders = Order::with(['user', 'payment'])
+        ->where('status', '!=', 'draft')
         ->get();
+        
+        $totalOrders = Order::where('status', 'accepted')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+        $confirmedOrders = Order::where('status', 'accepted')->count();    
+        $pendingOrders = Order::where('status', 'created')->count();
+        $processingOrders = Order::where('status', 'ready for delivery')->count();
 
-    return response()->json($logs);
+    
+        $deliveredOrders = Order::where('status', 'delivered')->count();
+
+
+        return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+    });
+
+    
 });
 
+    Route::get('/order/logs/{order_id}', function ($order_id) {
+
+        $logs = \App\Models\OrderLog::where('order_id', $order_id)
+            ->latest()
+            ->with('user') // optional if relation
+            ->get();
+
+        return response()->json($logs);
+    });
 
 //sales folder
-Route::get('/sales-commissions', function () {
-    return view('SalesRep.sales_commissions');
-});
 
-Route::get('/sales-customer_detail', function () {
-    return view('SalesRep.sales_customer_detail');
-});
+Route::middleware(['auth', 'role:sale_rep'])->group(function () {
+    Route::get('/sales-commissions', function () {
+        return view('SalesRep.sales_commissions');
+    });
 
-Route::get('/sales-customers', function () {
-    $customers = User::with('orders')->where('role', 'customer')->whereNotNull('business_name')->get();
-    $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
-    $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
-    $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
-    $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
-    $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
+    Route::get('/sales-customer_detail', function () {
+        return view('SalesRep.sales_customer_detail');
+    });
 
-     
+    Route::get('/sales-customers', function () {
+        $customers = User::with('orders')->where('role', 'customer')->whereNotNull('business_name')->get();
+        $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
+        $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
+        $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
+        $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
+        $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
 
-    return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
-});
+        return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
+    });
 
-Route::get('/sales/customers/{id}', [AuthController::class, 'showCustomer'])->name('customers.show');
-Route::post('/customer/{id}/assign-sales', [AuthController::class, 'updateSalesAssign'])
-    ->name('customer.assign.sales');
+    Route::get('/sales/customers/{id}', [AuthController::class, 'showCustomer'])->name('customers.show');
+    Route::post('/customer/{id}/assign-sales', [AuthController::class, 'updateSalesAssign'])
+        ->name('customer.assign.sales');
 
-Route::get('/sales-order-detail', function () {
-    return view('SalesRep.sales_order_detail');
-});
+    Route::get('/sales-order-detail', function () {
+        return view('SalesRep.sales_order_detail');
+    });
 
-
-
-Route::get('/sales-order-page2', function () {
-    return view('SalesRep.sales_order_page');
-});
-
-Route::get('/sales-orders2', function () {
-
-    $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->get();
-    $totalOrders = Order::where('status', 'accepted')
-        ->whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)
-        ->count();
-    $confirmedOrders = Order::where('status', 'accepted')->count();    
-    $pendingOrders = Order::where('status', 'created')->count();
-    $processingOrders = Order::where('status', 'ready for delivery')->count();
-
-    $deliveredOrders = Order::where('status', 'delivered')->count();
-
-    return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
-});
+    Route::get('/sales-tasks', [TaskController::class, 'index']);
+    Route::post('/tasks', [TaskController::class, 'store']);
 
 
-Route::get('/driver-orders', function () {
-    $orders = Order::with(['user', 'payment'])
-        ->whereNotIn('status', ['confirm', 'pending'])
-        ->get();
-    $totalOrders = Order::where('status', 'confirm')
-        ->whereMonth('created_at', Carbon::now()->month)
-        ->whereYear('created_at', Carbon::now()->year)
-        ->count();
-    $confirmedOrders = Order::where('status', 'confirm')->count();
-    $pendingOrders = Order::where('status', 'pending')->count();
-    $processingOrders = Order::where('status', 'processing')->count();
-    $deliveredOrders = Order::where('status', 'delivered')->count();
 
-    return view('drivers.index', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
-});
+    Route::get('/sales-order-page2', function () {
+        return view('SalesRep.sales_order_page');
+    });
+
+    Route::get('/sales-orders2', function () {
+
+        $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->get();
+        $totalOrders = Order::where('status', 'accepted')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+        $confirmedOrders = Order::where('status', 'accepted')->count();    
+        $pendingOrders = Order::where('status', 'created')->count();
+        $processingOrders = Order::where('status', 'ready for delivery')->count();
+
+        $deliveredOrders = Order::where('status', 'delivered')->count();
+
+        return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+    });
+
+    Route::get('/sales', function () {
+        return view('SalesRep.sales_dashboard');
+    });
+
+     Route::get('/sales-performance', function () {
+        return view('SalesRep.sales_performance');
+    });
+
+    Route::get('/sales-target', function () {
+        return view('SalesRep.sales_targets');
+    });
+
+});    
 
 
-Route::get('/sales-performance', function () {
-    return view('SalesRep.sales_performance');
-});
+    Route::get('/driver-orders', function () {
+        $orders = Order::with(['user', 'payment'])
+            ->whereNotIn('status', ['confirm', 'pending'])
+            ->get();
+        $totalOrders = Order::where('status', 'confirm')
+            ->whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->count();
+        $confirmedOrders = Order::where('status', 'confirm')->count();
+        $pendingOrders = Order::where('status', 'pending')->count();
+        $processingOrders = Order::where('status', 'processing')->count();
+        $deliveredOrders = Order::where('status', 'delivered')->count();
 
-Route::get('/sales-target', function () {
-    return view('SalesRep.sales_targets');
-});
+        return view('drivers.index', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+    });
+
+
+   
 
 // Route::get('/sales-tasks', function () {
 //     return view('SalesRep.sales_tasks');
