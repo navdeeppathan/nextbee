@@ -666,7 +666,7 @@
 
                             <div>
                                 <p class="text-sm text-slate-600">
-                                    {{ $order->payment->status ?? 'No Payment' }}
+                                    {{ $order->payment_status ?? 'No Payment' }}
                                 </p>
                             </div>
 
@@ -678,6 +678,17 @@
                                     class="text-purple-700 hover:underline text-sm">
                                     History
                                 </button>
+                                
+                                @if(!$order->status == 'created')
+                                 <button 
+                                    onclick="openPaymentModal({{ $order->id }})"
+                                    class="px-3 py-1 rounded text-sm 
+                                    {{ $order->payment_status == 'full' ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white' }}"
+                                    {{ $order->payment_status == 'full' ? 'disabled' : '' }}>
+                                    
+                                    {{ $order->payment_status == 'full' ? 'Paid' : 'Make Payment' }}
+                                </button>
+                                @endif
                             </div>
                         </div>
                         @endforeach
@@ -940,7 +951,7 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex items-center justify-between p-4 border-t border-slate-200">
+                {{-- <div class="flex items-center justify-between p-4 border-t border-slate-200">
                     <p class="text-sm text-slate-500">Showing 8 of 156 orders</p>
                     <div class="flex items-center gap-2">
                         <button class="px-3 py-2 border border-slate-200 rounded-lg text-sm hover:bg-slate-50 disabled:opacity-50" disabled>
@@ -955,6 +966,20 @@
                             <i class="fas fa-chevron-right"></i>
                         </button>
                     </div>
+                </div> --}}
+                <div class="flex items-center justify-between p-4 border-t border-slate-200">
+
+                    <!-- Showing count -->
+                    <p class="text-sm text-slate-500">
+                        Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} 
+                        of {{ $orders->total() }} orders
+                    </p>
+
+                    <!-- Pagination Links -->
+                    <div>
+                        {{ $orders->links('pagination::tailwind') }}
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -974,6 +999,117 @@
 
         </div>
     </div>
+
+    <div id="paymentModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000080; z-index:999;">
+
+        <div
+            style="background:white; padding:24px; width:360px; margin:80px auto; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+
+            <h3 style="font-size:18px; font-weight:700; margin-bottom:10px;">💳 Make Payment</h3>
+
+            <!-- SUMMARY -->
+            <div style="background:#f8fafc; padding:12px; border-radius:10px; margin-bottom:12px;">
+                <div>Total: £<span id="totalAmount">0</span></div>
+                <div>Paid: £<span id="paidAmount">0</span></div>
+                <div style="font-weight:700; color:#dc2626;">
+                    Remaining: £<span id="remainingText">0</span>
+                </div>
+            </div>
+
+            <!-- INPUT -->
+            <input type="number" id="pay_amount" placeholder="Enter amount"
+                style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px;">
+
+            <!-- BUTTONS -->
+            <div style="display:flex; gap:10px;">
+                <button onclick="submitPayment()"
+                    style="flex:1; background:#1e40af; color:white; padding:10px; border-radius:8px;">
+                    Pay Now
+                </button>
+
+                <button onclick="closeModal()" style="flex:1; background:#e2e8f0; padding:10px; border-radius:8px;">
+                    Cancel
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        let currentOrderId = null;
+        let remainingAmount = 0;
+
+        function openPaymentModal(orderId) {
+            console.log(orderId);
+            currentOrderId = orderId;
+
+            fetch('/order-remaining/' + orderId)
+                .then(res => res.json())
+                .then(data => {
+
+                    document.getElementById('totalAmount').innerText = data.total;
+                    document.getElementById('paidAmount').innerText = data.paid;
+                    document.getElementById('remainingText').innerText = data.remaining;
+
+                    remainingAmount = data.remaining;
+
+                    // document.getElementById('pay_amount').value = data.remaining;
+                    if (data.remaining > 0) {
+                        document.getElementById('pay_amount').value = data.remaining;
+                    } // auto fill
+                });
+
+            document.getElementById('paymentModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function submitPayment() {
+
+            let amount = parseFloat(document.getElementById('pay_amount').value);
+
+
+            if (!amount || amount <= 0) {
+                alert("Enter valid amount ❌");
+                return;
+            }
+
+            if (amount > remainingAmount) {
+                alert("Amount exceeds remaining ❌");
+                return;
+            }
+
+            fetch('/add-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: new URLSearchParams({
+                    order_id: currentOrderId,
+                    amount: amount,
+                    method: 'UPI'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.success) {
+                    alert("Payment Successful ✅");
+                    location.reload();
+                } else {
+                    alert(data.message || "Payment Failed ❌");
+                }
+
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Something went wrong ❌");
+            });
+        }
+    </script>
 
     <script>
         function openLogs(orderId) {

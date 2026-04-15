@@ -263,7 +263,7 @@
                         </h2>
                         <span class="text-sm text-slate-500" id="line-count">0 items</span>
                         <span class="px-3 py-1 text-xs rounded-full font-semibold 
-                            {{ $order->status == 'created' ? 'bg-red-100 text-yellow-300' : 'bg-green-100 text-green-800' }}">
+                            {{ $order->status == 'created' ? 'bg-red-100 text-black-300' : 'bg-green-100 text-green-800' }}">
                             {{ $order->status }}
                         </span>
                         <select onchange="updateStatus(this.value)" class="border px-3 py-2 rounded-lg text-sm">

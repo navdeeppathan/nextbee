@@ -299,7 +299,7 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
 
     Route::get('/sales-orders2', function () {
 
-        $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->get();
+        $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->latest()->paginate(10);
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
