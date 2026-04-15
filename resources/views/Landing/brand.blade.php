@@ -390,7 +390,16 @@
         <!-- Sticky Category Navigation -->
         <div class="sticky-cat">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div>
 
+                    <p class="text-slate-500" id="productTitle">
+                        @if(request()->is('brands/*'))
+                            Showing products of {{ $brand }}
+                        @else
+                            Showing all products
+                        @endif
+                    </p>
+                </div>
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
                     {{-- <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium"
                         onclick="filterCategory('all', this)">
@@ -461,46 +470,46 @@
                     <!-- Product 1 -->
                     @foreach($products as $product)
 
-                                        @php
-                                            $slug = \Illuminate\Support\Str::slug($product->category->name);
-                                        @endphp
+                        @php
+                            $slug = \Illuminate\Support\Str::slug($product->category->name);
+                        @endphp
 
 
 
-                                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
-                        {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}"
-                                            data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
-                                            <div class="relative h-48 bg-gray-100 overflow-hidden">
-                                                <!-- <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover"> -->
-                                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
-                                                    class="w-full h-full object-cover">
-                                                <div class="product-badge">
-                                                    <span
-                                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
-                                                </div>
-                                                <div
-                                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
-                                                </div>
-                                                <div class="quick-add absolute bottom-4 left-4 right-4">
-                                                    <button onclick="openModal('login')"
-                                                        class="w-full py-3 bg-white text-blue-900 rounded-xl font-medium shadow-lg hover:bg-blue-900 hover:text-white transition">
-                                                        Quick Add
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="p-5">
-                                                <div class="text-xs text-slate-500 mb-1">{{ $product->category->name }}</div>
-                                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2"> {{ $product->title }}</h3>
-                                                <p class="text-sm text-slate-500 mb-3">SKU : {{ $product->sku_code }}</p>
-                                                <div class="flex items-center justify-between">
-                                                    <span class="text-sm font-medium text-slate-600">£ {{ $product->price }}</span>
-                                                    <button onclick="openModal('register')"
-                                                        class="text-blue-900 font-medium text-sm hover:underline">
-                                                        View Price
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
+                            {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}"
+                            data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
+                            <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                <!-- <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover"> -->
+                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
+                                    class="w-full h-full object-cover">
+                                <div class="product-badge">
+                                    <span
+                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
+                                </div>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                                </div>
+                                <div class="quick-add absolute bottom-4 left-4 right-4">
+                                    <button onclick="openModal('login')"
+                                        class="w-full py-3 bg-white text-blue-900 rounded-xl font-medium shadow-lg hover:bg-blue-900 hover:text-white transition">
+                                        Quick Add
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="text-xs text-slate-500 mb-1">{{ $product->category->name }}</div>
+                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2"> {{ $product->title }}</h3>
+                                <p class="text-sm text-slate-500 mb-3">SKU : {{ $product->sku_code }}</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-slate-600">£ {{ $product->price }}</span>
+                                    <button onclick="openModal('register')"
+                                        class="text-blue-900 font-medium text-sm hover:underline">
+                                        View Price
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
 
                 </div>
@@ -980,32 +989,7 @@
             document.getElementById('mobile-menu').classList.toggle('active');
         }
 
-        // Category filter
-        function filterCategory(category, btn) {
-            // Update buttons
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('active');
-                b.classList.add('text-slate-600');
-            });
-            btn.classList.add('active');
-            btn.classList.remove('text-slate-600');
-
-            // Filter content
-            const groups = document.querySelectorAll('.category-group');
-            groups.forEach(group => {
-                if (category === 'all' || group.dataset.category === category) {
-                    group.style.display = 'block';
-                    gsap.from(group, { opacity: 0, y: 20, duration: 0.5 });
-                } else {
-                    group.style.display = 'none';
-                }
-            });
-
-            // Scroll to products
-            if (category !== 'all') {
-                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
+       
 
 
 
@@ -1075,43 +1059,53 @@
     </script>
 
     <script>
-        function filterCategory(category, btn) {
+       function filterCategory(category, btn) {
 
-            // active button
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
-
-            // filter products
-            document.querySelectorAll('.product-item').forEach(item => {
-
-                if (category === 'all') {
-                    item.style.display = 'block';
-                } else {
-                    if (item.dataset.category === category) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                }
-
-            });
-        }
-        window.onload = function () {
-
-    document.querySelectorAll('.product-item').forEach(item => {
-        if (item.dataset.brand !== 'selected') {
-            item.style.display = 'none';
-        }
+    // active button
+    document.querySelectorAll('.category-btn').forEach(b => {
+        b.classList.remove('active');
     });
+    btn.classList.add('active');
 
-};
-function showAllProducts() {
+    let title = document.getElementById('productTitle');
+
+    // ✅ TEXT FIX (MAIN SOLUTION)
+    if (category === 'all') {
+        title.innerText = "Showing all products";
+    } else {
+        title.innerText = "Showing products of {{ $brand }}";
+    }
+
+    // filter products
     document.querySelectorAll('.product-item').forEach(item => {
-        item.style.display = 'block';
+
+        if (category === 'all') {
+            item.style.display = 'block';
+        } else {
+            if (item.dataset.category === category) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        }
+
     });
 }
+        window.onload = function () {
+
+            document.querySelectorAll('.product-item').forEach(item => {
+                if (item.dataset.brand !== 'selected') {
+                    item.style.display = 'none';
+                }
+            });
+
+        };
+       
+        function showAllProducts() {
+            document.querySelectorAll('.product-item').forEach(item => {
+                item.style.display = 'block';
+            });
+        }
     </script>
 
 </body>

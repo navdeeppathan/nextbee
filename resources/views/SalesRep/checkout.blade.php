@@ -589,6 +589,7 @@
 
             document.getElementById('line-count').innerText = orderLines.length + " items";
         }
+        
         function updateQty(index, change) {
 
             let item = orderLines[index];

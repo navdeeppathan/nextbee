@@ -459,7 +459,7 @@
                     <a href="/checkout"
                         class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
                         <i class="fas fa-clipboard-list"></i>
-                         Sales Order
+                        Sales Order
                     </a>
                 </div>
 
@@ -643,9 +643,13 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div>
 
-                    <!-- <p class="text-slate-500" id="productTitle">
-                        Showing all products of {{ $brand }}
-                    </p> -->
+                    <p class="text-slate-500" id="productTitle">
+                        @if(request()->is('brand/*'))
+                            Showing products of {{ $brand }}
+                        @else
+                            Showing all products
+                        @endif
+                    </p>
                 </div>
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
 
@@ -683,60 +687,60 @@
                     @foreach($products as $product)
 
 
-                        @php
-                            $slug = \Illuminate\Support\Str::slug($product->category->name);
-                        @endphp
-                        <!-- <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
-                                                        data-category="{{ $slug }}"> -->
-                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
-                                {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}"
-                            data-category="{{ $slug }}">
-                            <div class="relative h-48 bg-gray-100 overflow-hidden">
-                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
-                                    alt="Coca Cola" class="product-image w-full h-full object-cover">
-                                <div class="product-badge">
-                                    <span
-                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
-                                </div>
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
-                                </div>
-                                <div class="quick-add absolute bottom-4 left-4 right-4">
-                                    <button
-                                        onclick="addToSalesOrder('{{ $product->title }}', '{{ $product->sku_code }}', {{ $product->moq }}, {{ $product->price }}, {{ $product->id }})"
-                                        class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                    </button>
-                                    <!-- <button onclick="addToCart({{ $product->id }})"
-                                                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                                                    </button> -->
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs text-slate-500">SKU : {{ $product->sku_code }}</span>
-                                    <span class="status-dot green"></span><span class="text-xs text-green-600">In
-                                        Stock</span>
-                                </div>
-                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2">{{ $product->title }}</h3>
-                                <p class="text-sm text-slate-500 mb-3">{{ $product->category->name }}</p>
-                                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                    <div>
-                                        <p class="text-xs text-slate-400">Trade Price</p>
-                                        <p class="text-lg font-bold text-blue-900">£ {{ $product->price }}</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-xs text-slate-400">MOQ</p>
-                                        <p class="text-sm font-semibold text-slate-700">{{ $product->moq }} cases</p>
-                                    </div>
-                                </div>
-                                <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                    <i class="fas fa-truck"></i>
-                                    <span>Next-day delivery available</span>
-                                </div>
-                            </div>
-                        </div>
+                                        @php
+                                            $slug = \Illuminate\Support\Str::slug($product->category->name);
+                                        @endphp
+                                        <!-- <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
+                                                                                                    data-category="{{ $slug }}"> -->
+                                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
+                        {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}" data-category="{{ $slug }}"
+                                            data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
+                                            <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
+                                                    alt="Coca Cola" class="product-image w-full h-full object-cover">
+                                                <div class="product-badge">
+                                                    <span
+                                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
+                                                </div>
+                                                <div
+                                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                                                </div>
+                                                <div class="quick-add absolute bottom-4 left-4 right-4">
+                                                    <button
+                                                        onclick="addToSalesOrder('{{ $product->title }}', '{{ $product->sku_code }}', {{ $product->moq }}, {{ $product->price }}, {{ $product->id }})"
+                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
+                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                    </button>
+                                                    <!-- <button onclick="addToCart({{ $product->id }})"
+                                                                                                                                    class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                                                                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                                                                                </button> -->
+                                                </div>
+                                            </div>
+                                            <div class="p-5">
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <span class="text-xs text-slate-500">SKU : {{ $product->sku_code }}</span>
+                                                    <span class="status-dot green"></span><span class="text-xs text-green-600">In
+                                                        Stock</span>
+                                                </div>
+                                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2">{{ $product->title }}</h3>
+                                                <p class="text-sm text-slate-500 mb-3">{{ $product->category->name }}</p>
+                                                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                                                    <div>
+                                                        <p class="text-xs text-slate-400">Trade Price</p>
+                                                        <p class="text-lg font-bold text-blue-900">£ {{ $product->price }}</p>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="text-xs text-slate-400">MOQ</p>
+                                                        <p class="text-sm font-semibold text-slate-700">{{ $product->moq }} cases</p>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                                                    <i class="fas fa-truck"></i>
+                                                    <span>Next-day delivery available</span>
+                                                </div>
+                                            </div>
+                                        </div>
                     @endforeach
 
 
@@ -912,6 +916,8 @@
 
             <div class="p-6">
                 <div class="mb-6">
+                    <div id="cart-message" class="mb-4 hidden p-3 rounded-lg text-sm"></div>
+
                     <label class="block text-sm font-medium text-slate-700 mb-2">Quantity (cases)</label>
                     <div class="flex items-center gap-3">
                         <button onclick="adjustQty(-1)"
@@ -1059,15 +1065,7 @@
     </div>
 
     <script>
-        window.onload = function () {
 
-            document.querySelectorAll('.product-item').forEach(item => {
-                if (!item.classList.contains('brand-product')) {
-                    item.style.display = 'none';
-                }
-            });
-
-        };
         // Global state
         let currentOrder = [];
         let tempProduct = null;
@@ -1143,30 +1141,55 @@
                 .then(res => res.json())
                 .then(data => {
 
+                    const options = document.querySelectorAll('.order-option');
+                    const messageBox = document.getElementById('cart-message');
+
+                    // 🔄 RESET
+                    options.forEach(el => {
+                        el.style.display = 'none';
+                        el.classList.remove('selected');
+                    });
+
+                    messageBox.classList.add('hidden');
+                    messageBox.innerHTML = "";
+
+                    // ✅ CASE 1: PRODUCT ALREADY IN CART
                     if (data.exists) {
 
-                        // ✅ ONLY CURRENT
-                        document.querySelectorAll('.order-option').forEach(el => {
-                            let val = el.querySelector('input').value;
+                        // 👉 only show current draft
+                        document.querySelector('[value="current"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="current"]').checked = true;
 
-                            if (val === 'current') {
-                                el.style.display = 'block';
-                                el.classList.add('selected');
-                                el.querySelector('input').checked = true;
-                            } else {
-                                el.style.display = 'none';
-                            }
-                        });
+                        // 👉 MESSAGE SHOW IN MODAL
+                        messageBox.classList.remove('hidden');
+                        messageBox.className = "mb-4 p-3 rounded-lg bg-yellow-50 text-yellow-800";
 
-                    } else {
+                        messageBox.innerHTML = `
+                <b>Already in Sales Order</b><br>
+                This item is already added to your Sales Order.<br>
+                You can add more quantity to the current draft.
+            `;
 
-                        // ✅ SHOW ALL
-                        document.querySelectorAll('.order-option').forEach(el => {
-                            el.style.display = 'block';
-                            el.classList.remove('selected');
-                        });
+                    }
 
-                        document.querySelector('input[value="new"]').checked = true;
+                    // ✅ CASE 2: CART EMPTY
+                    else if (!data.hasCartItems) {
+
+                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
+
+                        document.querySelector('[value="new"]').checked = true;
+
+                    }
+
+                    // ✅ CASE 3: CART HAS ITEMS (but this product not)
+                    else {
+
+                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
+                        // document.querySelector('[value="current"]').closest('.order-option').style.display = 'block';
+
+                        document.querySelector('[value="new"]').checked = true;
                     }
 
                     document.getElementById('order-modal').classList.add('active');
@@ -1389,39 +1412,7 @@
             }
         }
 
-        // Category filter
-        function filterCategory(category, btn) {
 
-            // active button
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
-
-            // 🔥 TEXT CHANGE
-            let title = document.getElementById('productTitle');
-
-            if (category === 'all') {
-                title.innerText = 'Showing all products';
-            } else {
-                title.innerText = 'Showing products of {{ $brand }}';
-            }
-
-            // filter products
-            document.querySelectorAll('.product-item').forEach(item => {
-
-                if (category === 'all') {
-                    item.style.display = 'block';
-                } else {
-                    if (item.dataset.category === category) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                }
-
-            });
-        }
 
         // Toast notification
         function showToast(message) {
@@ -1448,32 +1439,62 @@
                 ease: 'power3.out'
             });
         });
-    </script>
-    <script>
-        function filterCategory(category, btn) {
 
-            // active button
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('active');
-            });
-            btn.classList.add('active');
+        window.onload = function () {
 
-            // filter products
-            document.querySelectorAll('.product-item').forEach(item => {
+    let title = document.getElementById('productTitle');
 
-                if (category === 'all') {
-                    item.style.display = 'block';
-                } else {
-                    if (item.dataset.category === category) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                }
+    // ✅ brand title
+    title.innerText = "Showing products of {{ $brand }}";
 
-            });
+    // ✅ only brand products show
+    document.querySelectorAll('.product-item').forEach(item => {
+
+        if (item.dataset.brand === 'selected') {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
         }
+
+    });
+
+};
+    function filterCategory(category, btn) {
+
+    document.querySelectorAll('.category-btn').forEach(b => {
+        b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    let title = document.getElementById('productTitle');
+
+    // ✅ ALL PRODUCTS CLICK
+    if (category === 'all') {
+
+        title.innerText = "Showing all products";
+
+        document.querySelectorAll('.product-item').forEach(item => {
+            item.style.display = 'block';
+        });
+
+        return;
+    }
+
+    // ✅ CATEGORY FILTER
+    title.innerText = "Showing products of {{ $brand }}";
+
+    document.querySelectorAll('.product-item').forEach(item => {
+
+        if (item.dataset.category === category && item.dataset.brand === 'selected') {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+
+    });
+}
     </script>
+
     <script>
         function addToCart(productId) {
 

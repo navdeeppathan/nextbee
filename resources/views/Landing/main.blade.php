@@ -448,10 +448,11 @@
                 </a>
 
                 <div class="hidden lg:flex items-center gap-8">
+                        <a href="/main" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Home</a>
+
                     <a href="#products"
                         class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Products</a>
-                    <a href="#sea-items" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Items
-                        on Sea</a>
+                    
                     <a href="#brands"
                         class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Brands</a>
                     <a href="#services"
