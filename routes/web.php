@@ -347,17 +347,19 @@ Route::post('/profile/password', [AuthController::class, 'changePassword'])->mid
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
 Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
-Route::get('/cart/check/{id}', function ($id) {
+Route::get('/cart/check/{id}', function($id) {
 
-    $exists = Cart::where('product_id', $id)
-        ->where('user_id', auth()->id())
+    $exists = Cart::where('user_id', auth()->id())
+        ->where('product_id', $id)
         ->exists();
 
+    $hasCartItems = Cart::where('user_id', auth()->id())->exists();
+
     return response()->json([
-        'exists' => $exists
+        'exists' => $exists,
+        'hasCartItems' => $hasCartItems
     ]);
 });
-
 Route::get('/customer/payments', function () {
 
     $payments = Payment::where('user_id', auth()->id())

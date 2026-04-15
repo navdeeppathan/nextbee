@@ -113,7 +113,7 @@
                     @foreach($orders as $order)
                         <tr>
                             <td>
-                                #{{ $order->parent_order_id ?? $order->id }}
+                                #{{ $order->parent_order_id  }}
                             </td>
 
 

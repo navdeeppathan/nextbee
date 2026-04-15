@@ -125,7 +125,8 @@ class OrderController extends Controller
     public function view($id)
     {
         $order = Order::with('items.product')
-            ->where('id', $id)
+            ->where('is_active', 1) // ✅ IMPORTANT
+            ->where('parent_order_id', $id)
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
@@ -221,7 +222,7 @@ class OrderController extends Controller
 
     public function placeOrder(Request $request)
     {
-        \Log::info($request->all());
+        // \Log::info($request->all());
         $data = $request->all();
 
         $delivery = $data['delivery_instructions'] ?? null;
@@ -241,7 +242,9 @@ class OrderController extends Controller
             'total_price' => 0,
             'status' => 'created',
             'delivery_instructions' => $delivery,
-            'internal_notes' => $notes
+            'internal_notes' => $notes,
+            'parent_order_id' => 0, // temp
+            'is_active' => 1
         ]);
 
         $total = 0;
@@ -268,7 +271,8 @@ class OrderController extends Controller
 
         $order->update([
             'total_price' => $finalTotal,
-            'discount' => $discount
+            'discount' => $discount,
+            'parent_order_id' => $order->id // 🔥 MAIN FIX
         ]);
 
         Payment::create([
@@ -307,7 +311,9 @@ class OrderController extends Controller
             'status' => 'draft',
             'delivery_instructions' => $delivery,
             'internal_notes' => $notes,
-            'discount' => $discount // ✅ ADD THIS
+            'discount' => $discount, // ✅ ADD THIS
+            'parent_order_id' => 0,
+            'is_active' => 1
         ]);
 
         $total = 0;
@@ -334,7 +340,8 @@ class OrderController extends Controller
         }
 
         $order->update([
-            'total_price' => $finalTotal
+            'total_price' => $finalTotal,
+            'parent_order_id' => $order->id
         ]);
         Cart::where('user_id', auth()->id())->delete();
 

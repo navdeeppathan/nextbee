@@ -75,7 +75,7 @@
                     @foreach($orders as $order)
                         <tr>
                             <td>
-                                #{{ $order->parent_order_id ?? $order->id }}
+                                #{{ $order->parent_order_id  }}
                             </td>
                             <!-- <td>
                                 @foreach($order->items as $item)
@@ -125,7 +125,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="/order/{{ $order->id }}">
+                                <a href="/order/{{ $order->parent_order_id }}">
                                     <button class="px-3 py-1 bg-blue-900 text-white rounded">
                                         View Order
                                     </button>
