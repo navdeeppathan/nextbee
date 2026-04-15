@@ -372,56 +372,7 @@
         </div>
     </div>
 
-    <!-- Hero Section -->
-    <section class="hero-bg pt-32 pb-16 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center text-white mb-12">
-                <div
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur rounded-full mb-6 border border-white/20">
-                    <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                    <span class="text-sm font-medium">Serving 500+ London Businesses</span>
-                </div>
-                <h1 class="font-display text-4xl md:text-6xl font-bold leading-tight mb-6">
-                    Wholesale Food & Grocery<br>
-                    <span class="text-yellow-400">Supply Solutions</span>
-                </h1>
-                <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
-                    10,000+ products across beverages, groceries, frozen foods, and household supplies. Trade pricing
-                    available upon account approval.
-                </p>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="scrollToSection('products')"
-                        class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold rounded-full hover:bg-yellow-400 transition">
-                        Browse Categories
-                    </button>
-                    <button onclick="openModal('register')"
-                        class="px-8 py-4 bg-white/10 backdrop-blur text-white font-medium rounded-full hover:bg-white/20 transition border border-white/30">
-                        Request Price List
-                    </button>
-                </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
-                    <div class="text-3xl font-bold text-yellow-400">10K+</div>
-                    <div class="text-sm text-slate-300">Products</div>
-                </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
-                    <div class="text-3xl font-bold text-yellow-400">24h</div>
-                    <div class="text-sm text-slate-300">Delivery</div>
-                </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
-                    <div class="text-3xl font-bold text-yellow-400">MOQ</div>
-                    <div class="text-sm text-slate-300">1 Pallet</div>
-                </div>
-                <div class="bg-white/10 backdrop-blur rounded-2xl p-4 text-center border border-white/20">
-                    <div class="text-3xl font-bold text-yellow-400">30%</div>
-                    <div class="text-sm text-slate-300">Savings</div>
-                </div>
-            </div>
-        </div>
-    </section>
+   
 
     @php
         $categoryIcons = [
@@ -439,6 +390,9 @@
         <!-- Sticky Category Navigation -->
         <div class="sticky-cat">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-slate-500">
+                        Showing all products of {{ $brand }}
+                    </p>
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
                     {{-- <button class="category-btn active px-6 py-3 rounded-full text-sm font-medium"
                         onclick="filterCategory('all', this)">
@@ -513,7 +467,7 @@
                             $slug = \Illuminate\Support\Str::slug($product->category->name);
                         @endphp
 
-                        <div class="product-card bg-white rounded-2xl overflow-hidden product-item"
+                        <div class="product-card bg-white mt-20 rounded-2xl overflow-hidden product-item"
                             data-category="{{ $slug }}">
                             <div class="relative h-48 bg-gray-100 overflow-hidden">
                                 <!-- <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover"> -->
@@ -553,7 +507,6 @@
         </div>
     </section>
 
-    <!-- BRANDS SECTION -->
     <section id="brands" class="py-16 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -604,65 +557,6 @@
 
             </div>
 
-        </div>
-    </section>
-
-    <!-- SERVICES SECTION -->
-    <section id="services" class="py-16 bg-slate-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">Why Choose NextBee?</h2>
-                <p class="text-slate-600">B2B wholesale solutions tailored for your business</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div
-                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
-                        <i class="fas fa-truck-fast"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Next-Day Delivery</h3>
-                    <p class="text-slate-600">Order by 6PM for delivery across Greater London within 24 hours.
-                        Temperature-controlled vehicles for frozen goods.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div
-                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
-                        <i class="fas fa-pound-sign"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Trade Credit</h3>
-                    <p class="text-slate-600">30-60 day payment terms for established businesses. Credit limits from
-                        £10,000 to £50,000 available.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-8 shadow-sm">
-                    <div
-                        class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-900 text-2xl mb-6">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <h3 class="font-bold text-xl mb-3">Dedicated Support</h3>
-                    <p class="text-slate-600">Your personal account manager available 7 days a week. Emergency stock
-                        available for urgent orders.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA SECTION -->
-    <section class="cta-bg py-20 text-white relative">
-        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
-            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Ready to Stock Your Business?</h2>
-            <p class="text-xl text-blue-100 mb-8">Open a trade account today and access wholesale pricing on 10,000+
-                products. Application approved within 24 hours.</p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <button onclick="openModal('register')"
-                    class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold rounded-full hover:bg-yellow-400 transition text-lg">
-                    Open Trade Account
-                </button>
-                <a href="tel:02079460958"
-                    class="px-8 py-4 bg-white/10 backdrop-blur text-white font-medium rounded-full hover:bg-white/20 transition border border-white/30 text-lg">
-                    <i class="fas fa-phone mr-2"></i> 020 7946 0958
-                </a>
-            </div>
         </div>
     </section>
 

@@ -704,9 +704,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                    </button> -->
+                                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                        </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -742,6 +742,58 @@
             </div>
 
 
+
+        </div>
+    </section>
+
+      <section id="brands" class="py-16 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="text-center mb-12">
+                <h2 class="font-display text-3xl font-bold text-slate-900 mb-4">
+                    Featured Brands
+                </h2>
+                <p class="text-slate-600">
+                    Official distributor for leading FMCG brands
+                </p>
+            </div>
+
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
+
+                @php
+                    $brandColors = [
+                        'Coca-Cola' => 'text-red-600',
+                        'Pepsi' => 'text-blue-700',
+                        'Cadbury' => 'text-purple-700',
+                        'Kelloggs' => 'text-red-500',
+                        'Heinz' => 'text-blue-600',
+                        'Nestlé' => 'text-green-600',
+                    ];
+                @endphp
+
+                @foreach($brands as $brand)
+
+                    @php
+                        $color = $brandColors[$brand] ?? 'text-slate-700';
+                        $urlBrand = str_replace("'", "", $brand); // Kellogg's fix
+                    @endphp
+
+                    <a href="{{ url('/brand/' . $urlBrand) }}">
+
+                        <div
+                            class="flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition">
+
+                            <span class="font-bold text-xl {{ $color }}">
+                                {{ $brand }}
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                @endforeach
+
+            </div>
 
         </div>
     </section>
@@ -1066,25 +1118,59 @@
 
         // Add to Sales Order - Open Modal
         function addToSalesOrder(name, sku, moq, price, id) {
-            tempProduct = {
-                name,
-                sku,
-                moq,
-                price,
-                id // 👈 IMPORTANT
-            };
+
+            tempProduct = { name, sku, moq, price, id };
 
             document.getElementById('modal-product-name').textContent = name;
             document.getElementById('modal-moq').textContent = moq;
             document.getElementById('modal-qty').value = moq;
 
-            document.getElementById('order-modal').classList.add('active');
-        }
+            // 🔥 BACKEND CHECK
+            fetch('/cart/check/' + id)
+                .then(res => res.json())
+                .then(data => {
 
+                    if (data.exists) {
+
+                        // ✅ ONLY CURRENT
+                        document.querySelectorAll('.order-option').forEach(el => {
+                            let val = el.querySelector('input').value;
+
+                            if (val === 'current') {
+                                el.style.display = 'block';
+                                el.classList.add('selected');
+                                el.querySelector('input').checked = true;
+                            } else {
+                                el.style.display = 'none';
+                            }
+                        });
+
+                    } else {
+
+                        // ✅ SHOW ALL
+                        document.querySelectorAll('.order-option').forEach(el => {
+                            el.style.display = 'block';
+                            el.classList.remove('selected');
+                        });
+
+                        document.querySelector('input[value="new"]').checked = true;
+                    }
+
+                    document.getElementById('order-modal').classList.add('active');
+                });
+        }
         // Close Order Modal
         function closeOrderModal() {
             document.getElementById('order-modal').classList.remove('active');
             tempProduct = null;
+
+            // ✅ RESET OPTIONS BACK
+            document.querySelectorAll('.order-option').forEach(el => {
+                el.style.display = 'block';
+                el.classList.remove('selected');
+            });
+
+            document.querySelector('input[value="new"]').checked = true;
         }
 
         // Adjust quantity

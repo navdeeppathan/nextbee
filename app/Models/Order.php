@@ -14,20 +14,24 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'total_price',
-        'status'
+        'status',
+        'discount',
+        'delivery_instructions',   // ✅ ADD THIS
+        'internal_notes'  ,         // ✅ ADD THIS
+         'payment_status' 
     ];
     public function items()
-{
-    return $this->hasMany(OrderItem::class);
-}
-public function user()
-{
-    return $this->belongsTo(User::class);
-}
-public function payment()
-{
-    return $this->hasOne(Payment::class);
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
 
-}
+    }
 
 }

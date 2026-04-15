@@ -5,11 +5,10 @@
 
 @section('content')
 
-   
 
-   
 
-    {{-- ── Transactions Table ── --}}
+
+
     <div class="card">
         <div
             style="padding: 18px 20px 14px; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between;">
@@ -34,11 +33,12 @@
                         <th>Payment ID</th>
                         <th>Order ID</th>
                         <th>Product</th>
-                        <th>Method</th>
                         <th>Amount</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>Payment</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -54,41 +54,148 @@
 
                             <td>Order Payment</td>
 
-                            <td>
-                                <div style="display:flex; gap:6px;">
-                                    <div
-                                        style="width:24px;height:24px;background:#f1f5f9;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;">
-                                        {{ strtoupper(substr($p->method, 0, 2)) }}
-                                    </div>
-                                    <span>{{ $p->method }}</span>
-                                </div>
-                            </td>
+                           
 
                             <td style="font-weight:700;">£ {{ $p->amount }}</td>
 
                             <td>{{ $p->created_at->format('d M Y') }}</td>
 
                             <td>
-                                <span class="pill {{ $p->status == 'Paid' ? 'pill-green' : 'pill-amber' }}">
-                                    {{ $p->status }}
-                                </span>
-                            </td>
-                            <td>
-                                <a href="/invoice/{{ $p->id }}">
-                                    <button class="px-3 py-1 bg-blue-900 text-white rounded">
-                                        View
-                                    </button>
-                                </a>
+                                @if($p->order->payment_status == 'pending')
+                                    <span class="pill pill-yellow">Pending</span>
+
+                                @elseif($p->order->payment_status == 'partial')
+                                    <span class="pill pill-blue">Partial Payment</span>
+
+                                @elseif($p->order->payment_status == 'full')
+                                    <span class="pill pill-green">Full Payment</span>
+                                @endif
+                                </td>
+                                <td>
+                                    <a href="/invoice/{{ $p->id }}">
+                                        <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                            View
+                                        </button>
+                                    </a>
+                                </td>
+                                <td>
+                                <button 
+                                    onclick="openPaymentModal({{ $p->order_id }})"
+                                    class="px-3 py-1 rounded 
+                                    {{ $p->order->payment_status == 'full' ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white' }}"
+                                    {{ $p->order->payment_status == 'full' ? 'disabled' : '' }}>
+                                    
+                                    {{ $p->order->payment_status == 'full' ? 'Paid' : 'Make Payment' }}
+                                </button>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
             <div style="padding:15px;">
-    {{ $payments->links() }}
-</div>
+                {{ $payments->links() }}
+            </div>
         </div>
-        
+
     </div>
+
+    <div id="paymentModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000080; z-index:999;">
+
+        <div
+            style="background:white; padding:24px; width:360px; margin:80px auto; border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+
+            <h3 style="font-size:18px; font-weight:700; margin-bottom:10px;">💳 Make Payment</h3>
+
+            <!-- SUMMARY -->
+            <div style="background:#f8fafc; padding:12px; border-radius:10px; margin-bottom:12px;">
+                <div>Total: £<span id="totalAmount">0</span></div>
+                <div>Paid: £<span id="paidAmount">0</span></div>
+                <div style="font-weight:700; color:#dc2626;">
+                    Remaining: £<span id="remainingText">0</span>
+                </div>
+            </div>
+
+            <!-- INPUT -->
+            <input type="number" id="pay_amount" placeholder="Enter amount"
+                style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px;">
+
+            <!-- BUTTONS -->
+            <div style="display:flex; gap:10px;">
+                <button onclick="submitPayment()"
+                    style="flex:1; background:#1e40af; color:white; padding:10px; border-radius:8px;">
+                    Pay Now
+                </button>
+
+                <button onclick="closeModal()" style="flex:1; background:#e2e8f0; padding:10px; border-radius:8px;">
+                    Cancel
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        let currentOrderId = null;
+        let remainingAmount = 0;
+
+        function openPaymentModal(orderId) {
+            console.log(orderId);
+            currentOrderId = orderId;
+
+            fetch('/order-remaining/' + orderId)
+                .then(res => res.json())
+                .then(data => {
+
+                    document.getElementById('totalAmount').innerText = data.total;
+                    document.getElementById('paidAmount').innerText = data.paid;
+                    document.getElementById('remainingText').innerText = data.remaining;
+
+                    remainingAmount = data.remaining;
+
+                    // document.getElementById('pay_amount').value = data.remaining;
+                    if (data.remaining > 0) {
+                        document.getElementById('pay_amount').value = data.remaining;
+                    } // auto fill
+                });
+
+            document.getElementById('paymentModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function submitPayment() {
+
+            let amount = parseFloat(document.getElementById('pay_amount').value);
+
+
+            if (!amount || amount <= 0) {
+                alert("Enter valid amount ❌");
+                return;
+            }
+
+            if (amount > remainingAmount) {
+                alert("Amount exceeds remaining ❌");
+                return;
+            }
+
+            fetch('/add-payment', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: new URLSearchParams({
+                    order_id: currentOrderId,
+                    amount: amount,
+                    method: 'UPI'
+                })
+            })
+                .then(() => {
+                    alert("Payment Successful ✅");
+                    location.reload();
+                });
+        }
+    </script>
 
 @endsection

@@ -267,7 +267,7 @@
 
                     <!-- Add Product Search -->
                     <div class="relative mb-6">
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
+                        <!-- <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
                         <div class="relative">
                             <input type="text" id="product-search" placeholder="Search by SKU, name, or category..."
                                 class="w-full px-4 py-3 pl-11 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none"
@@ -275,7 +275,7 @@
                             <i
                                 class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
 
-                        </div>
+                        </div> -->
 
                         <!-- Product Dropdown -->
                         <div id="product-dropdown" class="product-dropdown">
@@ -332,15 +332,18 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Instructions</label>
-                            <textarea id="delivery_instructions" rows="2"
+                            <textarea onkeyup="updateDraft()" id="delivery_instructions" rows="2"
                                 placeholder="e.g., Deliver to rear entrance, use loading bay..."
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">
+                            {{ $order->delivery_instructions }}
+</textarea>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Internal Notes</label>
-                            <textarea id="internal_notes" rows="2"
+                            <textarea onkeyup="updateDraft()" id="internal_notes" rows="2"
                                 placeholder="Notes for your team (not visible to customer)..."
-                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">
+                            {{ $order->internal_notes }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -441,11 +444,11 @@
                             <i class="fas fa-check-circle mr-2"></i>
                             Place Sales Order
                         </button>
-                        <button onclick="saveDraft()"
+                        <!-- <button onclick="saveDraft()"
                             class="w-full py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition">
                             <i class="fas fa-save mr-2"></i>
                             Save as Draft
-                        </button>
+                        </button> -->
                         <button onclick="clearOrder()"
                             class="w-full py-3 bg-white text-red-600 border-2 border-red-200 rounded-xl font-medium hover:bg-red-50 transition">
                             <i class="fas fa-trash-alt mr-2"></i>
@@ -722,57 +725,44 @@
             updateSummary();
         }
 
-        // ✅ SAVE while typing
-        document.getElementById('delivery_instructions').addEventListener('input', function () {
-            localStorage.setItem('delivery_instructions', this.value);
-        });
+       function submitOrder() {
 
-        document.getElementById('internal_notes').addEventListener('input', function () {
-            localStorage.setItem('internal_notes', this.value);
-        });
+    let delivery = document.getElementById('delivery_instructions').value;
+    let notes = document.getElementById('internal_notes').value;
 
-        // ✅ LOAD saved data
-        document.addEventListener('DOMContentLoaded', () => {
+    fetch('/draft/place/{{ $order->id }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: new URLSearchParams({
+            delivery_instructions: delivery,
+            internal_notes: notes,
+            discount: discount
+        })
+    })
+    .then(() => {
+        alert("Order Placed from Draft ✅");
+        window.location.href = "/customer/orders";
+    });
+}
 
-            renderOrderLines();
-            updateSummary();
+function updateDraft() {
 
-            let today = new Date().toISOString().split('T')[0];
-            document.getElementById('delivery-date').value = today;
+    let delivery = document.getElementById('delivery_instructions').value;
+    let notes = document.getElementById('internal_notes').value;
 
-            // 🔥 LOAD textarea data
-            document.getElementById('delivery_instructions').value = localStorage.getItem('delivery_instructions') || '';
-            document.getElementById('internal_notes').value = localStorage.getItem('internal_notes') || '';
-        });
-
-        function submitOrder() {
-
-            let delivery = document.getElementById('delivery_instructions').value;
-            let notes = document.getElementById('internal_notes').value;
-
-            fetch('/place-order', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }, // ✅ comma yaha important hai
-
-                body: new URLSearchParams({
-                    delivery_instructions: delivery,
-                    internal_notes: notes,
-                    discount: discount
-                })
-            })
-                .then(() => {
-                    alert("Order Placed ✅");
-                    window.location.href = "/customer/orders";
-                    localStorage.removeItem('delivery_instructions');
-                    localStorage.removeItem('internal_notes');
-                })
-                .catch(() => {
-                    alert("Error ❌");
-                });
-        }
-
+    fetch('/draft/update/{{ $order->id }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: new URLSearchParams({
+            delivery_instructions: delivery,
+            internal_notes: notes
+        })
+    });
+}
         function saveDraft() {
 
             let delivery = document.getElementById('delivery_instructions').value;
@@ -789,7 +779,7 @@
                     internal_notes: notes,
                     discount: discount
 
-
+                    
                 })
             })
                 .then(() => {
@@ -889,14 +879,14 @@
 
         document.addEventListener('DOMContentLoaded', () => {
 
-            renderOrderLines();
-            updateSummary();
+    renderOrderLines();
+    updateSummary();
 
-            // ✅ TODAY DATE AUTO SET
-            let today = new Date().toISOString().split('T')[0];
-            document.getElementById('delivery-date').value = today;
+    // ✅ TODAY DATE AUTO SET
+    let today = new Date().toISOString().split('T')[0];
+    document.getElementById('delivery-date').value = today;
 
-        });
+});
     </script>
 </body>
 

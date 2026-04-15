@@ -45,6 +45,7 @@ use App\Http\Controllers\LocationController;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderLog;
+use App\Models\Cart;
 
 Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
@@ -53,20 +54,20 @@ Route::get('/', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
     $brands = Product::whereNotNull('brand')
-    ->where('brand', '!=', '')
-    ->distinct()
-    ->pluck('brand');
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
     return view('Landing.index', compact('categories', 'products', 'brands'));
 });
 
 Route::get('/main', function () {
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
-     // 🔥 unique brands nikalo
+    // 🔥 unique brands nikalo
     $brands = Product::whereNotNull('brand')
-    ->where('brand', '!=', '')
-    ->distinct()
-    ->pluck('brand');
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
     return view('Landing.main', compact('categories', 'products', 'brands'));
 });
 
@@ -80,9 +81,31 @@ Route::get('/brand/{brand}', function ($brand) {
         ->get();
 
     // ✅ sirf us brand ki categories
-     $categories = Category::all();
+    $categories = Category::all();
+    $brands = Product::whereNotNull('brand')
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
 
-    return view('Landing.productbrand', compact('products', 'brand', 'categories'));
+    return view('Landing.productbrand', compact('products', 'brand', 'categories' , 'brands'));
+});
+
+Route::get('/brands/{brand}', function ($brand) {
+
+    $brand = urldecode($brand);
+
+    // ✅ products with category
+    $products = Product::with('category')
+        ->where('brand', $brand)
+        ->get();
+
+    // ✅ sirf us brand ki categories
+    $categories = Category::all();
+    $brands = Product::whereNotNull('brand')
+        ->where('brand', '!=', '')
+        ->distinct()
+        ->pluck('brand');
+    return view('Landing.brand', compact('products', 'brand', 'categories', 'brands'));
 });
 
 Route::get('/inventory', function () {
@@ -94,15 +117,15 @@ Route::get('/inventory/dashboard', function () {
 
     $totalSkus = Product::count();
     $categories = Category::count();
-    $expiringsoon = Product::where('shelf_life' , '<', 3)->count();
-    $lowstock = Product::where('quantity' , '<', 10)->count();
+    $expiringsoon = Product::where('shelf_life', '<', 3)->count();
+    $lowstock = Product::where('quantity', '<', 10)->count();
 
-    
+
 
     $criticalExpiry = Product::all()->filter(function ($product) {
 
         $expiry = Carbon::parse($product->created_at)
-                    ->addDays($product->shelf_life);
+            ->addDays($product->shelf_life);
 
         return $expiry->between(now(), now()->addDays(8));
     });
@@ -123,7 +146,7 @@ Route::get('/customers', function () {
     $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
     $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
     $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
-    
+
     return view('Inventory.customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
@@ -189,9 +212,11 @@ Route::get('/sales-orders-inventory', function () {
     $confirmedOrders = Order::where('status', 'accepted')->count();    
     $pendingOrders = Order::where('status', 'created')->count();
     $processingOrders = Order::where('status', 'ready for delivery')->count();
-    $deliveredOrders = Order::where('status', 'delivered')->count();
 
    
+    $deliveredOrders = Order::where('status', 'delivered')->count();
+
+
     return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
 });
 
@@ -222,7 +247,7 @@ Route::get('/sales-customers', function () {
     $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
     $pendingCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'pending')->count();
     $churnRiskCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'churn_risk')->count();
-    
+
     return view('SalesRep.sales_customers', compact('customers', 'totalCustomers', 'activeCustomers', 'inactiveCustomers', 'pendingCustomers', 'churnRiskCustomers'));
 });
 
@@ -241,6 +266,7 @@ Route::get('/sales-order-page2', function () {
 });
 
 Route::get('/sales-orders2', function () {
+
     $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->get();
     $totalOrders = Order::where('status', 'accepted')
         ->whereMonth('created_at', Carbon::now()->month)
@@ -249,6 +275,7 @@ Route::get('/sales-orders2', function () {
     $confirmedOrders = Order::where('status', 'accepted')->count();    
     $pendingOrders = Order::where('status', 'created')->count();
     $processingOrders = Order::where('status', 'ready for delivery')->count();
+
     $deliveredOrders = Order::where('status', 'delivered')->count();
 
     return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
@@ -256,14 +283,14 @@ Route::get('/sales-orders2', function () {
 
 
 Route::get('/driver-orders', function () {
-   $orders = Order::with(['user', 'payment'])
-    ->whereNotIn('status', ['confirm', 'pending'])
-    ->get();
+    $orders = Order::with(['user', 'payment'])
+        ->whereNotIn('status', ['confirm', 'pending'])
+        ->get();
     $totalOrders = Order::where('status', 'confirm')
         ->whereMonth('created_at', Carbon::now()->month)
         ->whereYear('created_at', Carbon::now()->year)
         ->count();
-    $confirmedOrders = Order::where('status', 'confirm')->count();    
+    $confirmedOrders = Order::where('status', 'confirm')->count();
     $pendingOrders = Order::where('status', 'pending')->count();
     $processingOrders = Order::where('status', 'processing')->count();
     $deliveredOrders = Order::where('status', 'delivered')->count();
@@ -304,6 +331,16 @@ Route::post('/profile/password', [AuthController::class, 'changePassword'])->mid
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
 Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
+Route::get('/cart/check/{id}', function ($id) {
+
+    $exists = Cart::where('product_id', $id)
+        ->where('user_id', auth()->id())
+        ->exists();
+
+    return response()->json([
+        'exists' => $exists
+    ]);
+});
 
 Route::get('/customer/payments', function () {
 
@@ -314,6 +351,29 @@ Route::get('/customer/payments', function () {
     return view('customer.payments', compact('payments'));
 
 })->middleware('auth');
+Route::post('/add-payment', [OrderController::class, 'addPayment']);
+Route::get('/order-remaining/{id}', function ($id) {
+
+    $order = Order::find($id);
+
+    if (!$order) {
+        return response()->json([
+            'total' => 0,
+            'paid' => 0,
+            'remaining' => 0
+        ]);
+    }
+
+    $paid = Payment::where('order_id', $order->id)
+        ->where('status', 'done')   // ✅ ONLY DONE
+        ->sum('amount');
+
+    return response()->json([
+        'total' => (float) $order->total_price,
+        'paid' => (float) $paid,
+        'remaining' => max(0, $order->total_price - $paid)
+    ]);
+});
 
 Route::get('/cart', function () {
     $cartItems = \App\Models\Cart::with('product')
@@ -325,7 +385,7 @@ Route::get('/cart', function () {
 
 Route::get('/checkout-sales/{order_id}', function ($order_id) {
 
-   
+
     $order = Order::with('items.product.locations')
         ->where('id', $order_id)
         ->firstOrFail();
@@ -376,7 +436,7 @@ Route::post('/order-item/update', function (Request $req) {
     $item->quantity = $req->qty;
     $item->save();
 
-     // ✅ LOG ENTRY
+    // ✅ LOG ENTRY
     OrderLog::create([
         'order_id' => $item->order_id,
         'order_item_id' => $item->id,
@@ -396,7 +456,7 @@ Route::post('/order/update-status', function (Request $req) {
     $order->status = $req->status;
     $order->save();
 
-     // ✅ LOG ENTRY
+    // ✅ LOG ENTRY
     OrderLog::create([
         'order_id' => $order->id,
         'user_id' => auth()->id(),
@@ -428,5 +488,10 @@ Route::post('/cart/update', function (Request $request) {
     return response()->json(['success' => true]);
 });
 Route::post('/cart/delete', [CartController::class, 'delete'])->middleware('auth');
+// Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
+Route::post('/save-draft', [OrderController::class, 'saveDraft'])->middleware('auth');
 Route::get('/invoice/{id}', [OrderController::class, 'invoice'])->middleware('auth');
+
+Route::get('/draft/{id}', [OrderController::class, 'viewDraft']);
+Route::post('/draft/place/{id}', [OrderController::class, 'placeDraftOrder']);
