@@ -592,8 +592,7 @@
         function updateQty(index, change) {
 
             let item = orderLines[index];
-            // 🔥 FORCE NUMBER (THIS IS THE FIX)
-            item.qty = Number(item.qty);
+           
 
             if (change < 0 && item.qty <= 1) {
                 showToast('Minimum qty is 1');
