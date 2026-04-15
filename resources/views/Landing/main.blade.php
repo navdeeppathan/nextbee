@@ -459,7 +459,7 @@
                     <a href="/checkout"
                         class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
                         <i class="fas fa-clipboard-list"></i>
-                        Create Sales Order
+                         Sales Order
                     </a>
                 </div>
 
@@ -615,7 +615,7 @@
                 <a href="#services" class="block text-2xl font-medium text-slate-800"
                     onclick="toggleMobileMenu()">Services</a>
                 <a href="/sales-order-page2" onclick="toggleMobileMenu();"
-                    class="block text-2xl font-medium text-blue-900">Create Sales Order</a>
+                    class="block text-2xl font-medium text-blue-900"> Sales Order</a>
                 <hr class="border-slate-200">
                 <a href="#" class="block text-lg font-medium text-slate-600">My Profile</a>
                 <a href="#" class="block text-lg font-medium text-slate-600">Order History</a>
@@ -1186,7 +1186,7 @@
                 </a>
                 <a href="/sales-order-page2"
                     class="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition border border-blue-700 text-lg inline-flex items-center">
-                    <i class="fas fa-clipboard-list mr-2"></i> Create Sales Order
+                    <i class="fas fa-clipboard-list mr-2"></i>  Sales Order
                 </a>
             </div>
         </div>

@@ -436,7 +436,7 @@
     <nav class="fixed w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <a href="#" class="flex items-center gap-3 group">
+                <a href="/main" class="flex items-center gap-3 group">
                     <div
                         class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
                         <i class="fas fa-building text-white text-xl"></i>
@@ -459,7 +459,7 @@
                     <a href="/checkout"
                         class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
                         <i class="fas fa-clipboard-list"></i>
-                        Create Sales Order
+                         Sales Order
                     </a>
                 </div>
 
@@ -643,9 +643,9 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div>
 
-                    <p class="text-slate-500">
+                    <!-- <p class="text-slate-500" id="productTitle">
                         Showing all products of {{ $brand }}
-                    </p>
+                    </p> -->
                 </div>
                 <div class="category-nav flex gap-2 overflow-x-auto py-4">
 
@@ -682,10 +682,14 @@
                     <!-- Product 1 -->
                     @foreach($products as $product)
 
+
                         @php
                             $slug = \Illuminate\Support\Str::slug($product->category->name);
                         @endphp
-                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
+                        <!-- <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
+                                                        data-category="{{ $slug }}"> -->
+                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
+                                {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}"
                             data-category="{{ $slug }}">
                             <div class="relative h-48 bg-gray-100 overflow-hidden">
                                 <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
@@ -704,9 +708,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                        </button> -->
+                                                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                                    </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -746,7 +750,7 @@
         </div>
     </section>
 
-      <section id="brands" class="py-16 bg-white border-t border-slate-200">
+    <section id="brands" class="py-16 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="text-center mb-12">
@@ -1055,6 +1059,15 @@
     </div>
 
     <script>
+        window.onload = function () {
+
+            document.querySelectorAll('.product-item').forEach(item => {
+                if (!item.classList.contains('brand-product')) {
+                    item.style.display = 'none';
+                }
+            });
+
+        };
         // Global state
         let currentOrder = [];
         let tempProduct = null;
@@ -1378,25 +1391,36 @@
 
         // Category filter
         function filterCategory(category, btn) {
+
+            // active button
             document.querySelectorAll('.category-btn').forEach(b => {
                 b.classList.remove('active');
-                b.classList.add('text-slate-600');
             });
             btn.classList.add('active');
-            btn.classList.remove('text-slate-600');
 
-            const groups = document.querySelectorAll('.category-group');
-            groups.forEach(group => {
-                if (category === 'all' || group.dataset.category === category) {
-                    group.style.display = 'block';
-                } else {
-                    group.style.display = 'none';
-                }
-            });
+            // 🔥 TEXT CHANGE
+            let title = document.getElementById('productTitle');
 
-            if (category !== 'all') {
-                document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+            if (category === 'all') {
+                title.innerText = 'Showing all products';
+            } else {
+                title.innerText = 'Showing products of {{ $brand }}';
             }
+
+            // filter products
+            document.querySelectorAll('.product-item').forEach(item => {
+
+                if (category === 'all') {
+                    item.style.display = 'block';
+                } else {
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+
+            });
         }
 
         // Toast notification

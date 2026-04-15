@@ -51,6 +51,7 @@ Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
 
 Route::get('/', function () {
+    
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
     $brands = Product::whereNotNull('brand')
@@ -75,37 +76,45 @@ Route::get('/brand/{brand}', function ($brand) {
 
     $brand = urldecode($brand);
 
-    // ✅ products with category
-    $products = Product::with('category')
-        ->where('brand', $brand)
-        ->get();
+    // ✅ ALL PRODUCTS (IMPORTANT)
+    $products = Product::with('category')->get();
 
-    // ✅ sirf us brand ki categories
+    // ✅ selected brand alag se
+    $brandProducts = Product::where('brand', $brand)->pluck('id')->toArray();
+
     $categories = Category::all();
+
     $brands = Product::whereNotNull('brand')
         ->where('brand', '!=', '')
         ->distinct()
         ->pluck('brand');
 
-    return view('Landing.productbrand', compact('products', 'brand', 'categories' , 'brands'));
+    return view('Landing.productbrand', compact(
+        'products',
+        'brandProducts',
+        'brand',
+        'categories',
+        'brands'
+    ));
 });
 
 Route::get('/brands/{brand}', function ($brand) {
 
-    $brand = urldecode($brand);
+  $brand = urldecode($brand);
 
-    // ✅ products with category
-    $products = Product::with('category')
-        ->where('brand', $brand)
-        ->get();
+    // ✅ ALL PRODUCTS (IMPORTANT)
+    $products = Product::with('category')->get();
 
-    // ✅ sirf us brand ki categories
+    // ✅ selected brand alag se
+    $brandProducts = Product::where('brand', $brand)->pluck('id')->toArray();
+
     $categories = Category::all();
+
     $brands = Product::whereNotNull('brand')
         ->where('brand', '!=', '')
         ->distinct()
         ->pluck('brand');
-    return view('Landing.brand', compact('products', 'brand', 'categories', 'brands'));
+    return view('Landing.brand', compact('products', 'brandProducts', 'brand', 'categories', 'brands'));
 });
 
 Route::get('/inventory', function () {
