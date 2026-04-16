@@ -686,6 +686,9 @@
                                         <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-600 border border-slate-200">
                                             SKU: {{ $product->sku_code }}
                                         </span>
+                                        <span class="text-xs bg-green-100 px-2 py-1 rounded text-slate-600 border border-slate-200">
+                                            Price: {{ $product->price }}
+                                        </span>
                                     </div>
 
                                     <p class="text-sm text-slate-500">
