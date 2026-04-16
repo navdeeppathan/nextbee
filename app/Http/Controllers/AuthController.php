@@ -98,7 +98,8 @@ class AuthController extends Controller
             'sales_assigned'=>$request->sales_assigned,
             'credit_limit'=>$request->credit_limit,
             'invoice_pay_days'=>$request->invoice_pay_days,
-            'tier'=>$request->tier
+            'tier'=>$request->tier,
+            'status'=>'pending'
         ]);
 
         // ❌ remove Auth::login($user);
@@ -285,7 +286,10 @@ class AuthController extends Controller
             ->latest()
             ->get();
 
-        $monthlyAverageOrder = $orders->avg('total_price');
+        
+        $months = 1;
+        $recentOrders = $orders->where('created_at', '>=', now()->subMonths($months));
+        $monthlyAverageOrder = $months > 0 ? round($recentOrders->count() / $months, 1) : 0;
         $orderFrequency = $orders->count();
         $lastOrder = $orders->first();
 

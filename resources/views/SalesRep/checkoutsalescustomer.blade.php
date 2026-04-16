@@ -156,10 +156,7 @@
 
 </head>
 <script>
-    let orderLines = @json($orderData); // ✅ DB data
-    let orderId = {{ $order->id }};
-    let order = @json($order);
-    console.log(orderLines);
+    let orderLines = @json($cartData); // ✅ DB data
 </script>
 
 <body class="bg-slate-50">
@@ -175,21 +172,35 @@
                             <i class="fas fa-building text-white"></i>
                         </div>
                         <div>
-                            <h1 class="font-display text-xl font-bold text-slate-900">METRO</h1>
+                            <h1 class="font-display text-xl font-bold text-slate-900">NextBee</h1>
                             <p class="text-xs text-slate-500">B2B WHOLESALE</p>
                         </div>
                     </a>
                     <span class="text-slate-300">|</span>
-                    <span class="text-lg font-semibold text-slate-800">Update Sales Order</span>
+                    <span class="text-lg font-semibold text-slate-800">Create Sales Order</span>
+                    <div class="hidden lg:flex items-center gap-8">
+                        <a href="/main" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Home</a>
+                    <a href="#products"
+                        class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Products</a>
+                    <a href="#brands"
+                        class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Brands</a>
+                    <a href="#services"
+                        class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Services</a>
+                    <a href="/checkout"
+                        class="text-sm font-medium text-blue-900 hover:text-blue-700 transition flex items-center gap-2">
+                        <i class="fas fa-clipboard-list"></i>
+                        Sales Order
+                    </a>
+                </div>
                 </div>
 
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-xs text-slate-500">{{ Auth::user()->role }}</p>
-                        <p class="text-sm font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-slate-500">{{ $user->role }}</p>
+                        <p class="text-sm font-semibold text-slate-900">{{ $user->name }}</p>
                     </div>
                     <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span class="text-blue-900 font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                        <span class="text-blue-900 font-bold">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                     </div>
                 </div>
             </div>
@@ -203,12 +214,12 @@
         <div class="mb-8">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h1 class="font-display text-3xl font-bold text-slate-900">Sales Order</h1>
-                    {{-- <p class="text-slate-500 mt-1">Create a new sales order for your business</p> --}}
+                    <h1 class="font-display text-3xl font-bold text-slate-900">New Sales Order</h1>
+                    <p class="text-slate-500 mt-1">Create a new sales order for your business</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <!-- <span class="text-sm text-slate-500">Order #:</span> -->
-                    <a href="{{redirect()->back()->getTargetUrl()}}">
+                    <a href="/main">
 
                         <!-- <span class="font-mono font-semibold text-blue-900 bg-blue-50 px-3 py-1 rounded-lg"> Back</span> -->
                         <button
@@ -234,7 +245,7 @@
                     <div class="grid md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Customer Name</label>
-                            <input type="text" value="{{ $order->user->name }}"
+                            <input type="text" value="{{ $user->name }}"
                                 class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50"
                                 readonly>
                         </div>
@@ -246,11 +257,15 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Email</label>
-                            <input type="text" value="{{ $order->user->email }}"
+                            <input type="text" value="{{ $user->email }}"
                                 class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none bg-slate-50"
                                 readonly>
                         </div>
-                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Request Order Date</label>
+                            <input type="date" id="delivery-date"
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none">
+                        </div>
                     </div>
                 </div>
 
@@ -262,23 +277,9 @@
                             Order Lines
                         </h2>
                         <span class="text-sm text-slate-500" id="line-count">0 items</span>
-                        <span class="px-3 py-1 text-xs rounded-full font-semibold 
-                            {{ $order->status == 'created' ? 'bg-red-100 text-black-300' : 'bg-green-100 text-green-800' }}">
-                            {{ $order->status }}
-                        </span>
-
-                        <select onchange="updateStatus(this.value)" class="border px-3 py-2 rounded-lg text-sm">
-                            <option value="created" {{ $order->status == 'created' ? 'selected' : '' }}>Created</option>
-                            <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
-                            <option value="ready for delivery" {{ $order->status == 'ready for delivery' ? 'selected' : '' }}>Ready For Delivery</option>
-                            <option value="out for delivery" {{ $order->status == 'out for delivery' ? 'selected' : '' }}>Out For Delivery</option>
-                            <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                        </select>
-                        
                     </div>
 
                     <!-- Add Product Search -->
-                    
                     <div class="relative mb-6">
                         <label class="block text-sm font-medium text-slate-700 mb-2">Add Product</label>
                         <div class="relative">
@@ -306,19 +307,12 @@
                                     <th
                                         class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-32">
                                         Qty (Cases)</th>
-
-                                    <th
-                                        class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
-                                        Inventory</th>
                                     <th
                                         class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
                                         Unit Price</th>
                                     <th
                                         class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
                                         Line Total</th>
-                                    {{-- <th
-                                        class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
-                                        Status</th> --}}
                                     <th
                                         class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-16">
                                         Action</th>
@@ -349,29 +343,20 @@
                         <i class="fas fa-sticky-note text-blue-900"></i>
                         Order Notes
                     </h2>
-                    
-                        
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">
-                                    Delivery Instructions
-                                </label>
-                                <textarea name="delivery_instruction" disabled rows="2"
-                                    placeholder="e.g., Deliver to rear entrance..."
-                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{ $order->delivery_instructions}}</textarea>
-                            </div>
-
-
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-2">
-                                    Internal Notes
-                                </label>
-                                <textarea name="order_note" disabled rows="2"
-                                    placeholder="Notes for your team..."
-                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{$order->internal_notes}}</textarea>
-                            </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Instructions</label>
+                            <textarea id="delivery_instructions" rows="2"
+                                placeholder="e.g., Deliver to rear entrance, use loading bay..."
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
                         </div>
-                
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Internal Notes</label>
+                            <textarea id="internal_notes" rows="2"
+                                placeholder="Notes for your team (not visible to customer)..."
+                                class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -385,7 +370,7 @@
                         <h2 class="font-display text-lg font-semibold text-slate-900 mb-4">Order Summary</h2>
 
                         <!-- Coupon Code -->
-                        {{-- <div class="mb-6 p-4 bg-slate-50 rounded-xl">
+                        <div class="mb-6 p-4 bg-slate-50 rounded-xl">
                             <label
                                 class="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Coupon
                                 Code</label>
@@ -404,7 +389,7 @@
                                 <button onclick="removeCoupon()"
                                     class="text-xs text-red-600 hover:underline">Remove</button>
                             </div>
-                        </div> --}}
+                        </div>
 
                         <!-- Totals -->
                         <div class="space-y-3 border-t border-slate-100 pt-4">
@@ -418,13 +403,17 @@
                             </div>
 
                             <!-- Discount Row -->
+                            <!-- <div id="discount-row" class="flex justify-between text-sm hidden">
+                                <span class="text-green-600 font-medium">Discount</span>
+                                <span class="font-semibold text-green-600" id="discount-amount">-£0.00</span>
+                            </div> -->
                             <div id="discount-row" class="flex justify-between text-sm hidden">
                                 <span class="text-green-600 font-medium">Discount</span>
                                 <span class="font-semibold text-green-600" id="discount-amount">-£0.00</span>
                             </div>
 
                             <div class="flex justify-between text-sm">
-                                <span class="text-slate-600">VAT (20%)</span>
+                                <span class="text-slate-600">VAT (05%)</span>
                                 <span class="font-semibold text-slate-900" id="vat-amount">£0.00</span>
                             </div>
 
@@ -443,8 +432,14 @@
                         </div>
 
                         @php
-                            $creditLimit = $order->user->credit_limit ?? 0;
-                            $totalUsed = $order->total_price ?? 0;
+                            $creditLimit = $user->credit_limit ?? 0;
+
+                            $totalUsed = \App\Models\Cart::where('user_id', $user->id)
+                                ->with('product')
+                                ->get()
+                                ->sum(function ($item) {
+                                    return $item->product->price * max(5, $item->quantity);
+                                });
 
                             $available = max($creditLimit - $totalUsed, 0);
 
@@ -453,20 +448,6 @@
                                 : 0;
                         @endphp
                         <!-- Credit Limit Info -->
-                        {{-- <div class="mt-4 p-3 bg-slate-50 rounded-lg">
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="text-slate-600">Credit Limit</span>
-                                <span class="font-medium text-slate-900">£{{ $order->user->credit_limit ?? 0 }}</span>
-                            </div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span class="text-slate-600">Available</span>
-                                <span class="font-medium text-green-600" id="credit-available">£{{ $order->user->credit_limit ?? 0 }}</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
-                                <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all"
-                                    style="width: 0%"></div>
-                            </div>
-                        </div> --}}
                         <div class="mt-4 p-3 bg-slate-50 rounded-lg">
 
                             <!-- Credit Limit -->
@@ -497,15 +478,25 @@
                         </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="space-y-3">
-                        <button onclick="saveOrder()"
-                            class="w-full py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg">
+                        <button onclick="submitOrder()" id="submit-btn" disabled
+                            class="w-full py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                             <i class="fas fa-check-circle mr-2"></i>
-                            Save
+                            Place Sales Order
                         </button>
+                        {{-- <button onclick="saveDraft()"
+                            class="w-full py-3 bg-white text-slate-700 border-2 border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition">
+                            <i class="fas fa-save mr-2"></i>
+                            Save as Draft
+                        </button> --}}
+                        <button onclick="clearOrder()"
+                            class="w-full py-3 bg-white text-red-600 border-2 border-red-200 rounded-xl font-medium hover:bg-red-50 transition">
+                            <i class="fas fa-trash-alt mr-2"></i>
+                            Clear Order
+                        </button>
+                    </div>
 
-                    </div>    
-                    
                     <!-- Help Card -->
                     <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl p-6 text-white">
                         <h3 class="font-semibold mb-2 flex items-center gap-2">
@@ -533,23 +524,22 @@
         </div>
     </div>
 
-    
     <script>
-        
 
         // ✅ render items
         function renderOrderLines() {
 
             const tbody = document.getElementById('order-lines-body');
+            document.getElementById('submit-btn').disabled = orderLines.length === 0;
 
             if (orderLines.length === 0) {
                 tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="text-center py-10">
-                            No items in cart
-                        </td>
-                    </tr>
-                `;
+            <tr>
+                <td colspan="5" class="text-center py-10">
+                    No items in cart
+                </td>
+            </tr>
+        `;
                 return;
             }
 
@@ -557,7 +547,7 @@
        
 
 
-                <tr class="order-line border-b border-slate-100 animate-slide-in">
+         <tr class="order-line border-b border-slate-100 animate-slide-in">
                     <td class="py-4 px-2">
                         <div>
                             <p class="font-medium text-slate-900">${line.name}</p>
@@ -578,15 +568,11 @@
                         </div>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-medium text-slate-900">${line.totalQuantity}</span>
+                        <span class="text-sm font-medium text-slate-900">£ ${Number(line.price).toFixed(2)}</span>
                     </td>
                     <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-medium text-slate-900">£${Number(line.price || 0).toFixed(2)}</span>
+                        <span class="text-sm font-bold text-blue-900">£ ${Number(line.lineTotal).toFixed(2)}</span>
                     </td>
-                    <td class="py-4 px-2 text-right">
-                        <span class="text-sm font-bold text-blue-900">£${Number(line.lineTotal || 0).toFixed(2)}</span>
-                    </td>
-                    
                     <td class="py-4 px-2 text-center">
                         <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-600 transition w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
                             <i class="fas fa-trash-alt"></i>
@@ -598,156 +584,38 @@
 
             document.getElementById('line-count').innerText = orderLines.length + " items";
         }
-        
-        // function updateQty(index, change) {
 
-        //     let item = orderLines[index];
-        //     // 🔥 FORCE NUMBER (THIS IS THE FIX)
-        //     item.qty = Number(item.qty);
-
-        //     if (change < 0 && item.qty <= 1) {
-        //         showToast('Minimum qty is 1');
-        //         return;
-        //     }
-
-        //     item.qty += change;
-        //     item.lineTotal = item.qty * item.price;
-
-        //     // ✅ ONLY THIS API
-        //     fetch('/order-item/update', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        //         },
-        //         body: JSON.stringify({
-        //             order_item_id: item.id,
-        //             qty: item.qty
-        //         })
-        //     });
-
-        //     renderOrderLines();
-        //     updateSummary();
-        // }
-
-        let updatedItems = [];
-        let selectedStatus = null;
 
         function updateQty(index, change) {
 
             let item = orderLines[index];
+              // 🔥 FORCE NUMBER (THIS IS THE FIX)
             item.qty = Number(item.qty);
 
-            if (change < 0 && item.qty <= 1) {
-                showToast('Minimum qty is 1');
+            if (change < 0 && item.qty <= 5) {
+                showToast('Minimum qty is 5');
                 return;
             }
 
             item.qty += change;
             item.lineTotal = item.qty * item.price;
 
-            // ✅ store change
-            updatedItems.push({
-                order_item_id: item.id,
-                qty: item.qty
+            // ✅ DB UPDATE CALL
+            fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    cart_id: item.id,   // IMPORTANT
+                    qty: item.qty
+                })
             });
 
             renderOrderLines();
             updateSummary();
         }
-
-
-        // function updateStatus(status) {
-
-        //     fetch('/order/update-status', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        //         },
-        //         body: JSON.stringify({
-        //             order_id: orderId,
-        //             status: status
-        //         })
-        //     })
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         if (data.success) {
-        //             window.location.href = '/sales-orders2';
-        //         }
-        //     })  
-        //     .catch(err => {
-        //         console.log(err);
-        //         alert("Error ❌");
-        //     });
-        // }
-
-        function updateStatus(status) {
-            console.log(status);
-            selectedStatus = status;
-        }
-
-        console.log("selectedStatus: " ,selectedStatus);
-
-        function saveOrder() {
-
-            // ✅ 1. Update all items
-            let itemPromises = updatedItems.map(item => {
-
-                return fetch('/order-item/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify(item)
-                });
-
-            });
-
-            // ✅ 2. Wait for all item updates
-            Promise.all(itemPromises)
-                .then(() => {
-
-                    // ✅ 3. Update status (if changed)
-                    if (selectedStatus) {
-
-                        console.log("selectedStatus: called");
-
-                        return fetch('/order/update-status', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                order_id: orderId,
-                                status: selectedStatus
-                            })
-                        });
-
-                    }
-
-                })
-                .then(() => {
-
-
-                    alert("Order Updated ✅");
-
-                    // reset temp data
-                    updatedItems = [];
-                    selectedStatus = null;
-
-                   window.location.href = '/sales-orders2';
-
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Update failed ❌");
-                });
-        }
-
-
         function setQty(index, value) {
 
             let item = orderLines[index];
@@ -778,35 +646,76 @@
         // ✅ remove item
         function removeItem(index) {
 
-            let item = orderLines[index];
+            let item = orderLines[index]; // 👈 cart item
 
-            fetch('/order-item/delete', {
+            fetch('/cart/delete', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    order_item_id: item.id
+                    cart_id: item.id ,
+                    user_id: {{ $user->id }} // 👈 IMPORTANT (cart table id)
                 })
             })
-            .then(res => res.json())
-            .then(data => {
+                .then(res => res.json())
+                .then(data => {
 
-                if (data.success) {
+                    if (data.success) {
 
-                    orderLines.splice(index, 1);
+                        // ✅ UI se remove
+                        orderLines.splice(index, 1);
 
-                    renderOrderLines();
-                    updateSummary();
+                        renderOrderLines();
+                        updateSummary();
 
-                    showToast('Item removed ✅');
-                }
+                        showToast('Item removed successfully ✅');
+                    }
 
-            });
+                })
+                .catch(() => {
+                    alert('Delete failed ❌');
+                });
         }
 
+        let appliedCoupon = null;
+        let discount = 0;
+        function applyCoupon() {
 
+            let code = document.getElementById('coupon-input').value;
+
+            fetch('/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ code })
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    if (!data.success) {
+                        showToast(data.message);
+                        return;
+                    }
+
+                    appliedCoupon = data.coupon;
+
+                    // ✅ FORCE FULL REFRESH
+                    renderOrderLines();
+
+                    setTimeout(() => {
+                        updateSummary();
+                    }, 50);
+
+                    document.getElementById('active-coupon').classList.remove('hidden');
+                    document.getElementById('active-coupon-name').innerText = appliedCoupon.code;
+
+                    showToast("Coupon Applied ✅");
+                });
+        }
         // ✅ summary
         function updateSummary() {
 
@@ -814,36 +723,127 @@
             let qty = 0;
 
             orderLines.forEach(item => {
-                total += item.lineTotal;
-                qty += item.qty;
+                total += Number(item.lineTotal);
+                qty += Number(item.qty);
             });
 
-            document.getElementById('subtotal').innerText = "£" + total;
-            document.getElementById('grand-total').innerText = "£" + total;
+            discount = 0;
+
+            if (appliedCoupon) {
+
+                if (appliedCoupon.type === 'percent') {
+                    discount = total * (appliedCoupon.value / 100);
+                } else {
+                    discount = appliedCoupon.value;
+                }
+
+                document.getElementById('discount-row').style.display = 'flex';
+                document.getElementById('discount-amount').innerText = "-£" + discount.toFixed(2);
+
+            } else {
+                document.getElementById('discount-row').style.display = 'none';
+            }
+
+            let afterDiscount = total - discount;
+            let vat = afterDiscount * 0.05;
+            let grandTotal = afterDiscount;
+
+            document.getElementById('subtotal').innerText = "£" + total.toFixed(2);
+            // document.getElementById('vat-amount').innerText = "£" + vat.toFixed(2);
+            document.getElementById('grand-total').innerText = "£" + grandTotal.toFixed(2);
             document.getElementById('total-items').innerText = qty + " items";
 
-            // enable button
+            // ✅ 🔥 THIS FIX
             document.getElementById('submit-btn').disabled = orderLines.length === 0;
         }
+        function removeCoupon() {
 
+            appliedCoupon = null;
+            discount = 0;
 
-        // ✅ place order
+            document.getElementById('active-coupon').classList.add('hidden');
+            document.getElementById('discount-row').classList.add('hidden');
+
+            showToast("Coupon Removed ❌");
+
+            updateSummary();
+        }
+
+        // ✅ SAVE while typing
+        document.getElementById('delivery_instructions').addEventListener('input', function () {
+            localStorage.setItem('delivery_instructions', this.value);
+        });
+
+        document.getElementById('internal_notes').addEventListener('input', function () {
+            localStorage.setItem('internal_notes', this.value);
+        });
+
+        // ✅ LOAD saved data
+        document.addEventListener('DOMContentLoaded', () => {
+
+            renderOrderLines();
+            updateSummary();
+
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('delivery-date').value = today;
+
+            // 🔥 LOAD textarea data
+            document.getElementById('delivery_instructions').value = localStorage.getItem('delivery_instructions') || '';
+            document.getElementById('internal_notes').value = localStorage.getItem('internal_notes') || '';
+        });
+
         function submitOrder() {
+
+            let delivery = document.getElementById('delivery_instructions').value;
+            let notes = document.getElementById('internal_notes').value;
 
             fetch('/place-order', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
+                }, // ✅ comma yaha important hai
+
+                body: new URLSearchParams({
+                    delivery_instructions: delivery,
+                    internal_notes: notes,
+                    discount: discount,
+                    user_id: {{$user->id}}
+                })
             })
                 .then(() => {
                     alert("Order Placed ✅");
-                    window.location.href = "/customer/orders";
+                    window.location.href = "/sales-orders2";
+                    localStorage.removeItem('delivery_instructions');
+                    localStorage.removeItem('internal_notes');
                 })
                 .catch(() => {
                     alert("Error ❌");
                 });
+        }
 
+        function saveDraft() {
+
+            let delivery = document.getElementById('delivery_instructions').value;
+            let notes = document.getElementById('internal_notes').value;
+
+            fetch('/save-draft', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    delivery_instructions: delivery,
+                    internal_notes: notes,
+                    discount: discount
+
+
+                })
+            })
+                .then(() => {
+                    alert("Draft Saved ✅");
+                    window.location.href = "/customer/orders";
+                });
         }
 
 
@@ -900,57 +900,32 @@
                 });
         }
 
-        // function quickAdd(productId) {
-
-        //     fetch('/cart/add', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        //         },
-        //         body: JSON.stringify({
-        //             product_id: productId,
-        //             quantity: 5 // default MOQ
-        //         })
-        //     })
-        //     .then(res => res.json())
-        //     .then(data => {
-
-        //             if (data.success) {
-        //                 window.location.reload();
-        //                 showToast('Added to cart ✅');
-
-        //                 // OPTIONAL: reload lines
-        //                 location.reload(); // ya dynamic add kar sakte ho
-        //             }
-
-        //     });
-        
-        // }
-
         function quickAdd(productId) {
 
-            fetch('/order-item/add', {
+            fetch('/cart/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    order_id: orderId,
                     product_id: productId,
-                    quantity: 5
+                    quantity: 5,// default MOQ
+                    user_id :{{ $user->id }}
                 })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // showToast('Item added to order ✅');
+                .then(res => res.json())
+                .then(data => {
 
-                    // better UX (no reload)
-                    location.reload(); 
-                }
-            });
+                    if (data.success) {
+                        window.location.reload();
+                        showToast('Added to cart ✅');
+
+                        // OPTIONAL: reload lines
+                        location.reload(); // ya dynamic add kar sakte ho
+                    }
+
+                });
         }
 
         document.addEventListener('click', function (e) {
@@ -958,6 +933,17 @@
             if (!e.target.closest('#product-search')) {
                 document.getElementById('product-dropdown').classList.remove('active');
             }
+
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            renderOrderLines();
+            updateSummary();
+
+            // ✅ TODAY DATE AUTO SET
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById('delivery-date').value = today;
 
         });
     </script>

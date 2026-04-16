@@ -837,7 +837,7 @@
                             $lastOrder = $orders->sortByDesc('created_at')->first();
 
                             // Monthly average (last 6 months example)
-                            $months = 6;
+                            $months = 1;
                             $recentOrders = $orders->where('created_at', '>=', now()->subMonths($months));
                             $monthlyAverage = $months > 0 ? round($recentOrders->count() / $months, 1) : 0;
                         @endphp
@@ -846,12 +846,12 @@
                         <div class="grid md:grid-cols-3 gap-4 mb-4">
                             <div class="p-3 bg-slate-50 rounded-lg border">
                                 <p class="text-xs text-slate-500 uppercase">Monthly Average</p>
-                                <p class="text-lg font-bold">{{ $monthlyAverage ? '£'.number_format($monthlyAverage) : '--' }}</p>
+                                <p class="text-lg font-bold">{{ $monthlyAverage ? number_format($monthlyAverage) : '--' }}</p>
                             </div>
 
                             <div class="p-3 bg-slate-50 rounded-lg border">
                                 <p class="text-xs text-slate-500 uppercase">Order Frequency</p>
-                                <p class="text-lg font-bold">{{ $orderFrequency ? $orderFrequency.'x / Week' : '--' }}</p>
+                                <p class="text-lg font-bold">{{ $orderFrequency ? $orderFrequency : '--' }}</p>
                             </div>
 
                             <div class="p-3 bg-slate-50 rounded-lg border">

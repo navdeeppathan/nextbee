@@ -12,7 +12,7 @@ class RoleMiddleware
     {
         // Check if user is logged in
         if (!auth()->check()) {
-            return redirect('/login');
+            return redirect('/');
         }
 
         // Check role

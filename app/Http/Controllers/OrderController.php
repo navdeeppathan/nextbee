@@ -229,24 +229,47 @@ class OrderController extends Controller
         $notes = $data['internal_notes'] ?? null;
         $discount = $data['discount'] ?? 0;
 
-        $items = Cart::where('user_id', auth()->id())
+
+
+        if($request->user_id){
+            $items = Cart::where('user_id', $request->user_id)
             ->with('product')
             ->get();
+        }else{
+            $items = Cart::where('user_id', auth()->id())
+                ->with('product')
+                ->get();
+        }
+
 
         if ($items->isEmpty()) {
             return response()->json(['error' => 'Cart empty']);
         }
 
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'total_price' => 0,
-            'status' => 'created',
-            'delivery_instructions' => $delivery,
-            'internal_notes' => $notes,
-            'parent_order_id' => 0, // temp
-            'is_active' => 1
-        ]);
+        if($request->user_id){
+            $order = Order::create([
+                'user_id' => $request->user_id,
+                'total_price' => 0,
+                'status' => 'created',
+                'delivery_instructions' => $delivery,
+                'internal_notes' => $notes,
+                'parent_order_id' => 0, // temp
+                'is_active' => 1
+            ]);
+        } 
+        else{
 
+            $order = Order::create([
+                'user_id' => auth()->id(),
+                'total_price' => 0,
+                'status' => 'created',
+                'delivery_instructions' => $delivery,
+                'internal_notes' => $notes,
+                'parent_order_id' => 0, // temp
+                'is_active' => 1
+            ]);
+
+        }
         $total = 0;
 
         foreach ($items as $item) {
@@ -277,7 +300,11 @@ class OrderController extends Controller
 
        
 
-        Cart::where('user_id', auth()->id())->delete();
+        if($request->user_id){
+            Cart::where('user_id', $request->user_id)->delete();
+        }else{
+            Cart::where('user_id', auth()->id())->delete();
+        }
 
         return response()->json(['success' => true]);
     }
@@ -422,6 +449,14 @@ class OrderController extends Controller
     }
     public function addPayment(Request $request)
     {
+        $request->validate([
+            'order_id' => 'required',
+            'amount' => 'required|numeric|min:1',
+            'method' => 'required|in:bank,cheque,cash',
+        ]);
+
+    
+
         $order = Order::findOrFail($request->order_id);
 
         $amount = (float) $request->amount;
@@ -441,14 +476,48 @@ class OrderController extends Controller
             return response()->json(['error' => 'Exceeds remaining']);
         }
 
-        // ✅ NEW ENTRY (history)
-        Payment::create([
+         // ✅ PREPARE PAYMENT DATA
+        $paymentData = [
             'order_id' => $order->id,
             'user_id' => auth()->id(),
             'amount' => $amount,
-            'method' => 'UPI',
+            'method' => $request->method,
             'status' => 'done'
-        ]);
+        ];
+
+         // ✅ EXTRA FIELDS BASED ON MODE
+        if ($request->method === 'bank') {
+
+            if (!$request->account_name) {
+                return response()->json(['error' => 'Account name required']);
+            }
+
+            $paymentData['account_name'] = $request->account_name;
+        }
+
+        if ($request->method === 'cheque') {
+
+            if (!$request->cheque_number) {
+                return response()->json(['error' => 'Cheque number required']);
+            }
+
+            $paymentData['cheque_number'] = $request->cheque_number;
+        }
+
+        // ✅ NEW ENTRY (history)
+        // Payment::create([
+        //     'order_id' => $order->id,
+        //     'user_id' => auth()->id(),
+        //     'amount' => $amount,
+        //     // 'method' => 'UPI',
+        //     'method' => $request->method,
+        //     'status' => 'done'
+        // ]);
+
+         // cash → no extra fields
+
+        // ✅ SAVE PAYMENT
+        Payment::create($paymentData);
 
         $finalPaid = $totalPaid + $amount;
 
@@ -566,5 +635,23 @@ class OrderController extends Controller
 
         return response()->json(['success' => true]);
 
+    }
+
+    public function updateAllocation(Request $request)
+    {
+        $request->validate([
+            'order_item_id' => 'required',
+            'is_allocated' => 'required|boolean'
+        ]);
+
+        $item = OrderItem::find($request->order_item_id);
+
+        $item->is_allocated = $request->is_allocated;
+        $item->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Allocation updated successfully'
+        ]);
     }
 }

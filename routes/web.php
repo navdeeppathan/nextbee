@@ -252,6 +252,11 @@ Route::post('/location/update-qty', function (\Illuminate\Http\Request $req) {
     }
 
     $location->quantity -= $req->used_qty;
+
+    // ✅ update expiry if provided
+    if ($req->expiry_date) {
+        $location->expiry_date = $req->expiry_date;
+    }
     $location->save();
 
     return response()->json(['success' => true]);
@@ -279,7 +284,7 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
     });
 
     Route::get('/sales-customers', function () {
-        $customers = User::with('orders')->where('role', 'customer')->whereNotNull('business_name')->get();
+        $customers = User::with('orders')->where('role', 'customer')->whereNotNull('business_name')->orderBy('id', 'desc')->get();
         $totalCustomers = User::where('role', 'customer')->whereNotNull('business_name')->count();
         $activeCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'active')->count();
         $inactiveCustomers = User::where('role', 'customer')->whereNotNull('business_name')->where('status', 'inactive')->count();
@@ -322,9 +327,33 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
         $processingOrders = Order::where('status', 'ready for delivery')->count();
 
         $deliveredOrders = Order::where('status', 'delivered')->count();
+        $users = User::where('role', 'customer')->whereNotNull('business_name')->get();
 
-        return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+        return view('SalesRep.sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders', 'users'));
     });
+
+    Route::get('/create-sales-checkout/{user_id}', function ($user_id) {
+
+    $user = User::findOrFail($user_id);
+
+    $cartItems = \App\Models\Cart::with('product')
+        ->where('user_id', $user_id) // ⚠️ check this
+        ->get();
+
+    $cartData = $cartItems->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'name' => $item->product->title,
+            'sku' => $item->product->sku_code,
+            'price' => $item->product->price,
+            'moq' => 1,
+            'qty' => max(5, $item->quantity),
+            'lineTotal' => $item->product->price * max(5, $item->quantity)
+        ];
+    });
+
+    return view('SalesRep.checkoutsalescustomer', compact('cartItems', 'cartData', 'user'));
+});
 
     Route::get('/sales', function () {
         return view('SalesRep.sales_dashboard');
@@ -477,7 +506,9 @@ Route::get('/checkout-inventory/{order_id}', function ($order_id) {
             'totalQuantity' => $item->product->locations()->sum('quantity'),
             'moq' => 1,
             'qty' => $item->quantity,
-            'lineTotal' => $item->product->price * $item->quantity
+            'lineTotal' => $item->product->price * $item->quantity,
+            'product_id' => $item->product_id,
+            'is_allocated' => $item->is_allocated
         ];
     });
 
@@ -485,6 +516,8 @@ Route::get('/checkout-inventory/{order_id}', function ($order_id) {
 
     return view('Inventory.checkout', compact('orderData', 'order', 'drivers'));
 });
+
+Route::post('/order-item/update-allocation', [OrderController::class, 'updateAllocation']);
 
 
 Route::post('/order/assign-driver', function (\Illuminate\Http\Request $req) {
@@ -519,6 +552,8 @@ Route::get('/checkout', function () {
 
     return view('Landing.checkout', compact('cartItems', 'cartData'));
 });
+
+
 
 Route::post('/order-item/update', function (Request $req) {
 
@@ -568,8 +603,9 @@ Route::post('/order/update-status', function (Request $req) {
     if(!in_array($req->status, ['accepted', 'created'])) {
         $order->status = $req->status;
     }
-    
-    $order->is_active = 0;
+    if(in_array($req->status, ['accepted', 'created'])) {
+        $order->is_active = 0;
+    }
     $order->save();
 
     // ✅ FIXED CONDITION
@@ -596,7 +632,7 @@ Route::post('/order/update-status', function (Request $req) {
         }
     }
 
-    // ✅ LOG ENTRY
+    // LOG ENTRY
     OrderLog::create([
         'order_id' => $order->id,
         'user_id' => auth()->id(),

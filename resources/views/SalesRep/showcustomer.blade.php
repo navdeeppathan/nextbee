@@ -57,7 +57,7 @@
                     <div class="p-4 bg-white rounded-lg border">
                         <p class="text-xs text-slate-500 uppercase">Monthly Average</p>
                         <p class="text-lg font-bold">
-                         £{{ number_format($monthlyAverageOrder ?? 0, 2) }}
+                         {{$monthlyAverageOrder}}
                         </p>
                     </div>
 

@@ -297,7 +297,7 @@
                     </button>
                 </div>
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+                {{-- <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
                     <h2 class="font-display text-lg font-semibold mb-4">
                         Allocate Product from Location
                     </h2>
@@ -346,6 +346,36 @@
                         class="w-full bg-blue-600 text-white py-2 rounded-lg">
                         Save Allocation
                     </button>
+                </div> --}}
+                <div id="allocate-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+                    <div class="bg-white w-full max-w-xl rounded-2xl p-6">
+
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="font-semibold text-lg">Allocate Product</h2>
+                            <button onclick="closeAllocateModal()">✖</button>
+                        </div>
+
+                        <!-- SAME YOUR CONTENT -->
+                        <!-- Product -->
+                        <select id="product-select" class="w-full border px-3 py-2 rounded-lg mb-4"></select>
+
+                        <!-- Location -->
+                        <select id="location-select" class="w-full border px-3 py-2 rounded-lg mb-4"></select>
+
+                        <!-- Qty -->
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <input type="number" id="total-qty" disabled class="border px-2 py-2 rounded">
+                            <input type="number" id="used-qty" class="border px-2 py-2 rounded">
+                            <input type="number" id="remaining-qty" disabled class="border px-2 py-2 rounded">
+                            <input type="date" id="expiry-date" class="border px-2 py-2 rounded w-full mb-4">
+                        </div>
+
+                        <button onclick="saveLocationQty()" class="w-full bg-blue-600 text-white py-2 rounded">
+                            Save Allocation
+                        </button>
+
+                    </div>
                 </div>
 
                 <!-- Order Lines Section -->
@@ -360,7 +390,9 @@
                             {{ $order->status == 'created' ? 'bg-red-100 text-black-300' : 'bg-green-100 text-green-800' }}">
                             {{ $order->status }}
                         </span>
-                        <select onchange="updateStatus(this.value)" class="border px-3 py-2 rounded-lg text-sm">
+                        {{-- <select onchange="updateStatus(this.value)" class="border px-3 py-2 rounded-lg text-sm"> --}}
+                        <select onchange="handleStatusChange(this)" class="border px-3 py-2 rounded-lg text-sm">
+                            
                             <option value="created" {{ $order->status == 'created' ? 'selected' : '' }}>Created</option>
                             <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
                             <option value="ready for delivery" {{ $order->status == 'ready for delivery' ? 'selected' : '' }}>Ready For Delivery</option>
@@ -451,7 +483,7 @@
                                 </label>
                                 <textarea name="delivery_instruction" disabled rows="2"
                                     placeholder="e.g., Deliver to rear entrance..."
-                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{ $order->delivery_instruction}}</textarea>
+                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{ $order->delivery_instructions}}</textarea>
                             </div>
 
                             <div>
@@ -460,7 +492,7 @@
                                 </label>
                                 <textarea name="order_note" disabled rows="2"
                                     placeholder="Notes for your team..."
-                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{$order->order_note}}</textarea>
+                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none">{{$order->internal_notes}}</textarea>
                             </div>
                         </div>
                 
@@ -588,6 +620,15 @@
 
                         </div>
                     </div>
+
+                    <div class="space-y-3">
+                        <button onclick="saveOrder()"
+                            class="w-full py-4 bg-blue-900 text-white rounded-xl font-bold hover:bg-blue-800 transition shadow-lg">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            Save
+                        </button>
+
+                    </div> 
                     
                     <!-- Help Card -->
                     <div class="bg-gradient-to-br from-blue-900 to-blue-800 rounded-2xl p-6 text-white">
@@ -644,39 +685,70 @@
             .then(res => res.json())
             .then(data => {
 
-                if (data.success) {
-                    alert("Driver Assigned ✅");
-                    
-                } else {
-                    alert("Something went wrong ❌");
+                if (!data.success) {
+                    throw new Error("Driver assign failed");
                 }
 
+                // ✅ NOW update status AFTER success
+                return fetch('/order/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        order_id: {{ $order->id }},
+                        status: 'out for delivery'
+                    })
+                });
+
+            })
+            .then(res => res.json())
+            .then(statusRes => {
+
+                if (!statusRes.success) {
+                    throw new Error("Status update failed");
+                }
+
+                alert("Driver Assigned & Status Updated ✅");
+
+                // optional reload
+                window.location.reload();
+
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Something went wrong ❌");
             });
+        }
+
+        function isAllAllocated() {
+            return orderLines.every(item => item.is_allocated === 1);
         }
 
         
         // load locations when product selected
-        document.getElementById('product-select').addEventListener('change', function () {
+        // document.getElementById('product-select').addEventListener('change', function () {
 
-            let productId = this.value;
+        //     let productId = this.value;
 
-            fetch(`/product-locations/${productId}`)
-                .then(res => res.json())
-                .then(locations => {
+        //     fetch(`/product-locations/${productId}`)
+        //         .then(res => res.json())
+        //         .then(locations => {
 
-                    let dropdown = document.getElementById('location-select');
+        //             let dropdown = document.getElementById('location-select');
 
-                    dropdown.innerHTML = '<option value="">Select Location</option>';
+        //             dropdown.innerHTML = '<option value="">Select Location</option>';
 
-                    locations.forEach(loc => {
-                        dropdown.innerHTML += `
-                            <option value="${loc.id}" data-qty="${loc.quantity}">
-                                Aisle ${loc.aisle} - Rack ${loc.rack} (Qty: ${loc.quantity})
-                            </option>
-                        `;
-                    });
-                });
-        });
+        //             locations.forEach(loc => {
+        //                 dropdown.innerHTML += `
+        //                     <option value="${loc.id}" data-qty="${loc.quantity}">
+        //                         Aisle ${loc.aisle} - Rack ${loc.rack} (Qty: ${loc.quantity})
+        //                     </option>
+        //                 `;
+        //             });
+        //         });
+        // });
 
 
         // when location selected
@@ -684,10 +756,19 @@
 
             let selected = this.options[this.selectedIndex];
             let qty = selected.getAttribute('data-qty');
+            let expiry = selected.getAttribute('data-expiry'); // ✅ ADD THIS
 
             document.getElementById('total-qty').value = qty;
             document.getElementById('used-qty').value = '';
             document.getElementById('remaining-qty').value = qty;
+
+             // ✅ FIX FORMAT
+            if (expiry) {
+                let formatted = expiry.split(' ')[0]; // remove time
+                document.getElementById('expiry-date').value = formatted;
+            } else {
+                document.getElementById('expiry-date').value = '';
+            }
         });
 
 
@@ -708,6 +789,9 @@
 
             let locationId = document.getElementById('location-select').value;
             let usedQty = document.getElementById('used-qty').value;
+            let expiryDate = document.getElementById('expiry-date').value; // ✅ ADD THIS
+
+            let currentItem = orderLines.find(item => item.product_id == document.getElementById('product-select').value);
 
             fetch('/location/update-qty', {
                 method: 'POST',
@@ -717,7 +801,8 @@
                 },
                 body: JSON.stringify({
                     location_id: locationId,
-                    used_qty: usedQty
+                    used_qty: usedQty,
+                    expiry_date: expiryDate // ✅ NEW
                 })
             })
             .then(res => res.json())
@@ -726,10 +811,29 @@
                 if (data.error) {
                     alert(data.error);
                 } else {
-                    alert('Location updated ✅');
-                    window.location.reload();
+
+                    // ✅ mark allocated
+                    return fetch('/order-item/update-allocation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            order_item_id: currentItem.id,
+                            is_allocated: 1
+                        })
+                    });
+
                 }
 
+            })
+            .then(() => {
+                alert('Allocated & Updated ✅');
+                window.location.reload();
+            })
+            .catch(() => {
+                alert('Something went wrong ❌');
             });
         }
 
@@ -767,11 +871,15 @@
                             </button>
                             <input type="number" value="${line.qty}" min="${line.moq}" 
                                 onchange="setQty(${index}, this.value)"
-                                class="focus:outline-none">
+                                class="focus:outline-none border ${line.qty > line.totalQuantity ? 'border-red-500' : ''}">
+
                             <button onclick="updateQty(${index}, 1)">
                                 <i class="fas fa-plus text-xs text-slate-600"></i>
                             </button>
                         </div>
+                        <p class="text-xs text-red-500 mt-1 ${line.qty > line.totalQuantity ? '' : 'hidden'}">
+                            Exceeds available stock (${line.totalQuantity})
+                        </p>
                     </td>
                     <td class="py-4 px-2 text-right">
                         <span class="text-sm font-medium text-slate-900">${line.totalQuantity}</span>
@@ -787,6 +895,11 @@
                         <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-600 transition w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
                             <i class="fas fa-trash-alt"></i>
                         </button>
+
+                        <button onclick="openAllocateModal(${index})"
+                            class="text-blue-600 hover:text-blue-800">
+                            Allocate
+                        </button>
                        
                     </td>
                 </tr>
@@ -795,10 +908,115 @@
 
             document.getElementById('line-count').innerText = orderLines.length + " items";
         }
+
+        // <input type="number" value="${line.qty}" min="${line.moq}" 
+        //                         onchange="setQty(${index}, this.value)"
+        //                         class="focus:outline-none">
+        function closeAllocateModal() {
+            document.getElementById('allocate-modal').classList.add('hidden');
+        }
+
+        function openAllocateModal(index) {
+
+            let item = orderLines[index];
+
+            
+
+            // show modal
+            let modal = document.getElementById('allocate-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // reset fields
+            document.getElementById('location-select').innerHTML = '<option>Loading...</option>';
+            document.getElementById('total-qty').value = '';
+            document.getElementById('used-qty').value = '';
+            document.getElementById('remaining-qty').value = '';
+
+            // set product
+            let productSelect = document.getElementById('product-select');
+            productSelect.innerHTML = `
+                <option value="${item.product_id}">
+                    ${item.name}
+                </option>
+            `;
+
+            // 🔥 LOAD LOCATIONS (MAIN FIX)
+            fetch(`/product-locations/${item.product_id}`)
+                .then(res => res.json())
+                .then(locations => {
+
+                    let dropdown = document.getElementById('location-select');
+
+                    if (!locations || locations.length === 0) {
+                        dropdown.innerHTML = `<option>No locations found</option>`;
+                        return;
+                    }
+
+                    dropdown.innerHTML = '<option value="">Select Location</option>';
+
+                    locations.forEach(loc => {
+                        // dropdown.innerHTML += `
+                        //     <option value="${loc.id}" data-qty="${loc.quantity}">
+                        //         Aisle ${loc.aisle} - Rack ${loc.rack} (Qty: ${loc.quantity})
+                        //     </option>
+                        // `;
+                        dropdown.innerHTML += `
+                            <option value="${loc.id}" 
+                                data-qty="${loc.quantity}" 
+                                data-expiry="${loc.expiry_date}">
+                                Aisle ${loc.aisle} - Rack ${loc.rack} 
+                                (Qty: ${loc.quantity}) 
+                                • Exp: ${loc.expiry_date ?? 'N/A'}
+                            </option>
+                        `;
+                    });
+
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('location-select').innerHTML =
+                        `<option>Error loading locations</option>`;
+                });
+        }
+
+        // function updateQty(index, change) {
+
+        //     let item = orderLines[index];
+        //     // 🔥 FORCE NUMBER (THIS IS THE FIX)
+        //     item.qty = Number(item.qty);
+
+        //     if (change < 0 && item.qty <= 1) {
+        //         showToast('Minimum qty is 1');
+        //         return;
+        //     }
+
+        //     item.qty += change;
+        //     item.lineTotal = item.qty * item.price;
+
+        //     // ✅ ONLY THIS API
+        //     fetch('/order-item/update', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //         },
+        //         body: JSON.stringify({
+        //             order_item_id: item.id,
+        //             qty: item.qty
+        //         })
+        //     });
+
+        //     renderOrderLines();
+        //     updateSummary();
+        // }
+        
+        let updatedItems = [];
+        let selectedStatus = null;
+
         function updateQty(index, change) {
 
             let item = orderLines[index];
-            // 🔥 FORCE NUMBER (THIS IS THE FIX)
             item.qty = Number(item.qty);
 
             if (change < 0 && item.qty <= 1) {
@@ -809,65 +1027,144 @@
             item.qty += change;
             item.lineTotal = item.qty * item.price;
 
-            // ✅ ONLY THIS API
-            fetch('/order-item/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    order_item_id: item.id,
-                    qty: item.qty
-                })
+            // ✅ store change
+            updatedItems.push({
+                order_item_id: item.id,
+                qty: item.qty
             });
 
             renderOrderLines();
             updateSummary();
         }
 
+        // function updateStatus(status) {
+        //     console.log(status);
+        //     selectedStatus = status;
+        // }
 
-        function updateStatus(status) {
+        function handleStatusChange(select) {
 
-            fetch('/order/update-status', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    order_id: orderId,
-                    status: status
-                })
-            })
-            .then(() => showToast('Status Updated ✅'));
+            let value = select.value;
+
+            if (!isAllAllocated()) {
+                alert("❌ You must allocate all items before changing status");
+
+                // reset to previous
+                select.value = "{{ $order->status }}";
+                return;
+            }
+
+            // ✅ allowed
+            updateStatus(value);
         }
-        function setQty(index, value) {
 
-            let item = orderLines[index];
+        function saveOrder() {
 
-            let newQty = parseInt(value) || 5;
-            if (newQty < 5) newQty = 5;
+            // ❌ BLOCK if not allocated
+            if (selectedStatus && !isAllAllocated()) {
+                alert("❌ Allocate all items before updating status");
+                return;
+            }
 
-            item.qty = newQty;
-            item.lineTotal = item.qty * item.price;
+            // ✅ 1. Update all items
+            let itemPromises = updatedItems.map(item => {
 
-            // ✅ DB update
-            fetch('/cart/update', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    cart_id: item.id,
-                    qty: item.qty
-                })
+                return fetch('/order-item/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify(item)
+                });
+
             });
 
-            renderOrderLines();
-            updateSummary();
+            // ✅ 2. Wait for all item updates
+            Promise.all(itemPromises)
+                .then(() => {
+
+                    // ✅ 3. Update status (if changed)
+                    if (selectedStatus) {
+
+                        console.log("selectedStatus: called");
+
+                        return fetch('/order/update-status', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                order_id: orderId,
+                                status: selectedStatus
+                            })
+                        });
+
+                    }
+
+                })
+                .then(() => {
+
+
+                    alert("Order Updated ✅");
+
+                    // reset temp data
+                    updatedItems = [];
+                    selectedStatus = null;
+
+                   window.location.href = '/sales-orders-inventory';
+
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("Update failed ❌");
+                });
         }
+
+
+        // function updateStatus(status) {
+
+        //     fetch('/order/update-status', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //         },
+        //         body: JSON.stringify({
+        //             order_id: orderId,
+        //             status: status
+        //         })
+        //     })
+        //     .then(() => showToast('Status Updated ✅'));
+        // }
+        // function setQty(index, value) {
+
+        //     let item = orderLines[index];
+
+        //     let newQty = parseInt(value) || 5;
+        //     if (newQty < 5) newQty = 5;
+
+        //     item.qty = newQty;
+        //     item.lineTotal = item.qty * item.price;
+
+        //     // ✅ DB update
+        //     fetch('/cart/update', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //         },
+        //         body: JSON.stringify({
+        //             cart_id: item.id,
+        //             qty: item.qty
+        //         })
+        //     });
+
+        //     renderOrderLines();
+        //     updateSummary();
+        // }
+       
 
         // ✅ remove item
         function removeItem(index) {

@@ -529,10 +529,15 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    {{-- <button onclick="createOrder()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
+                    {{-- <button class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
                         <i class="fas fa-plus"></i>
                         <span class="hidden sm:inline">Create Order</span>
                     </button> --}}
+                    <button onclick="openUserModal()" 
+                        class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        <span class="hidden sm:inline">Create Order</span>
+                    </button>
                     <button class="relative p-2 text-slate-600 hover:text-blue-900 transition">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">8</span>
@@ -621,7 +626,9 @@
                             <div>Date</div>
                             <div>Amount</div>
                             <div>Status</div>
-                            <div>Payment</div>
+                            <div>Payment/Method</div>
+                            
+
                             <div>Action</div>
                         </div>
 
@@ -666,9 +673,11 @@
 
                             <div>
                                 <p class="text-sm text-slate-600">
-                                    {{ $order->payment_status ?? 'No Payment' }}
+                                    {{ $order->payment_status ?? 'No Payment' }} - {{ $order->payment->method ?? 'N/A' }}
                                 </p>
                             </div>
+
+                            
 
                             <div class="flex gap-2">
                                 <button class="text-blue-900 hover:underline text-sm">
@@ -1017,6 +1026,19 @@
                 </div>
             </div>
 
+            <!-- PAYMENT MODE -->
+            <select id="payment_mode" onchange="handlePaymentMode()"
+                style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px;">
+                
+                <option value="">Select Payment Mode</option>
+                <option value="bank">Bank Transfer</option>
+                <option value="cheque">Cheque</option>
+                <option value="cash">Cash</option>
+            </select>
+
+            <!-- DYNAMIC FIELDS -->
+            <div id="extraFields"></div>
+
             <!-- INPUT -->
             <input type="number" id="pay_amount" placeholder="Enter amount"
                 style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px;">
@@ -1035,6 +1057,64 @@
 
         </div>
     </div>
+
+    <div id="userModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-xl w-[500px] max-h-[80vh] overflow-y-auto p-6">
+            
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold">Select Customer</h2>
+                <button onclick="closeUserModal()" class="text-xl">&times;</button>
+            </div>
+
+            <!-- SEARCH -->
+            <input type="text" id="userSearch" placeholder="Search user..."
+                class="w-full border px-3 py-2 rounded-lg mb-4"
+                onkeyup="filterUsers()">
+
+            <!-- USER LIST -->
+            <div id="userList">
+                @foreach($users as $user)
+                    <div class="p-3 border-b hover:bg-slate-100 cursor-pointer flex justify-between items-center"
+                        onclick="selectUser({{ $user->id }})">
+
+                        <div>
+                            <p class="font-medium">{{ $user->name }}</p>
+                            <p class="text-xs text-gray-500">{{ $user->email }}</p>
+                        </div>
+
+                        <i class="fas fa-arrow-right text-blue-600"></i>
+                    </div>
+                @endforeach
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openUserModal() {
+            document.getElementById('userModal').classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.add('hidden');
+        }
+
+        // redirect on select
+        function selectUser(userId) {
+            window.location.href = `/create-sales-checkout/${userId}`;
+        }
+
+        // search filter
+        function filterUsers() {
+            let input = document.getElementById('userSearch').value.toLowerCase();
+            let users = document.querySelectorAll('#userList > div');
+
+            users.forEach(user => {
+                let text = user.innerText.toLowerCase();
+                user.style.display = text.includes(input) ? 'flex' : 'none';
+            });
+        }
+    </script>   
     <script>
         let currentOrderId = null;
         let remainingAmount = 0;
@@ -1066,10 +1146,38 @@
             document.getElementById('paymentModal').style.display = 'none';
         }
 
+        function handlePaymentMode() {
+            let mode = document.getElementById('payment_mode').value;
+            let container = document.getElementById('extraFields');
+
+            container.innerHTML = '';
+
+            if (mode === 'bank') {
+                container.innerHTML = `
+                    <input type="text" id="account_name" placeholder="Account Name"
+                        style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px;">
+                `;
+            }
+
+            if (mode === 'cheque') {
+                container.innerHTML = `
+                    <input type="text" id="cheque_number" placeholder="Cheque Number"
+                        style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:12px;">
+                `;
+            }
+
+            // cash → no extra fields
+        }
+
         function submitPayment() {
 
             let amount = parseFloat(document.getElementById('pay_amount').value);
+            let mode = document.getElementById('payment_mode').value;
 
+            if (!mode) {
+                alert("Select payment mode ❌");
+                return;
+            }
 
             if (!amount || amount <= 0) {
                 alert("Enter valid amount ❌");
@@ -1081,6 +1189,16 @@
                 return;
             }
 
+            let extraData = {};
+
+            if (mode === 'bank') {
+                extraData.account_name = document.getElementById('account_name').value;
+            }
+
+            if (mode === 'cheque') {
+                extraData.cheque_number = document.getElementById('cheque_number').value;
+            }
+
             fetch('/add-payment', {
                 method: 'POST',
                 headers: {
@@ -1090,7 +1208,8 @@
                 body: new URLSearchParams({
                     order_id: currentOrderId,
                     amount: amount,
-                    method: 'UPI'
+                    method: mode,
+                    ...extraData
                 })
             })
             .then(res => res.json())
@@ -1100,6 +1219,7 @@
                     alert("Payment Successful ✅");
                     location.reload();
                 } else {
+                    
                     alert(data.message || "Payment Failed ❌");
                 }
 

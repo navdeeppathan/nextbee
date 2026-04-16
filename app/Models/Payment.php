@@ -12,7 +12,9 @@ class Payment extends Model
         'user_id',
         'amount',
         'method',
-        'status'
+        'status',
+        'account_name',
+        'cheque_number'
     ];
 
      public function order()
