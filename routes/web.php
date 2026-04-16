@@ -231,9 +231,6 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
         $deliveredOrders = Order::where('status', 'delivered')->where('is_active', 1)->count();
         
-
-
-
         return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
     });
 

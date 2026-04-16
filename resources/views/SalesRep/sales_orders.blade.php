@@ -679,7 +679,7 @@
                                     History
                                 </button>
                                 
-                                @if(!$order->status == 'created')
+                               
                                  <button 
                                     onclick="openPaymentModal({{ $order->id }})"
                                     class="px-3 py-1 rounded text-sm 
@@ -688,7 +688,7 @@
                                     
                                     {{ $order->payment_status == 'full' ? 'Paid' : 'Make Payment' }}
                                 </button>
-                                @endif
+                                
                             </div>
                         </div>
                         @endforeach

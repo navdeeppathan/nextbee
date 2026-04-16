@@ -58,11 +58,11 @@
                     <i class="fas fa-chevron-down section-chevron"></i>
                 </div>
                 <div class="section-content">
-                    <a href="/customers" class="nav-item {{ request()->is('customers') ? 'active' : '' }}">
+                    {{-- <a href="/customers" class="nav-item {{ request()->is('customers') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-store"></i></span>
                         <span class="nav-text">Customers</span>
                         <span class="tooltip">Customers</span>
-                    </a>
+                    </a> --}}
                     <a href="/returns" class="nav-item {{ request()->is('returns') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                         <span class="nav-text">Returns</span>
