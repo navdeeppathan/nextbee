@@ -14,7 +14,8 @@
             style="padding: 18px 20px 14px; border-bottom:1px solid #f1f5f9; display:flex; align-items:center; justify-content:space-between;">
             <div style="font-size:14px; font-weight:700; color:#0f172a;">All Transactions</div>
             <div style="display:flex; align-items:center; gap:10px;">
-                <span class="pill pill-blue" style="font-size:11px;"><span class="pill-dot"></span>6 transactions</span>
+                <span class="pill pill-blue" style="font-size:11px;"><span class="pill-dot"></span>{{ $totalTransactions }}
+                    transactions</span>
                 <button
                     style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:600; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:5px;">
                     <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -37,12 +38,12 @@
                         <th>Date</th>
                         <th>Status</th>
                         <th>Action</th>
-                        <th>Payment</th>
+                        <!-- <th>Payment</th> -->
 
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($payments as $p)
+                    @forelse($payments as $p)
                         <tr>
                             <td style="font-weight:700;">#{{ $p->id }}</td>
 
@@ -54,8 +55,6 @@
 
                             <td>Order Payment</td>
 
-                           
-
                             <td style="font-weight:700;">£ {{ $p->amount }}</td>
 
                             <td>{{ $p->created_at->format('d M Y') }}</td>
@@ -63,34 +62,32 @@
                             <td>
                                 @if($p->order->payment_status == 'pending')
                                     <span class="pill pill-yellow">Pending</span>
-
                                 @elseif($p->order->payment_status == 'partial')
                                     <span class="pill pill-blue">Partial Payment</span>
-
                                 @elseif($p->order->payment_status == 'full')
                                     <span class="pill pill-green">Full Payment</span>
                                 @endif
-                                </td>
-                                <td>
-                                    <a href="/invoice/{{ $p->id }}">
-                                        <button class="px-3 py-1 bg-blue-900 text-white rounded">
-                                            View
-                                        </button>
-                                    </a>
-                                </td>
-                                <td>
-                                    
-                                <button 
-                                    onclick="openPaymentModal({{ $p->order_id }})"
-                                    class="px-3 py-1 rounded 
-                                    {{ $p->order->payment_status == 'full' ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 text-white' }}"
-                                    {{ $p->order->payment_status == 'full' ? 'disabled' : '' }}>
-                                    
-                                    {{ $p->order->payment_status == 'full' ? 'Paid' : 'Make Payment' }}
-                                </button>
+                            </td>
+
+                            <td>
+                                <a href="/invoice/{{ $p->id }}">
+                                    <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                        View
+                                    </button>
+                                </a>
                             </td>
                         </tr>
-                    @endforeach
+
+                    @empty
+                        <!-- 🔥 NO DATA ROW -->
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:30px;">
+                                <div style="color:#64748b; font-size:14px;">
+                                    ❌ No Transactions Found
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
             <div style="padding:15px;">

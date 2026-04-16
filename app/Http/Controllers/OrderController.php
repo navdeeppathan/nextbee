@@ -275,15 +275,7 @@ class OrderController extends Controller
             'parent_order_id' => $order->id // 🔥 MAIN FIX
         ]);
 
-        Payment::create([
-            'order_id' => $order->id,
-            'user_id' => auth()->id(),
-            // 'amount' => $finalTotal,
-            'amount' => 0,
-
-            'method' => 'UPI',
-            'status' => 'pending'
-        ]);
+       
 
         Cart::where('user_id', auth()->id())->delete();
 

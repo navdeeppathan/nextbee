@@ -31,12 +31,12 @@ use App\Models\Payment;
 Route::put('/orderdata/{id}/update-notes', [OrderController::class, 'updateNotes'])
     ->name('order.updateNotes');
 
-    
+
 Route::get('/login', function () {
 
-  
 
-     $categories = Category::all();
+
+    $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
     $brands = Product::whereNotNull('brand')
         ->where('brand', '!=', '')
@@ -62,11 +62,11 @@ Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
 
 Route::get('/', function () {
-        if (auth()->check()) {
+    if (auth()->check()) {
         return redirect('/main'); // ✅ LOGIN HAI → MAIN
     }
 
-    
+
     $categories = Category::all();
     $products = Product::with('category')->get(); // 👈 important
     $brands = Product::whereNotNull('brand')
@@ -115,7 +115,7 @@ Route::get('/brand/{brand}', function ($brand) {
 
 Route::get('/brands/{brand}', function ($brand) {
 
-  $brand = urldecode($brand);
+    $brand = urldecode($brand);
 
     // ✅ ALL PRODUCTS (IMPORTANT)
     $products = Product::with('category')->get();
@@ -213,25 +213,25 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
     Route::get('/sales-orders-inventory', function () {
         $orders = Order::with(['user', 'payment'])
-        ->where('status', '!=', 'draft')
-        ->get();
-        
+            ->where('status', '!=', 'draft')
+            ->get();
+
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
-        $confirmedOrders = Order::where('status', 'accepted')->count();    
+        $confirmedOrders = Order::where('status', 'accepted')->count();
         $pendingOrders = Order::where('status', 'created')->count();
         $processingOrders = Order::where('status', 'ready for delivery')->count();
 
-    
+
         $deliveredOrders = Order::where('status', 'delivered')->count();
 
 
         return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
     });
 
-    
+
 });
 
 Route::get('/product-locations/{productId}', function ($productId) {
@@ -241,7 +241,8 @@ Route::get('/product-locations/{productId}', function ($productId) {
 Route::post('/location/update-qty', function (\Illuminate\Http\Request $req) {
     $location = \App\Models\Location::find($req->location_id);
 
-    if (!$location) return response()->json(['error' => 'Not found']);
+    if (!$location)
+        return response()->json(['error' => 'Not found']);
 
     if ($req->used_qty > $location->quantity) {
         return response()->json(['error' => 'Not enough stock', 'stock' => $location->quantity, 'used' => $req->used_qty]);
@@ -253,15 +254,15 @@ Route::post('/location/update-qty', function (\Illuminate\Http\Request $req) {
     return response()->json(['success' => true]);
 });
 
-    Route::get('/order/logs/{order_id}', function ($order_id) {
+Route::get('/order/logs/{order_id}', function ($order_id) {
 
-        $logs = \App\Models\OrderLog::where('order_id', $order_id)
-            ->latest()
-            ->with('user') // optional if relation
-            ->get();
+    $logs = \App\Models\OrderLog::where('order_id', $order_id)
+        ->latest()
+        ->with('user') // optional if relation
+        ->get();
 
-        return response()->json($logs);
-    });
+    return response()->json($logs);
+});
 
 //sales folder
 
@@ -306,12 +307,12 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
 
     Route::get('/sales-orders2', function () {
 
-        $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->latest()->paginate(10);
+        $orders = Order::with(['user', 'payment'])->where('status', '!=', 'draft')->latest()->paginate(10);
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
-        $confirmedOrders = Order::where('status', 'accepted')->count();    
+        $confirmedOrders = Order::where('status', 'accepted')->count();
         $pendingOrders = Order::where('status', 'created')->count();
         $processingOrders = Order::where('status', 'ready for delivery')->count();
 
@@ -324,7 +325,7 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
         return view('SalesRep.sales_dashboard');
     });
 
-     Route::get('/sales-performance', function () {
+    Route::get('/sales-performance', function () {
         return view('SalesRep.sales_performance');
     });
 
@@ -332,27 +333,27 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
         return view('SalesRep.sales_targets');
     });
 
-});    
+});
 
 
-    Route::get('/driver-orders', function () {
-        $orders = Order::with(['user', 'payment'])
-            ->whereNotIn('status', ['confirm', 'pending'])
-            ->get();
-        $totalOrders = Order::where('status', 'confirm')
-            ->whereMonth('created_at', Carbon::now()->month)
-            ->whereYear('created_at', Carbon::now()->year)
-            ->count();
-        $confirmedOrders = Order::where('status', 'confirm')->count();
-        $pendingOrders = Order::where('status', 'pending')->count();
-        $processingOrders = Order::where('status', 'processing')->count();
-        $deliveredOrders = Order::where('status', 'delivered')->count();
+Route::get('/driver-orders', function () {
+    $orders = Order::with(['user', 'payment'])
+        ->whereNotIn('status', ['confirm', 'pending'])
+        ->get();
+    $totalOrders = Order::where('status', 'confirm')
+        ->whereMonth('created_at', Carbon::now()->month)
+        ->whereYear('created_at', Carbon::now()->year)
+        ->count();
+    $confirmedOrders = Order::where('status', 'confirm')->count();
+    $pendingOrders = Order::where('status', 'pending')->count();
+    $processingOrders = Order::where('status', 'processing')->count();
+    $deliveredOrders = Order::where('status', 'delivered')->count();
 
-        return view('drivers.index', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
-    });
+    return view('drivers.index', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+});
 
 
-   
+
 
 // Route::get('/sales-tasks', function () {
 //     return view('SalesRep.sales_tasks');
@@ -378,7 +379,7 @@ Route::post('/profile/password', [AuthController::class, 'changePassword'])->mid
 Route::get('/customer/orders', [OrderController::class, 'myOrder'])->middleware('auth');
 Route::post('/cart/add', [CartController::class, 'add'])->middleware('auth');
 Route::post('/apply-coupon', [CartController::class, 'applyCoupon']);
-Route::get('/cart/check/{id}', function($id) {
+Route::get('/cart/check/{id}', function ($id) {
 
     $exists = Cart::where('user_id', auth()->id())
         ->where('product_id', $id)
@@ -396,8 +397,8 @@ Route::get('/customer/payments', function () {
     $payments = Payment::where('user_id', auth()->id())
         ->latest()
         ->paginate(10);
-
-    return view('customer.payments', compact('payments'));
+    $totalTransactions = $payments->total(); // pagination wala count
+    return view('customer.payments', compact('payments', 'totalTransactions'));
 
 })->middleware('auth');
 Route::post('/add-payment', [OrderController::class, 'addPayment']);
