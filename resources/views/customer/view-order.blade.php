@@ -151,6 +151,62 @@
         .toast.show {
             transform: translateX(0);
         }
+
+        .tracking-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tracking-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .step.active {
+            background: #1e40af;
+            color: #fff;
+        }
+
+        .line {
+            flex: 1;
+            height: 4px;
+            background: #e2e8f0;
+            margin: 0 8px;
+            border-radius: 2px;
+            position: relative;
+            top: -18px;
+            /* 🔥 PERFECT ALIGN */
+            z-index: 1;
+            transition: 0.3s;
+        }
+
+        .line.active {
+            background: #1e40af;
+        }
+
+        .tracking-item span {
+            font-size: 12px;
+            margin-top: 8px;
+            text-align: center;
+        }
     </style>
 
 
@@ -163,7 +219,7 @@
 
 
         <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
 
             <!-- Header Section -->
             <div class="mb-8">
@@ -184,6 +240,70 @@
                         </a>
                     </div>
                 </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+
+                <h2 class="font-semibold text-lg mb-6">Order Tracking</h2>
+
+                @php
+                    $status = strtolower(trim($order->status));
+
+                    // 🔥 IMPORTANT FIX (space normalize)
+                    $status = str_replace(['  '], ' ', $status);
+
+                    $steps = [
+                        'created' => 1,
+                        'accepted' => 2,
+                        'ready for delivery' => 3,
+                        'out for delivery' => 4,
+                        'delivered' => 5,
+                    ];
+
+                    $currentStep = $steps[$status] ?? 1;
+                @endphp
+
+                <div class="tracking-wrapper">
+
+                    <!-- STEP 1 -->
+                    <div class="tracking-item">
+                        <div class="step {{ $currentStep >= 1 ? 'active' : '' }}">1</div>
+                        <span>Created</span>
+                    </div>
+
+                    <div class="line {{ $currentStep >= 1 ? 'active' : '' }}"></div>
+
+                    <!-- STEP 2 -->
+                    <div class="tracking-item">
+                        <div class="step {{ $currentStep >= 2 ? 'active' : '' }}">2</div>
+                        <span>Accepted</span>
+                    </div>
+
+                    <div class="line {{ $currentStep >= 2 ? 'active' : '' }}"></div>
+
+                    <!-- STEP 3 -->
+                    <div class="tracking-item">
+                        <div class="step {{ $currentStep >= 3 ? 'active' : '' }}">3</div>
+                        <span>Ready For Delivery</span>
+                    </div>
+
+                    <div class="line {{ $currentStep >= 3 ? 'active' : '' }}"></div>
+
+                    <!-- STEP 4 -->
+                    <div class="tracking-item">
+                        <div class="step {{ $currentStep >= 4 ? 'active' : '' }}">4</div>
+                        <span>Out For Delivery</span>
+                    </div>
+
+                    <div class="line {{ $currentStep >= 4 ? 'active' : '' }}"></div>
+
+                    <!-- STEP 5 -->
+                    <div class="tracking-item">
+                        <div class="step {{ $currentStep >= 5 ? 'active' : '' }}">5</div>
+                        <span>Delivered</span>
+                    </div>
+
+                </div>
+
             </div>
 
             <div class="grid lg:grid-cols-3 gap-8">
@@ -252,7 +372,7 @@
                                         <th
                                             class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase w-28">
                                             Line Total</th>
-                                       
+
                                     </tr>
                                 </thead>
                                 <tbody id="order-lines-body">
@@ -397,43 +517,43 @@
 
                 if (orderLines.length === 0) {
                     tbody.innerHTML = `
-                            <tr>
-                                <td colspan="5" class="text-center py-10">
-                                    No items in cart
-                                </td>
-                            </tr>
-                        `;
+                                                <tr>
+                                                    <td colspan="5" class="text-center py-10">
+                                                        No items in cart
+                                                    </td>
+                                                </tr>
+                                            `;
                     return;
                 }
 
                 tbody.innerHTML = orderLines.map((line) => `
-<tr class="order-line border-b border-slate-100 animate-slide-in">
+                    <tr class="order-line border-b border-slate-100 animate-slide-in">
 
-    <td class="py-4 px-2">
-        <div>
-            <p class="font-medium text-slate-900">${line.name}</p>
-            <p class="text-xs text-slate-500">${line.sku} • MOQ: ${line.moq || 1}</p>
-        </div>
-    </td>
+                        <td class="py-4 px-2">
+                            <div>
+                                <p class="font-medium text-slate-900">${line.name}</p>
+                                <p class="text-xs text-slate-500">${line.sku} • MOQ: ${line.moq || 1}</p>
+                            </div>
+                        </td>
 
-    <td class="py-4 px-2 text-center">
-        <span class="font-semibold">${line.qty}</span>
-    </td>
+                        <td class="py-4 px-2 text-center">
+                            <span class="font-semibold">${line.qty}</span>
+                        </td>
 
-    <td class="py-4 px-2 text-right">
-        <span class="text-sm font-medium text-slate-900">
-            £${(line.price || 0).toFixed(2)}
-        </span>
-    </td>
+                        <td class="py-4 px-2 text-right">
+                            <span class="text-sm font-medium text-slate-900">
+                                £${(line.price || 0).toFixed(2)}
+                            </span>
+                        </td>
 
-    <td class="py-4 px-2 text-right">
-        <span class="text-sm font-bold text-blue-900">
-            £${(line.lineTotal || 0).toFixed(2)}
-        </span>
-    </td>
+                        <td class="py-4 px-2 text-right">
+                            <span class="text-sm font-bold text-blue-900">
+                                £${(line.lineTotal || 0).toFixed(2)}
+                            </span>
+                        </td>
 
-</tr>
-`).join('');
+                    </tr>
+                    `).join('');
                 document.getElementById('line-count').innerText = orderLines.length + " items";
             }
 
