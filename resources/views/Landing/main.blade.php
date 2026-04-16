@@ -416,6 +416,20 @@
         .status-dot.blue {
             background: #3b82f6;
         }
+
+        #brandSlider {
+            animation: scrollBrands 25s linear infinite;
+        }
+
+        @keyframes scrollBrands {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
     </style>
 </head>
 
@@ -448,11 +462,11 @@
                 </a>
 
                 <div class="hidden lg:flex items-center gap-8">
-                        <a href="/main" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Home</a>
+                    <a href="/main" class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Home</a>
 
                     <a href="#products"
                         class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Products</a>
-                    
+
                     <a href="#brands"
                         class="text-sm font-medium text-slate-600 hover:text-blue-900 transition">Brands</a>
                     <a href="#services"
@@ -842,9 +856,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                                    class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                                </button> -->
+                                                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                        </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1080,43 +1094,69 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
+            <!-- SLIDER WRAPPER -->
+            <div class="overflow-hidden relative">
 
-                @php
-                    $brandColors = [
-                        'Coca-Cola' => 'text-red-600',
-                        'Pepsi' => 'text-blue-700',
-                        'Cadbury' => 'text-purple-700',
-                        'Kelloggs' => 'text-red-500',
-                        'Heinz' => 'text-blue-600',
-                        'Nestlé' => 'text-green-600',
-                    ];
-                @endphp
-
-                @foreach($brands as $brand)
+                <div id="brandSlider" class="flex gap-6 w-max">
 
                     @php
-                        $color = $brandColors[$brand] ?? 'text-slate-700';
-                        $urlBrand = str_replace("'", "", $brand); // Kellogg's fix
+                        $colors = [
+                            'text-red-600',
+                            'text-blue-700',
+                            'text-purple-700',
+                            'text-red-500',
+                            'text-blue-600',
+                            'text-green-600'
+                        ];
                     @endphp
 
-                    <a href="{{ url('/brand/' . $urlBrand) }}">
+                    @foreach($brands as $index => $brand)
 
-                        <div
-                            class="flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition">
+                        @php
+                            $color = $colors[$index % 6]; // 🔥 repeat colors
+                            $urlBrand = str_replace("'", "", $brand);
+                        @endphp
 
-                            <span class="font-bold text-xl {{ $color }}">
-                                {{ $brand }}
-                            </span>
+                        <a href="{{ url('/brand/' . $urlBrand) }}">
 
-                        </div>
+                            <div
+                                class="min-w-[160px] flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 transition">
 
-                    </a>
+                                <span class="font-bold text-lg {{ $color }}">
+                                    {{ $brand }}
+                                </span>
 
-                @endforeach
+                            </div>
 
+                        </a>
+
+                    @endforeach
+
+                    <!-- 🔥 duplicate for infinite loop -->
+                    @foreach($brands as $index => $brand)
+
+                        @php
+                            $color = $colors[$index % 6];
+                            $urlBrand = str_replace("'", "", $brand);
+                        @endphp
+
+                        <a href="{{ url('/brand/' . $urlBrand) }}">
+
+                            <div
+                                class="min-w-[160px] flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 transition">
+
+                                <span class="font-bold text-lg {{ $color }}">
+                                    {{ $brand }}
+                                </span>
+
+                            </div>
+
+                        </a>
+
+                    @endforeach
+
+                </div>
             </div>
-
         </div>
     </section>
 
@@ -1338,7 +1378,6 @@
             document.getElementById('modal-moq').textContent = moq;
             document.getElementById('modal-qty').value = moq;
 
-            // 🔥 BACKEND CHECK
             fetch('/cart/check/' + id)
                 .then(res => res.json())
                 .then(data => {
@@ -1355,43 +1394,36 @@
                     messageBox.classList.add('hidden');
                     messageBox.innerHTML = "";
 
-                    // ✅ CASE 1: PRODUCT ALREADY IN CART
-                    if (data.exists) {
+                    // ✅ CASE 1: CART EMPTY
+                    if (data.hasCartItems === false) {
 
-                        // 👉 only show current draft
+                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
+                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
+
+                        document.querySelector('[value="new"]').checked = true;
+                    }
+
+                    // ✅ CASE 2: CART HAS ITEMS
+                    else {
+
+                        // 👉 ONLY CURRENT SHOW
                         document.querySelector('[value="current"]').closest('.order-option').style.display = 'block';
                         document.querySelector('[value="current"]').checked = true;
 
-                        // 👉 MESSAGE SHOW IN MODAL
-                        messageBox.classList.remove('hidden');
-                        messageBox.className = "mb-4 p-3 rounded-lg bg-yellow-50 text-yellow-800";
+                        // 👉 CASE 2A: SAME PRODUCT ALREADY EXISTS → SHOW MESSAGE
+                        if (data.exists === true) {
 
-                        messageBox.innerHTML = `
-                <b>Already in Sales Order</b><br>
-                This item is already added to your Sales Order.<br>
-                You can add more quantity to the current draft.
-            `;
+                            messageBox.classList.remove('hidden');
+                            messageBox.className = "mb-4 p-3 rounded-lg bg-yellow-50 text-yellow-800";
 
-                    }
+                            messageBox.innerHTML = `
+                    <b>Already in Sales Order</b><br>
+                    This item is already added to your Sales Order.<br>
+                    You can add more quantity to the current draft.
+                `;
+                        }
 
-                    // ✅ CASE 2: CART EMPTY
-                    else if (!data.hasCartItems) {
-
-                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
-                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
-
-                        document.querySelector('[value="new"]').checked = true;
-
-                    }
-
-                    // ✅ CASE 3: CART HAS ITEMS (but this product not)
-                    else {
-
-                        document.querySelector('[value="new"]').closest('.order-option').style.display = 'block';
-                        document.querySelector('[value="regular"]').closest('.order-option').style.display = 'block';
-                        // document.querySelector('[value="current"]').closest('.order-option').style.display = 'block';
-
-                        document.querySelector('[value="new"]').checked = true;
+                        // 👉 CASE 2B: DIFFERENT PRODUCT → NO MESSAGE
                     }
 
                     document.getElementById('order-modal').classList.add('active');
@@ -1709,7 +1741,25 @@
                     }
                 })
         }
+
+        const slider = document.getElementById('brandSlider');
+
+        slider.addEventListener('mouseenter', () => {
+            slider.style.animationPlayState = 'paused';
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            slider.style.animationPlayState = 'running';
+        });
+
+        const wrapper = document.querySelector('#brandSlider');
+
+        wrapper.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            wrapper.scrollLeft += e.deltaY;
+        });
     </script>
+
 </body>
 
 </html>

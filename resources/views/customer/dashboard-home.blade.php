@@ -58,7 +58,7 @@
         </div>
         <div class="stat-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                <div class="stat-label">Cart Items</div>
+                <div class="stat-label">Current Sales Orders</div>
                 <div
                     style="width:32px;height:32px;background:#dbeafe;border-radius:8px;display:flex;align-items:center;justify-content:center;">
                     <svg width="15" height="15" fill="none" stroke="#1e40af" stroke-width="2" viewBox="0 0 24 24">
@@ -67,7 +67,14 @@
                     </svg>
                 </div>
             </div>
-            <div class="stat-value" style="color:#1e40af;">{{ $cartCount }}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <div class="stat-value" style="color:#1e40af;">
+                    {{ $cartCount }}
+                </div>
+                <div class="stat-value" style="color:#1e40af;">
+                    £{{ $cartTotal }}
+                </div>
+            </div>
         </div>
 
     </div>
@@ -83,7 +90,7 @@
             <div style="display:flex; gap:8px; padding:6px; border-radius:12px; width:fit-content;">
 
                 <button onclick="showTab('orders')" id="ordersTab" class="tab-btn active">
-                    📦 Active
+                    📦 Active Orders
                 </button>
 
                 <button onclick="showTab('drafts')" id="draftsTab" class="tab-btn">
@@ -106,6 +113,7 @@
                         <th>Date</th>
                         <th>Payment</th>
                         <th>Status</th>
+
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -155,6 +163,8 @@
                                         class="px-3 py-1 bg-blue-900 text-white rounded-lg text-xs">
                                         Edit
                                     </a>
+                                @else
+                                    <span class="text-slate-400 text-xs">No Action</span>
                                 @endif
                             </td>
                         </tr>
@@ -185,10 +195,10 @@
                             </td>
 
                             <!-- <td>
-                                                @foreach($order->items as $item)
-                                                    {{ $item->product->title ?? 'Product' }} <br>
-                                                @endforeach
-                                            </td> -->
+                                                                @foreach($order->items as $item)
+                                                                    {{ $item->product->title ?? 'Product' }} <br>
+                                                                @endforeach
+                                                            </td> -->
 
                             <td>
                                 {{ $order->items->sum('quantity') }}

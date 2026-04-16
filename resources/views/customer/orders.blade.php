@@ -34,7 +34,7 @@
         </div>
         <div class="stat-card">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                <div class="stat-label">Cart Items</div>
+                <div class="stat-label">Current Sales Orders</div>
                 <div
                     style="width:32px;height:32px;background:#dbeafe;border-radius:8px;display:flex;align-items:center;justify-content:center;">
                     <svg width="15" height="15" fill="none" stroke="#1e40af" stroke-width="2" viewBox="0 0 24 24">
@@ -43,7 +43,15 @@
                     </svg>
                 </div>
             </div>
-            <div class="stat-value" style="color:#1e40af;">{{ $cartCount }}</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                <div class="stat-value" style="color:#1e40af;">
+                    {{ $cartCount }}
+                </div>
+                <div class="stat-value" style="color:#1e40af;">
+                    £{{ $cartTotal }}
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -78,10 +86,10 @@
                                 #{{ $order->parent_order_id  }}
                             </td>
                             <!-- <td>
-                                        @foreach($order->items as $item)
-                                            {{ $item->product->title ?? 'Product' }} <br>
-                                        @endforeach
-                                    </td> -->
+                                                @foreach($order->items as $item)
+                                                    {{ $item->product->title ?? 'Product' }} <br>
+                                                @endforeach
+                                            </td> -->
                             <td>
                                 {{ $order->items->sum('quantity') }}
                             </td>
@@ -109,10 +117,10 @@
                                     <span class="pill pill-purple">Accepted</span>
 
                                 @elseif($order->status == 'ready for delivery')
-                                    <span class="pill pill-yellow">Ready</span>
+                                    <span class="pill pill-yellow">Ready For Delivery</span>
 
                                 @elseif($order->status == 'out for delivery')
-                                    <span class="pill pill-orange">Out for Delivery</span>
+                                    <span class="pill pill-orange">Out For Delivery</span>
 
                                 @elseif($order->status == 'delivered')
                                     <span class="pill pill-green">Delivered</span>
@@ -126,10 +134,10 @@
                             </td>
                             <td>
                                 <!-- <a href="/order/{{ $order->parent_order_id }}">
-                                            <button class="px-3 py-1 bg-blue-900 text-white rounded">
-                                                View Order
-                                            </button>
-                                        </a> -->
+                                                    <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                                        View Order
+                                                    </button>
+                                                </a> -->
 
                                 {{-- ❌ Draft me button hide --}}
                                 @if($order->status != 'draft')
