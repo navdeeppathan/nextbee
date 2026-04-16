@@ -687,60 +687,61 @@
                     @foreach($products as $product)
 
 
-                                        @php
-                                            $slug = \Illuminate\Support\Str::slug($product->category->name);
-                                        @endphp
-                                        <!-- <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
-                                                                                                    data-category="{{ $slug }}"> -->
-                                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
-                        {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}" data-category="{{ $slug }}"
-                                            data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
-                                            <div class="relative h-48 bg-gray-100 overflow-hidden">
-                                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
-                                                    alt="Coca Cola" class="product-image w-full h-full object-cover">
-                                                <div class="product-badge">
-                                                    <span
-                                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
-                                                </div>
-                                                <div
-                                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
-                                                </div>
-                                                <div class="quick-add absolute bottom-4 left-4 right-4">
-                                                    <button
-                                                        onclick="addToSalesOrder('{{ $product->title }}', '{{ $product->sku_code }}', {{ $product->moq }}, {{ $product->price }}, {{ $product->id }})"
-                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
-                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                    </button>
-                                                    <!-- <button onclick="addToCart({{ $product->id }})"
-                                                                                                                                    class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                                                                                                    <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                                                                                                </button> -->
-                                                </div>
-                                            </div>
-                                            <div class="p-5">
-                                                <div class="flex items-center justify-between mb-2">
-                                                    <span class="text-xs text-slate-500">SKU : {{ $product->sku_code }}</span>
-                                                    <span class="status-dot green"></span><span class="text-xs text-green-600">In
-                                                        Stock</span>
-                                                </div>
-                                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2">{{ $product->title }}</h3>
-                                                <p class="text-sm text-slate-500 mb-3">{{ $product->category->name }}</p>
-                                                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                                                    <div>
-                                                        <p class="text-xs text-slate-400">Trade Price</p>
-                                                        <p class="text-lg font-bold text-blue-900">£ {{ $product->price }}</p>
-                                                    </div>
-                                                    <div class="text-right">
-                                                        <p class="text-xs text-slate-400">MOQ</p>
-                                                        <p class="text-sm font-semibold text-slate-700">{{ $product->moq }} cases</p>
-                                                    </div>
-                                                </div>
-                                                <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
-                                                    <i class="fas fa-truck"></i>
-                                                    <span>Next-day delivery available</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                        @php
+                            $slug = \Illuminate\Support\Str::slug($product->category->name);
+                        @endphp
+                        <!-- <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item"
+                                                                                                        data-category="{{ $slug }}"> -->
+                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
+                            {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}"
+                            data-category="{{ $slug }}"
+                            data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
+                            <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
+                                    alt="Coca Cola" class="product-image w-full h-full object-cover">
+                                <div class="product-badge">
+                                    <span
+                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
+                                </div>
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                                </div>
+                                <div class="quick-add absolute bottom-4 left-4 right-4">
+                                    <button
+                                        onclick="addToSalesOrder('{{ $product->title }}', '{{ $product->sku_code }}', {{ $product->moq }}, {{ $product->price }}, {{ $product->id }})"
+                                        class="w-full py-3 bg-blue-900 text-white rounded-xl font-medium shadow-lg hover:bg-blue-800 transition">
+                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                    </button>
+                                    <!-- <button onclick="addToCart({{ $product->id }})"
+                                                                                                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                                                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                                                                                    </button> -->
+                                </div>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs text-slate-500">SKU : {{ $product->sku_code }}</span>
+                                    <span class="status-dot green"></span><span class="text-xs text-green-600">In
+                                        Stock</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2">{{ $product->title }}</h3>
+                                <p class="text-sm text-slate-500 mb-3">{{ $product->category->name }}</p>
+                                <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+                                    <div>
+                                        <p class="text-xs text-slate-400">Trade Price</p>
+                                        <p class="text-lg font-bold text-blue-900">£ {{ $product->price }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-slate-400">MOQ</p>
+                                        <p class="text-sm font-semibold text-slate-700">{{ $product->moq }} cases</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Next-day delivery available</span>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
 
 
@@ -1440,59 +1441,97 @@
             });
         });
 
+        function filterCategory(category, btn) {
+
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
+
+            let title = document.getElementById('productTitle');
+            let isBrandPage = window.location.pathname.includes('/brand/');
+
+            // ✅ ALL PRODUCTS CLICK
+            if (category === 'all') {
+
+                showAllMode = true; // 🔥 MODE ON
+
+                title.innerText = "Showing all products";
+
+                document.querySelectorAll('.product-item').forEach(item => {
+                    item.style.display = 'block';
+                });
+
+                return;
+            }
+
+            // ❗ CATEGORY FILTER
+            document.querySelectorAll('.product-item').forEach(item => {
+
+                // 🔥 CASE 1: ALL MODE (brand ignore)
+                if (showAllMode) {
+
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                }
+
+                // 🔥 CASE 2: BRAND PAGE NORMAL
+                else if (isBrandPage) {
+
+                    if (item.dataset.category === category && item.dataset.brand === 'selected') {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                }
+
+                // 🔥 CASE 3: NORMAL PAGE
+                else {
+
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                }
+
+            });
+
+            // TITLE UPDATE
+            if (showAllMode) {
+                title.innerText = "Showing " + category + " (All Brands)";
+            } else if (isBrandPage) {
+                title.innerText = "Showing products of {{ $brand }}";
+            } else {
+                title.innerText = "Showing category: " + category;
+            }
+        }
         window.onload = function () {
 
-    let title = document.getElementById('productTitle');
+            let isBrandPage = window.location.pathname.includes('/brand/');
 
-    // ✅ brand title
-    title.innerText = "Showing products of {{ $brand }}";
+            if (!isBrandPage) return;
 
-    // ✅ only brand products show
-    document.querySelectorAll('.product-item').forEach(item => {
+            showAllMode = false; // 🔥 RESET
 
-        if (item.dataset.brand === 'selected') {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
+            document.querySelectorAll('.product-item').forEach(item => {
 
-    });
+                if (item.dataset.brand === 'selected') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
 
-};
-    function filterCategory(category, btn) {
+            });
 
-    document.querySelectorAll('.category-btn').forEach(b => {
-        b.classList.remove('active');
-    });
-    btn.classList.add('active');
+        };
 
-    let title = document.getElementById('productTitle');
-
-    // ✅ ALL PRODUCTS CLICK
-    if (category === 'all') {
-
-        title.innerText = "Showing all products";
-
-        document.querySelectorAll('.product-item').forEach(item => {
-            item.style.display = 'block';
-        });
-
-        return;
-    }
-
-    // ✅ CATEGORY FILTER
-    title.innerText = "Showing products of {{ $brand }}";
-
-    document.querySelectorAll('.product-item').forEach(item => {
-
-        if (item.dataset.category === category && item.dataset.brand === 'selected') {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
-
-    });
-}
     </script>
 
     <script>
