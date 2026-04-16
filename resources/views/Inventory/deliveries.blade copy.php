@@ -478,10 +478,10 @@
                     {{-- <button class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-semibold text-white transition">
                         + New Route
                     </button> --}}
-                    {{-- <button onclick="openCreateModal()" 
+                    <button onclick="openCreateModal()" 
                         class="bg-emerald-600 px-4 py-2 rounded-lg text-white">
                         + New Route
-                    </button> --}}
+                    </button>
                     <button class="relative p-2 text-slate-600 hover:text-blue-900 transition" aria-label="Notifications">
                         <i class="fas fa-bell text-xl"></i>
                         <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-semibold">8</span>
@@ -514,10 +514,10 @@
                         <p class="text-2xl font-bold text-slate-900 font-display">{{$activeDrivers}}</p>
                         <p class="text-xs text-slate-500 uppercase font-medium mt-1">Active Drivers</p>
                     </div>
-                    {{-- <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <div class="text-center p-4 bg-slate-50 rounded-xl border border-slate-200">
                         <p class="text-2xl font-bold text-slate-900 font-display">{{$totalStops}}</p>
                         <p class="text-xs text-slate-500 uppercase font-medium mt-1">Total Stops</p>
-                    </div> --}}
+                    </div>
                     <div class="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-200">
                         <p class="text-2xl font-bold text-emerald-600 font-display">{{$completedRoutes}}</p>
                         <p class="text-xs text-emerald-600 uppercase font-medium mt-1">Completed</p>
@@ -707,100 +707,157 @@
 
             <div class="grid lg:grid-cols-3 gap-6">
 
-            @foreach($orders as $order)
+                @foreach($routes as $route)
 
-            <div class="card overflow-hidden border border-slate-200">
+                <div class="card overflow-hidden 
+                    {{ $route->status == 'completed' ? 'route-completed' : ($route->status == 'in_progress' ? 'route-active' : 'route-pending') }}">
 
-                <!-- HEADER -->
-                <div class="p-6 border-b border-slate-200">
-                    
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-900">
-                                #SO-{{ $order->id }}
-                            </h3>
-                            <p class="text-xs text-slate-500">
-                                {{ $order->created_at->format('M d, Y') }}
-                            </p>
-                        </div>
+                    <!-- HEADER -->
+                    <div class="p-6 border-b border-slate-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900">
+                                    {{ $route->route_code ?? 'N/A' }}
+                                </h3>
+                                <p class="text-xs text-slate-500">
+                                    {{ $route->area ?? 'No Area' }}
+                                </p>
+                            </div>
 
-                        <span class="px-2 py-1 text-xs font-bold rounded-full
-                            {{ $order->status == 'delivered' ? 'bg-emerald-100 text-emerald-700' :
-                            ($order->status == 'out for delivery' ? 'bg-blue-100 text-blue-700' :
-                            'bg-amber-100 text-amber-700') }}">
-                            {{ ucfirst($order->status) }}
-                        </span>
-                    </div>
-
-                    <!-- CUSTOMER -->
-                    <div class="mb-4">
-                        <p class="text-sm font-semibold text-slate-900">
-                            {{ $order->user->name ?? 'N/A' }}
-                        </p>
-                        <p class="text-xs text-slate-500">
-                            {{ $order->user->delivery_address ?? 'No Address' }}
-                        </p>
-                    </div>
-
-                    <!-- DRIVER -->
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
-                            {{ strtoupper(substr($order->driver->name ?? 'NA',0,2)) }}
-                        </div>
-
-                        
-
-                        <div>
-                            <p class="text-sm font-semibold text-slate-900">
-                                {{ $order->driver->name ?? 'No Driver Assigned' }}
-                            </p>
-                            <p class="text-xs text-slate-500">
-                                Delivery: {{ $order->delivery_date ?? 'Not Set' }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- ORDER INFO -->
-                    <div class="flex justify-between text-xs text-slate-500 mb-2">
-                        <span>
-                            Items: {{ $order->items->count() }}
-                        </span>
-                        <span class="font-semibold text-slate-900">
-                            £{{ number_format($order->total_price, 2) }}
-                        </span>
-                    </div>
-
-                </div>
-
-                <!-- ITEMS LIST -->
-                <div class="p-4 space-y-2 max-h-48 overflow-y-auto">
-
-                    @foreach($order->items as $item)
-                        <div class="flex justify-between p-2 bg-slate-50 rounded-lg text-xs">
-                            <span class="font-medium text-slate-700">
-                                {{ $item->product->title ?? 'Product' }}
-                            </span>
-                            <span class="text-slate-500">
-                                x{{ $item->quantity }}
+                            <span class="px-2 py-1 text-xs font-bold rounded-full
+                                {{ $route->status == 'completed' ? 'bg-emerald-100 text-emerald-700' :
+                                ($route->status == 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                                'bg-amber-100 text-amber-700') }}">
+                                {{ ucfirst(str_replace('_',' ',$route->status)) }}
                             </span>
                         </div>
-                    @endforeach
+
+                        <!-- DRIVER -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+                                {{ strtoupper(substr($route->driver->name ?? 'NA',0,2)) }}
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900">
+                                    {{ $route->driver->name ?? 'No Driver' }}
+                                </p>
+                                <p class="text-xs text-slate-500">
+                                    {{ $route->van_number ?? 'No Van' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- PROGRESS -->
+                        @php
+                            $percentage = $route->total_stops ? ($route->completed_stops / $route->total_stops)*100 : 0;
+                        @endphp
+
+                        <div class="flex justify-between text-xs text-slate-500 mb-2">
+                            <span>
+                                Progress: {{ $route->completed_stops ?? 0 }}/{{ $route->total_stops ?? 0 }} stops
+                            </span>
+                            <span class="font-semibold
+                                {{ $route->status == 'completed' ? 'text-emerald-600' :
+                                ($route->status == 'in_progress' ? 'text-blue-600' :
+                                'text-amber-600') }}">
+                                {{ round($percentage) }}%
+                            </span>
+                        </div>
+
+                        <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="h-full 
+                                {{ $route->status == 'completed' ? 'bg-emerald-500' :
+                                ($route->status == 'in_progress' ? 'bg-blue-600' :
+                                'bg-amber-500') }}"
+                                style="width: {{ $percentage }}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STOPS -->
+                    <div class="p-4 space-y-2 max-h-64 overflow-y-auto">
+
+                        @forelse($route->stops as $index => $stop)
+
+                            @if($stop->status == 'completed')
+                                <!-- COMPLETED -->
+                                <div class="flex items-center gap-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                                    <span class="text-emerald-600 text-lg">✓</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-900">
+                                            {{ $stop->customer_name }}
+                                        </p>
+                                        <p class="text-xs text-slate-500">
+                                            Delivered {{ $stop->completed_at ?? '' }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                            @elseif($stop->status == 'in_progress')
+                                <!-- CURRENT -->
+                                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <span class="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs animate-pulse">●</span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-semibold text-slate-900">
+                                            {{ $stop->customer_name }}
+                                        </p>
+                                        <p class="text-xs text-blue-600">
+                                            In Progress
+                                        </p>
+                                    </div>
+                                </div>
+
+                            @else
+                                <!-- PENDING -->
+                                <div class="flex items-center gap-3 p-3 bg-slate-100 rounded-lg border border-slate-200 opacity-50">
+                                    <span class="text-slate-400 text-xs font-bold">
+                                        {{ $index + 1 }}
+                                    </span>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-slate-500">
+                                            {{ $stop->customer_name }}
+                                        </p>
+                                        <p class="text-xs text-slate-400">
+                                            Pending
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+
+                        @empty
+                            <p class="text-xs text-slate-400">No stops available</p>
+                        @endforelse
+
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <div class="p-4 border-t border-slate-200 bg-slate-50">
+                        <button onclick="openRoute({{ $route->route_id }})"
+                            class="w-full py-2 
+                            {{ $route->status == 'completed' ? 'bg-slate-200 text-slate-700' :
+                            ($route->status == 'in_progress' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                            'bg-amber-50 text-amber-700 border border-amber-200') }}
+                            rounded-lg text-sm font-semibold hover:opacity-90 transition">
+                            
+                            {{ $route->status == 'completed' ? 'View Report' :
+                            ($route->status == 'in_progress' ? 'View Details & Items' :
+                            'Monitor Loading') }}
+                        </button>
+
+                        <!-- DELETE -->
+                        <form method="POST" action="/routes/{{ $route->route_id }}">
+                            @csrf
+                            @method('DELETE')
+                            <button class="mt-2 w-full bg-red-100 text-red-600 py-2 rounded-lg text-sm font-semibold">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
 
                 </div>
 
-                <!-- ACTION -->
-                <div class="p-4 border-t border-slate-200 bg-slate-50">
-
-                    <a href="/checkout-inventory/{{ $order->id }}"
-                        class="block w-full text-center py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">
-                        View Details
-                    </a>
-
-                </div>
-
-            </div>
-
-            @endforeach
+                @endforeach
 
             </div>
 

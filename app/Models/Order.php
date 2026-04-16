@@ -20,7 +20,9 @@ class Order extends Model
         'internal_notes',         // ✅ ADD THIS
         'payment_status',
         'parent_order_id',   // 🔥 ADD THIS
-        'is_active'          // 🔥 ADD THIS
+        'is_active' ,
+        'assigned_driver',
+        'delivery_date'       // 🔥 ADD THIS
 
     ];
     public function items()
@@ -35,6 +37,11 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class);
 
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'assigned_driver');
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\Route;
 use App\Models\RouteItem;
@@ -17,12 +18,20 @@ class RouteController extends Controller
         $routes = Route::with(['driver', 'stops', 'items', 'metrics'])->get();
         $activeDrivers = User::where('role', 'driver')->where('status', 'active')->count();
         $totalStops = Stop::count();
-        $completedRoutes = Route::where('status', 'completed')->count();
-        $inPrgoressRoutes = Route::where('status', 'in_progress')->count();
-        $pendingRoutes = Route::where('status', 'pending')->count();
+        // $completedRoutes = Route::where('status', 'completed')->count();
+        // $inPrgoressRoutes = Route::where('status', 'in_progress')->count();
+        // $pendingRoutes = Route::where('status', 'pending')->count();
+        $completedRoutes = Order::where('status', 'delivered')->count();
+        $inPrgoressRoutes = Order::where('status', 'out for delivery')->count();
+        $pendingRoutes = Order::where('status', 'ready for delivery')->count();
+
+        $orders = Order::with(['user', 'driver', 'items'])
+            ->where('status', 'ready for delivery')
+            ->latest()
+            ->get();
 
 
-        return view('Inventory.deliveries', compact('routes', 'activeDrivers', 'totalStops', 'completedRoutes', 'inPrgoressRoutes', 'pendingRoutes'));
+        return view('Inventory.deliveries', compact('routes', 'activeDrivers', 'totalStops', 'completedRoutes', 'inPrgoressRoutes', 'pendingRoutes', 'orders'));
     }
 
     // ✅ STORE ROUTE
