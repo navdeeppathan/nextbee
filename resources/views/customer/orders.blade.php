@@ -78,10 +78,10 @@
                                 #{{ $order->parent_order_id  }}
                             </td>
                             <!-- <td>
-                                @foreach($order->items as $item)
-                                    {{ $item->product->title ?? 'Product' }} <br>
-                                @endforeach
-                            </td> -->
+                                        @foreach($order->items as $item)
+                                            {{ $item->product->title ?? 'Product' }} <br>
+                                        @endforeach
+                                    </td> -->
                             <td>
                                 {{ $order->items->sum('quantity') }}
                             </td>
@@ -125,11 +125,20 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="/order/{{ $order->parent_order_id }}">
-                                    <button class="px-3 py-1 bg-blue-900 text-white rounded">
-                                        View Order
-                                    </button>
-                                </a>
+                                <!-- <a href="/order/{{ $order->parent_order_id }}">
+                                            <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                                View Order
+                                            </button>
+                                        </a> -->
+
+                                {{-- ❌ Draft me button hide --}}
+                                @if($order->status != 'draft')
+                                    <a href="/order/{{ $order->parent_order_id }}">
+                                        <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                            View Order
+                                        </button>
+                                    </a>
+                                @endif
                             </td>
 
                         </tr>
