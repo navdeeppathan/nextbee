@@ -635,7 +635,16 @@
                     status: status
                 })
             })
-            .then(() => showToast('Status Updated ✅'));
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/sales-orders2';
+                }
+            })  
+            .catch(err => {
+                console.log(err);
+                alert("Error ❌");
+            });
         }
         function setQty(index, value) {
 

@@ -213,22 +213,28 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
     Route::get('/sales-orders-inventory', function () {
         $orders = Order::with(['user', 'payment'])
-            ->where('status', '!=', 'draft')
-            ->get();
-
+        ->where('status', '!=', 'draft')
+        ->where('status', '!=', 'created')
+        ->where('is_active', 1)
+        ->latest()
+        ->paginate(10);
+        
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
+            ->where('is_active', 1)
             ->count();
-        $confirmedOrders = Order::where('status', 'accepted')->count();
-        $pendingOrders = Order::where('status', 'created')->count();
-        $processingOrders = Order::where('status', 'ready for delivery')->count();
+
+        $confirmedOrders = Order::where('status', 'accepted')->where('is_active', 1)->count();    
+       
+        $processingOrders = Order::where('status', 'ready for delivery')->where('is_active', 1)->count();
+
+        $deliveredOrders = Order::where('status', 'delivered')->where('is_active', 1)->count();
+        
 
 
-        $deliveredOrders = Order::where('status', 'delivered')->count();
 
-
-        return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'pendingOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
+        return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
     });
 
 
@@ -307,7 +313,9 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
 
     Route::get('/sales-orders2', function () {
 
-        $orders = Order::with(['user', 'payment'])->where('status', '!=', 'draft')->latest()->paginate(10);
+
+        $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->where('is_active', 1)->latest()->paginate(10);
+
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
@@ -476,7 +484,21 @@ Route::get('/checkout-inventory/{order_id}', function ($order_id) {
         ];
     });
 
-    return view('Inventory.checkout', compact('orderData', 'order'));
+    $drivers = User::where('role', 'driver')->where('status', 'active')->get();
+
+    return view('Inventory.checkout', compact('orderData', 'order', 'drivers'));
+});
+
+
+Route::post('/order/assign-driver', function (\Illuminate\Http\Request $req) {
+
+    $order = Order::findOrFail($req->order_id);
+
+    $order->assigned_driver = $req->driver_id;
+    $order->delivery_date = $req->delivery_date;
+    $order->save();
+
+    return response()->json(['success' => true]);
 });
 
 Route::get('/checkout', function () {
@@ -522,12 +544,60 @@ Route::post('/order-item/update', function (Request $req) {
     return response()->json(['success' => true]);
 });
 
+// Route::post('/order/update-status', function (Request $req) {
+
+//     $order = Order::findOrFail($req->order_id);
+//     $oldStatus = $order->status; // 🔥 old status
+//     $order->status = $req->status;
+//     $order->save();
+
+//     // ✅ LOG ENTRY
+//     OrderLog::create([
+//         'order_id' => $order->id,
+//         'user_id' => auth()->id(),
+//         'action_type' => 'status_update',
+//         'old_value' => $oldStatus,
+//         'new_value' => $req->status
+//     ]);
+
+//     return response()->json(['success' => true]);
+// });
 Route::post('/order/update-status', function (Request $req) {
 
-    $order = Order::findOrFail($req->order_id);
-    $oldStatus = $order->status; // 🔥 old status
-    $order->status = $req->status;
+    $order = Order::with('items')->findOrFail($req->order_id);
+
+    $oldStatus = $order->status;
+
+    if(!in_array($req->status, ['accepted', 'created'])) {
+        $order->status = $req->status;
+    }
+    
+    $order->is_active = 0;
     $order->save();
+
+    // ✅ FIXED CONDITION
+    if (in_array($req->status, ['accepted', 'created'])) {
+
+        $order2 = Order::create([
+            'user_id' => $order->user_id,
+            'total_price' => $order->total_price,
+            'status' => $req->status,
+            'discount' => $order->discount,
+            'delivery_instructions' => $order->delivery_instructions,
+            'internal_notes' => $order->internal_notes,
+            'parent_order_id' => $order->id,
+            'is_active' => 1
+        ]);
+
+        foreach ($order->items as $item) {
+            OrderItem::create([
+                'order_id' => $order2->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+            ]);
+        }
+    }
 
     // ✅ LOG ENTRY
     OrderLog::create([

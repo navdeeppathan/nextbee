@@ -679,11 +679,11 @@
                     <p class="text-2xl font-bold text-slate-900">{{ $totalOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">This month</p>
                 </div>
-                <div class="bg-white rounded-xl p-4 border border-slate-200">
+                {{-- <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Pending</p>
                     <p class="text-2xl font-bold text-amber-600">{{ $pendingOrders }}</p>
                     <p class="text-xs text-slate-400 mt-1">Needs action</p>
-                </div>
+                </div> --}}
                 <div class="bg-white rounded-xl p-4 border border-slate-200">
                     <p class="text-sm text-slate-500">Confirmed</p>
                     <p class="text-2xl font-bold text-blue-600">{{ $confirmedOrders }}</p>
@@ -827,7 +827,7 @@
 
                             <div>
                                 <p class="text-sm text-slate-600">
-                                    {{ $order->payment->status ?? 'No Payment' }}
+                                    {{ $order->payment_status ?? 'No Payment' }}
                                 </p>
                             </div>
 
@@ -846,6 +846,21 @@
 
                        
                     </div>
+                </div>
+
+                <div class="flex items-center justify-between p-4 border-t border-slate-200">
+
+                    <!-- Showing count -->
+                    <p class="text-sm text-slate-500">
+                        Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} 
+                        of {{ $orders->total() }} orders
+                    </p>
+
+                    <!-- Pagination Links -->
+                    <div>
+                        {{ $orders->links('pagination::tailwind') }}
+                    </div>
+
                 </div>
 
                 <!-- Pagination -->
