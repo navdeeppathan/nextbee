@@ -439,11 +439,11 @@
                         <div class="mt-4 p-3 bg-slate-50 rounded-lg">
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="text-slate-600">Credit Limit</span>
-                                <span class="font-medium text-slate-900">£25,000</span>
+                                <span class="font-medium text-slate-900">£ {{ Auth::user()->credit_limit ?? 0 }}</span>
                             </div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="text-slate-600">Available</span>
-                                <span class="font-medium text-green-600" id="credit-available">£25,000</span>
+                                <span class="font-medium text-green-600" id="credit-available">£ {{ Auth::user()->credit_limit ?? 0 }}</span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
                                 <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all"
@@ -724,6 +724,29 @@
             document.getElementById('grand-total').innerText = "£" + grandTotal.toFixed(2);
             document.getElementById('total-items').innerText = qty + " items";
 
+            let creditLimit = {{ Auth::user()->credit_limit ?? 0 }};
+
+// 🔥 NO LIMIT — NEGATIVE ALLOWED
+let available = creditLimit - grandTotal;
+
+// UI update
+let availableEl = document.getElementById('credit-available');
+availableEl.innerText = "£" + available.toFixed(2);
+
+// 🔥 COLOR CHANGE
+if (available < 0) {
+    availableEl.classList.remove('text-green-600');
+    availableEl.classList.add('text-green-600'); // ❌ negative
+} else {
+    availableEl.classList.remove('text-green-600');
+    availableEl.classList.add('text-green-600'); // ✅ normal
+}
+
+// 🔥 PROGRESS BAR
+let percent = (grandTotal / creditLimit) * 100;
+if (percent > 100) percent = 100;
+
+document.getElementById('credit-bar').style.width = percent + "%";
             // ✅ 🔥 THIS FIX
             document.getElementById('submit-btn').disabled = orderLines.length === 0;
         }

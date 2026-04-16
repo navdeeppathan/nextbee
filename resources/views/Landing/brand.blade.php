@@ -286,6 +286,20 @@
             background: #1e40af;
             color: white;
         }
+
+         #brandSlider {
+            animation: scrollBrands 25s linear infinite;
+        }
+
+        @keyframes scrollBrands {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
     </style>
 </head>
 
@@ -517,7 +531,7 @@
         </div>
     </section>
 
-    <section id="brands" class="py-16 bg-white border-t border-slate-200">
+     <section id="brands" class="py-16 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="text-center mb-12">
@@ -529,44 +543,69 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-8 items-center opacity-70">
+            <!-- SLIDER WRAPPER -->
+            <div class="overflow-hidden relative">
 
-                @php
-                    $brandColors = [
-                        'Coca-Cola' => 'text-red-600',
-                        'Pepsi' => 'text-blue-700',
-                        'Cadbury' => 'text-purple-700',
-                        'Kelloggs' => 'text-red-500',
-                        'Heinz' => 'text-blue-600',
-                        'Nestlé' => 'text-green-600',
-                    ];
-                @endphp
-
-                @foreach($brands as $brand)
+                <div id="brandSlider" class="flex gap-6 w-max">
 
                     @php
-                        $color = $brandColors[$brand] ?? 'text-slate-700';
-                        $urlBrand = str_replace("'", "", $brand); // Kellogg's fix
+                        $colors = [
+                            'text-red-600',
+                            'text-blue-700',
+                            'text-purple-700',
+                            'text-red-500',
+                            'text-blue-600',
+                            'text-green-600'
+                        ];
                     @endphp
 
-                    <a href="{{ url('/brands/' . $urlBrand) }}">
+                    @foreach($brands as $index => $brand)
 
+                        @php
+                            $color = $colors[$index % 6]; // 🔥 repeat colors
+                            $urlBrand = str_replace("'", "", $brand);
+                        @endphp
 
-                        <div
-                            class="flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 cursor-pointer transition">
+                        <a href="{{ url('/brands/' . $urlBrand) }}">
 
-                            <span class="font-bold text-xl {{ $color }}">
-                                {{ $brand }}
-                            </span>
+                            <div
+                                class="min-w-[160px] flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 transition">
 
-                        </div>
+                                <span class="font-bold text-lg {{ $color }}">
+                                    {{ $brand }}
+                                </span>
 
-                    </a>
+                            </div>
 
-                @endforeach
+                        </a>
 
+                    @endforeach
+
+                    <!-- 🔥 duplicate for infinite loop -->
+                    @foreach($brands as $index => $brand)
+
+                        @php
+                            $color = $colors[$index % 6];
+                            $urlBrand = str_replace("'", "", $brand);
+                        @endphp
+
+                        <a href="{{ url('/brands/' . $urlBrand) }}">
+
+                            <div
+                                class="min-w-[160px] flex items-center justify-center h-20 bg-slate-50 rounded-xl hover:bg-blue-50 transition">
+
+                                <span class="font-bold text-lg {{ $color }}">
+                                    {{ $brand }}
+                                </span>
+
+                            </div>
+
+                        </a>
+
+                    @endforeach
+
+                </div>
             </div>
-
         </div>
     </section>
 
@@ -1156,6 +1195,23 @@
                 item.style.display = 'block';
             });
         }
+
+         const slider = document.getElementById('brandSlider');
+
+        slider.addEventListener('mouseenter', () => {
+            slider.style.animationPlayState = 'paused';
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            slider.style.animationPlayState = 'running';
+        });
+
+        const wrapper = document.querySelector('#brandSlider');
+
+        wrapper.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            wrapper.scrollLeft += e.deltaY;
+        });
     </script>
 
 </body>

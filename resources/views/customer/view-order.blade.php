@@ -404,12 +404,12 @@
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Delivery Instructions</label>
                                 <textarea rows="2" placeholder="e.g., Deliver to rear entrance, use loading bay..."
-                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none" readonly>{{ $order->delivery_instructions ?? '-' }}</textarea>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Internal Notes</label>
                                 <textarea rows="2" placeholder="Notes for your team (not visible to customer)..."
-                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none"></textarea>
+                                    class="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl focus:border-blue-900 focus:outline-none resize-none" readonly>{{ $order->internal_notes ?? '-' }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -464,13 +464,14 @@
 
                             <!-- Credit Limit Info -->
                             <div class="mt-4 p-3 bg-slate-50 rounded-lg">
+                                <!-- <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-600">Credit Limit</span>
+                                    <span class="font-medium text-slate-900">£ {{ Auth::user()->credit_limit ?? 0 }}</span>
+                                </div> -->
                                 <div class="flex justify-between text-xs mb-1">
                                     <span class="text-slate-600">Credit Limit</span>
-                                    <span class="font-medium text-slate-900">£25,000</span>
-                                </div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-slate-600">Available</span>
-                                    <span class="font-medium text-green-600" id="credit-available">£25,000</span>
+                                    <span class="font-medium text-green-600" id="credit-available">£
+                                        {{ Auth::user()->credit_limit ?? 0 }}</span>
                                 </div>
                                 <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
                                     <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all"
@@ -517,43 +518,43 @@
 
                 if (orderLines.length === 0) {
                     tbody.innerHTML = `
-                                                <tr>
-                                                    <td colspan="5" class="text-center py-10">
-                                                        No items in cart
-                                                    </td>
-                                                </tr>
-                                            `;
+                                                    <tr>
+                                                        <td colspan="5" class="text-center py-10">
+                                                            No items in cart
+                                                        </td>
+                                                    </tr>
+                                                `;
                     return;
                 }
 
                 tbody.innerHTML = orderLines.map((line) => `
-                    <tr class="order-line border-b border-slate-100 animate-slide-in">
+                        <tr class="order-line border-b border-slate-100 animate-slide-in">
 
-                        <td class="py-4 px-2">
-                            <div>
-                                <p class="font-medium text-slate-900">${line.name}</p>
-                                <p class="text-xs text-slate-500">${line.sku} • MOQ: ${line.moq || 1}</p>
-                            </div>
-                        </td>
+                            <td class="py-4 px-2">
+                                <div>
+                                    <p class="font-medium text-slate-900">${line.name}</p>
+                                    <p class="text-xs text-slate-500">${line.sku} • MOQ: ${line.moq || 1}</p>
+                                </div>
+                            </td>
 
-                        <td class="py-4 px-2 text-center">
-                            <span class="font-semibold">${line.qty}</span>
-                        </td>
+                            <td class="py-4 px-2 text-center">
+                                <span class="font-semibold">${line.qty}</span>
+                            </td>
 
-                        <td class="py-4 px-2 text-right">
-                            <span class="text-sm font-medium text-slate-900">
-                                £${(line.price || 0).toFixed(2)}
-                            </span>
-                        </td>
+                            <td class="py-4 px-2 text-right">
+                                <span class="text-sm font-medium text-slate-900">
+                                    £${(line.price || 0).toFixed(2)}
+                                </span>
+                            </td>
 
-                        <td class="py-4 px-2 text-right">
-                            <span class="text-sm font-bold text-blue-900">
-                                £${(line.lineTotal || 0).toFixed(2)}
-                            </span>
-                        </td>
+                            <td class="py-4 px-2 text-right">
+                                <span class="text-sm font-bold text-blue-900">
+                                    £${(line.lineTotal || 0).toFixed(2)}
+                                </span>
+                            </td>
 
-                    </tr>
-                    `).join('');
+                        </tr>
+                        `).join('');
                 document.getElementById('line-count').innerText = orderLines.length + " items";
             }
 

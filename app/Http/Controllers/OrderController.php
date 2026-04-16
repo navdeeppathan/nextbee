@@ -107,6 +107,14 @@ class OrderController extends Controller
             ->where('is_active', 1)
             ->sum('total_price');
         $cartCount = Cart::where('user_id', auth()->id())->count();
+        $cartItems = Cart::with('product')
+            ->where('user_id', auth()->id())
+            ->get();
+
+        // ✅ TOTAL PRICE CALCULATION
+        $cartTotal = $cartItems->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
 
         $categories = Category::all();
         $products = Product::all();
@@ -117,7 +125,8 @@ class OrderController extends Controller
             'products',
             'totalOrders',
             'totalSpent',
-            'cartCount'
+            'cartCount',
+            'cartTotal'
         ));
     }
 
@@ -166,8 +175,8 @@ class OrderController extends Controller
                 'draft',
                 'created',
                 'accepted',
-                'ready_for_delivery',
-                'out_for_delivery'
+                'ready for delivery',
+                'out for delivery'
             ])
             ->latest()
             ->get();
@@ -186,6 +195,14 @@ class OrderController extends Controller
             ->where('is_active', 1)
             ->sum('total_price');
         $cartCount = Cart::where('user_id', $userId)->count();
+        $cartItems = Cart::with('product')
+            ->where('user_id', $userId)
+            ->get();
+
+        // ✅ TOTAL PRICE CALCULATION
+        $cartTotal = $cartItems->sum(function ($item) {
+            return $item->product->price * $item->quantity;
+        });
 
         $categories = Category::all();
         $products = Product::all();
@@ -197,7 +214,8 @@ class OrderController extends Controller
             'products',
             'totalOrders',
             'totalSpent',
-            'cartCount'
+            'cartCount',
+            'cartTotal' // 🔥 ADD THIS
         ));
     }
 
@@ -275,7 +293,7 @@ class OrderController extends Controller
             'parent_order_id' => $order->id // 🔥 MAIN FIX
         ]);
 
-       
+
 
         Cart::where('user_id', auth()->id())->delete();
 

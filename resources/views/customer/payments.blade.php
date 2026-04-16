@@ -33,8 +33,8 @@
                     <tr>
                         <th>Payment ID</th>
                         <th>Order ID</th>
-                        <th>Product</th>
                         <th>Amount</th>
+                        <th>Method</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -53,9 +53,9 @@
                                 </a>
                             </td>
 
-                            <td>Order Payment</td>
 
                             <td style="font-weight:700;">£ {{ $p->amount }}</td>
+                            <td style="font-weight:700;"> {{ $p->method }}</td>
 
                             <td>{{ $p->created_at->format('d M Y') }}</td>
 

@@ -125,32 +125,99 @@
             </div>
 
             {{-- Quick Stats --}}
-            <!-- <div class="card" style="padding: 16px 20px;">
+            <div class="card" style="padding: 16px 20px;">
                 <div
                     style="font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;">
                     Account Summary</div>
                 <div style="display:flex; flex-direction:column; gap:12px;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:13px; color:#64748b;">Total Orders</span>
-                        <span style="font-size:13px; font-weight:700; color:#0f172a;">14</span>
+                        <span style="font-size:13px; color:#64748b;">Bussiness Name</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->business_name ?? '-' }}</span>
                     </div>
                     <div style="height:1px; background:#f1f5f9;"></div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:13px; color:#64748b;">Total Spent</span>
-                        <span style="font-size:13px; font-weight:700; color:#0f172a;">£8,400</span>
+                        <span style="font-size:13px; color:#64748b;">Bussiness Type</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->business_type ?? '-' }}</span>
                     </div>
                     <div style="height:1px; background:#f1f5f9;"></div>
+
+
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="font-size:13px; color:#64748b;">Member Since</span>
-                        <span style="font-size:13px; font-weight:700; color:#0f172a;">Jan 2024</span>
+                        <span style="font-size:13px; color:#64748b;">Licence No.</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->licence_no ?? '-' }}</span>
                     </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Licence Expiry Date</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->licence_expiry ?? '-' }}</span>
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Assigned Vehicle</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->assigned_vehicle ?? '-' }}</span>
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Delivery Days</span>
+                        @foreach(Auth::user()->preferred_delivery_days ?? [] as $day)
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs mr-1">
+                                {{ $day }}
+                            </span>
+                        @endforeach
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Monthly Volume</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->monthly_volume ?? '-' }}</span>
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Sales Assigned</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->sales_assigned ?? '-' }}</span>
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Credit Limit</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->credit_limit ?? '-' }}</span>
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Invaice Pay Days</span>
+                        <span
+                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->invoice_pay_days ?? '-' }}</span>
+                    </div>
+                    <div style="height:1px; background:#f1f5f9;"></div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#64748b;">Tier</span>
+                        <span style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->tier ?? '-' }}</span>
+                    </div>
+
                     <div style="height:1px; background:#f1f5f9;"></div>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:13px; color:#64748b;">Account Status</span>
-                        <span class="pill pill-green" style="font-size:11px;"><span class="pill-dot"></span>Active</span>
+                        <span class="pill pill-green" style="font-size:11px;"><span
+                                class="pill-dot"></span>{{ Auth::user()->status ?? '-' }}</span>
                     </div>
                 </div>
-            </div> -->
+            </div>
         </div>
 
         {{-- ── Right: Info Sections ── --}}
