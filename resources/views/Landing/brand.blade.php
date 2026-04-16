@@ -470,46 +470,46 @@
                     <!-- Product 1 -->
                     @foreach($products as $product)
 
-                        @php
-                            $slug = \Illuminate\Support\Str::slug($product->category->name);
-                        @endphp
+                                        @php
+                                            $slug = \Illuminate\Support\Str::slug($product->category->name);
+                                        @endphp
 
 
 
-                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
-                            {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}"
-                            data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
-                            <div class="relative h-48 bg-gray-100 overflow-hidden">
-                                <!-- <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover"> -->
-                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
-                                    class="w-full h-full object-cover">
-                                <div class="product-badge">
-                                    <span
-                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
-                                </div>
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
-                                </div>
-                                <div class="quick-add absolute bottom-4 left-4 right-4">
-                                    <button onclick="openModal('login')"
-                                        class="w-full py-3 bg-white text-blue-900 rounded-xl font-medium shadow-lg hover:bg-blue-900 hover:text-white transition">
-                                        Quick Add
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <div class="text-xs text-slate-500 mb-1">{{ $product->category->name }}</div>
-                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2"> {{ $product->title }}</h3>
-                                <p class="text-sm text-slate-500 mb-3">SKU : {{ $product->sku_code }}</p>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-slate-600">£ {{ $product->price }}</span>
-                                    <button onclick="openModal('register')"
-                                        class="text-blue-900 font-medium text-sm hover:underline">
-                                        View Price
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                                        <div class="product-card bg-white rounded-2xl mt-20 overflow-hidden product-item
+                        {{ in_array($product->id, $brandProducts) ? 'brand-product' : '' }}" data-category="{{ $slug }}" {{-- 🔥 ADD THIS
+                                            --}} data-brand="{{ in_array($product->id, $brandProducts) ? 'selected' : 'other' }}">
+                                            <div class="relative h-48 bg-gray-100 overflow-hidden">
+                                                <!-- <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&h=400&fit=crop" alt="Coca Cola" class="product-image w-full h-full object-cover"> -->
+                                                <img src="{{ $product->image ? asset($product->image) : 'https://via.placeholder.com/300' }}"
+                                                    class="w-full h-full object-cover">
+                                                <div class="product-badge">
+                                                    <span
+                                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-full">POPULAR</span>
+                                                </div>
+                                                <div
+                                                    class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity">
+                                                </div>
+                                                <div class="quick-add absolute bottom-4 left-4 right-4">
+                                                    <button onclick="openModal('login')"
+                                                        class="w-full py-3 bg-white text-blue-900 rounded-xl font-medium shadow-lg hover:bg-blue-900 hover:text-white transition">
+                                                        Quick Add
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="p-5">
+                                                <div class="text-xs text-slate-500 mb-1">{{ $product->category->name }}</div>
+                                                <h3 class="font-bold text-slate-900 mb-2 line-clamp-2"> {{ $product->title }}</h3>
+                                                <p class="text-sm text-slate-500 mb-3">SKU : {{ $product->sku_code }}</p>
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm font-medium text-slate-600">£ {{ $product->price }}</span>
+                                                    <button onclick="openModal('register')"
+                                                        class="text-blue-900 font-medium text-sm hover:underline">
+                                                        View Price
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                     @endforeach
 
                 </div>
@@ -989,7 +989,7 @@
             document.getElementById('mobile-menu').classList.toggle('active');
         }
 
-       
+
 
 
 
@@ -1059,48 +1059,98 @@
     </script>
 
     <script>
-       function filterCategory(category, btn) {
+        function filterCategory(category, btn) {
 
-    // active button
-    document.querySelectorAll('.category-btn').forEach(b => {
-        b.classList.remove('active');
-    });
-    btn.classList.add('active');
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            btn.classList.add('active');
 
-    let title = document.getElementById('productTitle');
+            let title = document.getElementById('productTitle');
+            let isBrandPage = window.location.pathname.includes('/brands/');
 
-    // ✅ TEXT FIX (MAIN SOLUTION)
-    if (category === 'all') {
-        title.innerText = "Showing all products";
-    } else {
-        title.innerText = "Showing products of {{ $brand }}";
-    }
+            // ✅ ALL PRODUCTS CLICK
+            if (category === 'all') {
 
-    // filter products
-    document.querySelectorAll('.product-item').forEach(item => {
+                showAllMode = true; // 🔥 MODE ON
 
-        if (category === 'all') {
-            item.style.display = 'block';
-        } else {
-            if (item.dataset.category === category) {
-                item.style.display = 'block';
+                title.innerText = "Showing all products";
+
+                document.querySelectorAll('.product-item').forEach(item => {
+                    item.style.display = 'block';
+                });
+
+                return;
+            }
+
+            // ❗ CATEGORY FILTER
+            document.querySelectorAll('.product-item').forEach(item => {
+
+                // 🔥 CASE 1: ALL MODE (brand ignore)
+                if (showAllMode) {
+
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                }
+
+                // 🔥 CASE 2: BRAND PAGE NORMAL
+                else if (isBrandPage) {
+
+                    if (item.dataset.category === category && item.dataset.brand === 'selected') {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                }
+
+                // 🔥 CASE 3: NORMAL PAGE
+                else {
+
+                    if (item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+
+                }
+
+            });
+
+            // TITLE UPDATE
+            if (showAllMode) {
+                title.innerText = "Showing " + category + " (All Brands)";
+            } else if (isBrandPage) {
+                title.innerText = "Showing products of {{ $brand }}";
             } else {
-                item.style.display = 'none';
+                title.innerText = "Showing category: " + category;
             }
         }
-
-    });
-}
         window.onload = function () {
 
+            let isBrandPage = window.location.pathname.includes('/brands/');
+
+            if (!isBrandPage) return;
+
+            showAllMode = false; // 🔥 RESET
+
             document.querySelectorAll('.product-item').forEach(item => {
-                if (item.dataset.brand !== 'selected') {
+
+                if (item.dataset.brand === 'selected') {
+                    item.style.display = 'block';
+                } else {
                     item.style.display = 'none';
                 }
+
             });
 
         };
-       
+
+
         function showAllProducts() {
             document.querySelectorAll('.product-item').forEach(item => {
                 item.style.display = 'block';
