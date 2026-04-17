@@ -189,6 +189,10 @@ class AuthController extends Controller
                 return redirect('/driver-orders');
             
             }
+             if(trim($user->role) == 'superadmin') {
+                return redirect('/dashboard');
+            
+            }
 
             // all other roles go to admin
             // return redirect('/admin-dashboard');
