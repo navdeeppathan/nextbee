@@ -180,7 +180,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:13px; color:#64748b;">Monthly Volume</span>
                         <span
-                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->monthly_volume ?? '-' }}</span>
+                            style="font-size:13px; font-weight:700; color:#0f172a;">£ {{ Auth::user()->monthly_volume ?? '-' }}</span>
                     </div>
                     <div style="height:1px; background:#f1f5f9;"></div>
 
@@ -194,7 +194,7 @@
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <span style="font-size:13px; color:#64748b;">Credit Limit</span>
                         <span
-                            style="font-size:13px; font-weight:700; color:#0f172a;">{{ Auth::user()->credit_limit ?? '-' }}</span>
+                            style="font-size:13px; font-weight:700; color:#0f172a;">£ {{ Auth::user()->credit_limit ?? '-' }}</span>
                     </div>
                     <div style="height:1px; background:#f1f5f9;"></div>
 
