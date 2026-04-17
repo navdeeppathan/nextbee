@@ -37,6 +37,8 @@ Route::post('/inventory/{id}/remove', [DashboardController::class, 'removeItem']
 Route::get('/inventory/purge-expired', [DashboardController::class, 'purgeExpired'])->name('inventory.purge-expired');
 Route::get('/orders/{id}/dispatch', [OrderController::class, 'dispatch'])->name('orders.dispatch');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+
 Route::get('/login', function () {
 
 

@@ -104,14 +104,14 @@
             </div>
             <form method="POST" action="{{ url('/logout') }}">
                 @csrf
-            <button
-            type="submit"
-             class="logout-btn"
-             {{-- onclick="logout()"  --}}
-             aria-label="Logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </button>
+                <button
+                type="submit"
+                class="logout-btn"
+                {{-- onclick="logout()"  --}}
+                aria-label="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
             </form>
         </div>
     </aside>

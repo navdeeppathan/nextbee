@@ -35,6 +35,7 @@
         <div class="nav-item"><span>📦</span><span class="nav-label">Warehouse</span></div>
         <div class="nav-item"><span>🚚</span><span class="nav-label">Logistics</span></div>
         <div class="nav-item"><span>⚙️</span><span class="nav-label">Settings</span></div>
+        
     </nav>
 </div>
 
@@ -47,7 +48,20 @@
                 <span class="status-pill status-live">Live ERP Sync: Xero Enabled</span>
                 <a href="#" class="hover:text-blue-400 transition-colors">Global Reports</a>
                 <a href="#" class="hover:text-blue-400 transition-colors">System Health</a>
+
+                <form method="POST" action="{{ url('/logout') }}">
+                        @csrf
+                    <button
+                    type="submit"
+                    class="logout-btn"
+                    {{-- onclick="logout()"  --}}
+                    aria-label="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
             </div>
+            
             <div class="flex items-center gap-4">
                 <div class="text-right hidden sm:block">
                     <p class="text-[10px] font-black text-slate-900 uppercase italic">Executive Command</p>
