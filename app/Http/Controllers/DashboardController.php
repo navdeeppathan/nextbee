@@ -19,8 +19,8 @@ class DashboardController extends Controller
 
         // MTD Revenue
         $revenue = Order::whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->sum('total_price');
+                    ->whereYear('created_at', now()->year)
+                    ->sum('total_price');
 
         // All-time totals
         $totalRevenue = Order::sum('total_price');
@@ -261,9 +261,10 @@ class DashboardController extends Controller
         $avgDropTime = 18;
 
         // On-time fulfillment
-        $onTimeDeliveries = Order::where('status', 'delivered')
-            ->whereColumn('delivered_at', '<=', 'estimated_delivery_at')
-            ->count();
+            // $onTimeDeliveries = Order::where('status', 'delivered')
+            //     ->whereColumn('delivered_at', '<=', 'estimated_delivery_at')
+            //     ->count();
+        $onTimeDeliveries = Order::where('status', 'delivered')->count(); // placeholder
         $onTimePercent = $totalDelivered > 0 ? ($onTimeDeliveries / $totalDelivered) * 100 : 96;
 
         // POD rate
@@ -303,13 +304,13 @@ class DashboardController extends Controller
         // ORDER TABLE (paginated)
         // ─────────────────────────────────────────────
         $orders = Order::with('user:id,name')
-            ->latest()
-            ->paginate(10);
+                ->latest()
+                ->paginate(10);
 
         // ─────────────────────────────────────────────
         // INVENTORY TABLE
         // ─────────────────────────────────────────────
-        $inventory = Product::orderBy('expiry_date', 'asc')->get();
+        $inventory = Product::orderBy('quantity', 'asc')->get();
 
         // ─────────────────────────────────────────────
         // PASS TO VIEW

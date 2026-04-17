@@ -21,6 +21,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use App\Models\Product;
+use App\Http\Controllers\DashboardController;
 
 use App\Models\User;
 use Carbon\Carbon;
@@ -404,9 +405,7 @@ Route::post('/order-return/store', [OrderController::class, 'storeOrderReturn'])
 //     return view('SalesRep.sales_tasks');
 // });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
+
 
 Route::get('/customer/dashboard', [OrderController::class, 'dashboard'])->middleware('auth');
 // Route::get('/customer/dashboard', [OrderController::class, 'dashboard']);
