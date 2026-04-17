@@ -6,6 +6,8 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\Location;
+use App\Models\OrderReturn;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Payment;
@@ -672,4 +674,172 @@ class OrderController extends Controller
             'message' => 'Allocation updated successfully'
         ]);
     }
+
+
+    public function storeOrderReturn(Request $request)
+    {
+        $request->validate([
+            'order_id' => 'required',
+            'product_id' => 'required',
+            'user_id' => 'required',
+            'quantity' => 'required|integer|min:1',
+            'reason' => 'required'
+        ]);
+
+        OrderReturn::create([
+            'order_id' => $request->order_id,
+            'product_id' => $request->product_id,
+            'user_id' => $request->user_id,
+            'quantity' => $request->quantity,
+            'reason' => $request->reason,
+            'status' => 'pending',
+            'refund_status' => 'pending',
+            'return_number' => 'RET-' . strtoupper(uniqid())
+        ]);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+
+    
+
+    public function getReturnsGrouped()
+    {
+        $returns = OrderReturn::with(['product', 'order.user'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('order_id'); // 🔥 MAIN MAGIC
+
+        $finalData = [];
+
+        foreach ($returns as $orderId => $items) {
+
+            $order = $items->first()->order;
+
+            $totalRefund = $items->sum(function ($item) {
+                return $item->quantity * ($item->product->price ?? 0);
+            });
+
+            $finalData[] = [
+                'return_number' => $items->first()->return_number,
+                'status' => $items->first()->status,
+                'submitted_at' => $items->first()->created_at,
+
+                'customer' => [
+                    'name' => $order->user->name ?? '',
+                    'email' => $order->user->email ?? ''
+                ],
+
+                'items' => $items->map(function ($item) {
+                    return [
+                        'product_name' => $item->product->title ?? '',
+                        'sku' => $item->product->sku_code ?? '',
+                        'quantity' => $item->quantity,
+                        'reason' => $item->reason,
+                        'price' => $item->product->price ?? 0,
+                        'total' => $item->quantity * ($item->product->price ?? 0),
+                        'product_id' => $item->product_id,
+                        'id' => $item->id
+                    ];
+                }),
+
+                'summary' => [
+                    'total_items_value' => $totalRefund,
+                    'refund_amount' => $totalRefund,
+                ]
+            ];
+        }
+
+        return view('Inventory.returns', [
+            'returns' => $finalData
+        ]);
+    }
+
+    
+
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'return_number' => 'required',
+            'status' => 'required|in:approved,rejected'
+        ]);
+
+        // 🔥 Get all items of this return_number
+        $returns = OrderReturn::where('return_number', $request->return_number)->get();
+
+        if ($returns->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Return not found'
+            ]);
+        }
+
+        foreach ($returns as $return) {
+
+            $return->status = $request->status;
+
+            // ✅ If approved → process refund
+            if ($request->status === 'approved') {
+
+                $price = $return->product->price ?? 0;
+                $refund = $return->quantity * $price;
+
+                $return->refund_amount = $refund;
+                $return->refund_status = 'processed';
+
+            }
+
+            // ❌ If rejected
+            if ($request->status === 'rejected') {
+                $return->refund_status = 'failed';
+                $return->refund_amount = 0;
+            }
+
+            $return->save();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Return ' . $request->status . ' successfully'
+        ]);
+    }
+
+    public function updateLocation(Request $request)
+    {
+        $request->validate([
+            'return_id' => 'required',
+            'location_id' => 'required',
+            'quantity' => 'required|integer|min:1'
+        ]);
+
+        $return = OrderReturn::find($request->return_id);
+
+        if (!$return || $return->status !== 'approved') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid return'
+            ]);
+        }
+
+        $location = Location::find($request->location_id);
+
+        if (!$location) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Location not found'
+            ]);
+        }
+
+        // ✅ Update stock
+        $location->quantity += $request->quantity;
+        $location->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Stock updated successfully'
+        ]);
+    }
+
+    
 }

@@ -525,6 +525,33 @@
         </div>
     </main>
 
+    <!-- Return Modal -->
+<div id="returnModal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50">
+    <div class="bg-white w-full max-w-md rounded-xl p-6 shadow-lg">
+        <h2 class="text-lg font-semibold mb-4">Return Product</h2>
+
+        <input type="hidden" id="return-index">
+
+        <div class="mb-3">
+            <label class="text-sm">Quantity</label>
+            <input type="number" id="return-qty" class="w-full border rounded-lg px-3 py-2 mt-1">
+        </div>
+
+        <div class="mb-4">
+            <label class="text-sm">Reason</label>
+            <textarea id="return-reason" class="w-full border rounded-lg px-3 py-2 mt-1"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <button onclick="closeReturnModal()" class="px-4 py-2 border rounded-lg">Cancel</button>
+            <button id="return-submit-btn" onclick="submitReturn()" 
+                class="px-4 py-2 bg-blue-900 text-white rounded-lg">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
+
     <!-- Toast Notification -->
     <div id="toast" class="toast">
         <div class="flex items-center gap-3">
@@ -532,6 +559,107 @@
             <span id="toast-message">Operation successful</span>
         </div>
     </div>
+
+    <script>
+        function openReturnModal(index) {
+            const item = orderLines[index];
+
+            document.getElementById('return-index').value = index;
+
+            let qtyInput = document.getElementById('return-qty');
+            qtyInput.value = item.qty;
+
+            // ✅ LIMITS
+            qtyInput.setAttribute('min', 1);
+            qtyInput.setAttribute('max', item.qty);
+
+            document.getElementById('return-reason').value = '';
+
+            document.getElementById('returnModal').classList.remove('hidden');
+            document.getElementById('returnModal').classList.add('flex');
+        }
+        function closeReturnModal() {
+            document.getElementById('returnModal').classList.add('hidden');
+        }
+
+        function submitReturn() {
+
+            let btn = document.getElementById('return-submit-btn');
+            btn.innerText = "Submitting...";
+            btn.disabled = true;
+
+            let index = document.getElementById('return-index').value;
+            let qty = parseInt(document.getElementById('return-qty').value);
+            let reason = document.getElementById('return-reason').value;
+
+            let item = orderLines[index];
+
+            // ✅ VALIDATION
+            if (!qty || qty < 1) {
+                alert("Quantity must be at least 1");
+                btn.innerText = "Submit";
+                btn.disabled = false;
+                return;
+            }
+
+            if (qty > item.qty) {
+                alert("Return quantity cannot exceed ordered quantity");
+                btn.innerText = "Submit";
+                btn.disabled = false;
+                return;
+            }
+
+            if (!reason) {
+                alert("Please enter reason");
+                btn.innerText = "Submit";
+                btn.disabled = false;
+                return;
+            }
+
+            console.log("Submitting return:", {
+                order_id: orderId,
+                product_id: item.product_id,
+                quantity: qty,
+                reason: reason
+            });
+
+            fetch('/order-return/store', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    product_id: item.product_id,
+                    user_id: {{ auth()->id() }},
+                    quantity: qty,
+                    reason: reason
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+
+                console.log("Response:", data);
+
+                if (data.success) {
+                    closeReturnModal();
+                    alert("Return request submitted ✅");
+                } else {
+                    alert(data.message || "Something went wrong ❌");
+                }
+
+            })
+            .catch(err => {
+                console.error("ERROR:", err);
+                alert("Server error ❌ (check console)");
+            })
+            .finally(() => {
+                btn.innerText = "Submit";
+                btn.disabled = false;
+            });
+        }
+    </script>
 
     
     <script>
@@ -591,6 +719,12 @@
                         <button onclick="removeItem(${index})" class="text-red-400 hover:text-red-600 transition w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50">
                             <i class="fas fa-trash-alt"></i>
                         </button>
+                        ${order.status === 'delivered' ? `
+                            <button onclick="openReturnModal(${index})"
+                                class="text-blue-600 hover:text-blue-800 transition px-2 py-1 text-xs border rounded-lg">
+                                Return
+                            </button>
+                        ` : ''}
                     </td>
                 </tr>
         

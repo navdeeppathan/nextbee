@@ -124,7 +124,8 @@ class AuthController extends Controller
             'credit_limit' => 'nullable',
             'invoice_pay_days' => 'nullable',
             'tier' => 'nullable',
-            'status' => 'nullable' // 👈 useful if you update active/inactive
+            'status' => 'nullable',
+            
         ]);
 
         $customer->update([
@@ -147,6 +148,7 @@ class AuthController extends Controller
 
             // optional
             'status' => $request->status ?? $customer->status,
+            
         ]);
 
         return redirect()->back()->with('success', 'Customer updated successfully ✅');

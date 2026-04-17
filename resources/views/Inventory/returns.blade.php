@@ -497,7 +497,7 @@
             </div>
         </header>
 
-        <div class="p-6">
+        {{-- <div class="p-6">
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 <div class="glass rounded-2xl p-4 border border-slate-200 text-center">
@@ -785,8 +785,227 @@
                 </div>
 
             </div>
-        </div>
+        </div> --}}
+
+        <div class="space-y-4 p-6">
+
+            @foreach($returns as $return)
+
+            <div class="return-card rounded-2xl p-6 
+                {{ $return['status'] == 'pending' ? 'return-pending' : 
+                ($return['status'] == 'approved' ? 'return-approved' : 
+                ($return['status'] == 'rejected' ? 'return-rejected' : 'return-processing')) }}">
+
+                <div class="flex flex-col lg:flex-row gap-6 justify-between">
+
+                    <!-- LEFT -->
+                    <div class="flex-1">
+
+                        <!-- HEADER -->
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 text-xs font-bold rounded uppercase
+                                {{ $return['status'] == 'pending' ? 'bg-amber-100 text-amber-700' :
+                                ($return['status'] == 'approved' ? 'bg-emerald-100 text-emerald-700' :
+                                ($return['status'] == 'rejected' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700')) }}">
+                                {{ $return['status'] }}
+                            </span>
+
+                            <span class="text-xs text-slate-500">
+                                {{ $return['return_number'] }}
+                            </span>
+
+                            <span class="text-xs text-slate-500">
+                                {{ \Carbon\Carbon::parse($return['submitted_at'])->format('d M Y h:i A') }}
+                            </span>
+                        </div>
+
+                        <!-- CUSTOMER -->
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="p-4 bg-slate-50 rounded-xl border">
+                                <p class="text-xs text-slate-500 uppercase mb-2">Customer</p>
+                                <p class="font-bold text-slate-900">
+                                    {{ $return['customer']['name'] }}
+                                </p>
+                                <p class="text-sm text-slate-500">
+                                    {{ $return['customer']['email'] }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ITEMS -->
+                        <div class="space-y-3">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Returned Items</p>
+
+                            @foreach($return['items'] as $item)
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border">
+                                
+                                <div>
+                                    <p class="font-semibold text-slate-900">
+                                        {{ $item['product_name'] }}
+                                    </p>
+                                    <p class="text-xs text-slate-500">
+                                        SKU: {{ $item['sku'] }}
+                                    </p>
+                                    <p class="text-xs text-amber-600">
+                                        Reason: {{ $item['reason'] }}
+                                    </p>
+                                </div>
+
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-slate-900">
+                                        {{ $item['quantity'] }}
+                                    </p>
+                                    <p class="text-xs text-slate-500">
+                                        £{{ number_format($item['total'], 2) }}
+                                    </p>
+                                </div>
+
+                                @if($return['status'] == 'approved')
+                                    <button 
+                                        onclick="openLocationModal({{ $item['product_id'] }}, {{ $item['quantity'] }}, {{ $item['id'] }})"
+                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                                        Add to Inventory
+                                    </button>
+                                @endif
+
+                            </div>
+                            @endforeach
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="lg:w-80 space-y-4">
+
+                        <div class="p-4 bg-slate-50 rounded-xl border">
+                            <p class="text-xs font-bold text-slate-500 uppercase mb-3">
+                                Return Summary
+                            </p>
+
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between">
+                                    <span>Items Total</span>
+                                    <span class="font-bold">
+                                        £{{ number_format($return['summary']['total_items_value'], 2) }}
+                                    </span>
+                                </div>
+
+                                <div class="flex justify-between">
+                                    <span>Refund Amount</span>
+                                    <span class="text-amber-600 font-bold">
+                                        £{{ number_format($return['summary']['refund_amount'], 2) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                       
+
+                        <!-- ACTIONS -->
+                        @if($return['status'] == 'pending')
+                        <div class="space-y-2">
+                            <button 
+                                onclick="updateReturnStatus('{{ $return['return_number'] }}', 'approved')"
+                                class="w-full py-3 bg-emerald-600 text-white rounded-lg">
+                                Approve Return
+                            </button>
+
+                            <button 
+                                onclick="updateReturnStatus('{{ $return['return_number'] }}', 'rejected')"
+                                class="w-full py-3 bg-red-100 text-red-600 rounded-lg">
+                                Reject
+                            </button>
+                        </div>
+                        @endif
+
+                    </div>
+
+                </div>
+            </div>
+
+            @endforeach
+
+            </div>
   
+            <div id="locationModal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center">
+    <div class="bg-white p-6 rounded-xl w-96">
+
+        <h2 class="text-lg font-bold mb-4">Update Inventory</h2>
+
+        <input type="hidden" id="return-id">
+
+        <div class="mb-3">
+            <label>Location</label>
+            <select id="location-dropdown" class="w-full border px-3 py-2 rounded"></select>
+        </div>
+
+        <div class="mb-3">
+            <label>Quantity</label>
+            <input type="number" id="location-qty" class="w-full border px-3 py-2 rounded">
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <button onclick="closeLocationModal()">Cancel</button>
+            <button onclick="submitLocationUpdate()" class="bg-blue-600 text-white px-4 py-2 rounded">Update</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function openLocationModal(productId, qty, returnId) {
+
+    document.getElementById('return-id').value = returnId;
+    document.getElementById('location-qty').value = qty;
+
+    fetch(`/locations/by-product/${productId}`)
+    .then(res => res.json())
+    .then(data => {
+
+        let dropdown = document.getElementById('location-dropdown');
+
+        dropdown.innerHTML = data.map(loc => `
+            <option value="${loc.id}">
+                Aisle: ${loc.aisle} | Rack: ${loc.rack} | Qty: ${loc.quantity}
+            </option>
+        `).join('');
+
+        document.getElementById('locationModal').classList.remove('hidden');
+        document.getElementById('locationModal').classList.add('flex');
+    });
+}
+
+function closeLocationModal() {
+    document.getElementById('locationModal').classList.add('hidden');
+}
+
+function submitLocationUpdate() {
+
+    let returnId = document.getElementById('return-id').value;
+    let locationId = document.getElementById('location-dropdown').value;
+    let qty = document.getElementById('location-qty').value;
+
+    fetch('/return/update-location', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            return_id: returnId,
+            location_id: locationId,
+            quantity: qty
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Stock Updated ✅");
+            closeLocationModal();
+        }
+    });
+}
+</script>
 
     <script>
         // ===== SIDEBAR COLLAPSE FUNCTIONALITY =====
@@ -895,6 +1114,30 @@
             if (confirm('Are you sure you want to logout?')) {
                 window.location.href = 'login.html';
             }
+        }
+    </script>
+
+    <script>
+        function updateReturnStatus(returnNumber, status) {
+
+            fetch('/return/update-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    return_number: returnNumber,
+                    status: status
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                }
+            });
         }
     </script>
 @endsection

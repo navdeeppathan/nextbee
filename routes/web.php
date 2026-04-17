@@ -191,10 +191,15 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
         return view('Inventory.inventory', compact('categories', 'products'));
     });
 
-    Route::get('/returns', function () {
-        return view('Inventory.returns');
-    });
+    Route::get('/returns', [OrderController::class, 'getReturnsGrouped']);
+    // web.php OR api.php
 
+    Route::post('/return/update-status', [OrderController::class, 'updateStatus']);
+
+    Route::post('/return/update-location', [OrderController::class, 'updateLocation']);
+    Route::get('/locations/by-product/{product_id}', function ($product_id) {
+        return \App\Models\Location::where('product_id', $product_id)->get();
+    });
     Route::get('/sales-dashboard', function () {
         return view('Inventory.sales_dashboard');
     });
@@ -388,6 +393,8 @@ Route::get('/driver-orders', function () {
 
 
 
+Route::post('/order-return/store', [OrderController::class, 'storeOrderReturn']);
+
 
 // Route::get('/sales-tasks', function () {
 //     return view('SalesRep.sales_tasks');
@@ -483,6 +490,7 @@ Route::get('/checkout-sales/{order_id}', function ($order_id) {
             'totalQuantity' => $item->product->locations()->sum('quantity'),
             'moq' => 1,
             'qty' => $item->quantity,
+            'product_id' => $item->product_id,
             'lineTotal' => $item->product->price * $item->quantity
         ];
     });
