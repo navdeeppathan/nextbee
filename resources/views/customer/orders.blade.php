@@ -86,10 +86,10 @@
                                 #{{ $order->parent_order_id  }}
                             </td>
                             <!-- <td>
-                                                @foreach($order->items as $item)
-                                                    {{ $item->product->title ?? 'Product' }} <br>
-                                                @endforeach
-                                            </td> -->
+                                                        @foreach($order->items as $item)
+                                                            {{ $item->product->title ?? 'Product' }} <br>
+                                                        @endforeach
+                                                    </td> -->
                             <td>
                                 {{ $order->items->sum('quantity') }}
                             </td>
@@ -134,10 +134,10 @@
                             </td>
                             <td>
                                 <!-- <a href="/order/{{ $order->parent_order_id }}">
-                                                    <button class="px-3 py-1 bg-blue-900 text-white rounded">
-                                                        View Order
-                                                    </button>
-                                                </a> -->
+                                                            <button class="px-3 py-1 bg-blue-900 text-white rounded">
+                                                                View Order
+                                                            </button>
+                                                        </a> -->
 
                                 {{-- ❌ Draft me button hide --}}
                                 @if($order->status != 'draft')
@@ -146,6 +146,9 @@
                                             View Order
                                         </button>
                                     </a>
+                                    <a href="/order-copy/{{ $order->parent_order_id }}"> <button
+                                            class="px-3 py-1 bg-green-600 text-white rounded mt-1"> Order Again </button> </a>
+
                                 @endif
                             </td>
 

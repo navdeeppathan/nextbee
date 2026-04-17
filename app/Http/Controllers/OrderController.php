@@ -252,11 +252,11 @@ class OrderController extends Controller
 
 
 
-        if($request->user_id){
+        if ($request->user_id) {
             $items = Cart::where('user_id', $request->user_id)
-            ->with('product')
-            ->get();
-        }else{
+                ->with('product')
+                ->get();
+        } else {
             $items = Cart::where('user_id', auth()->id())
                 ->with('product')
                 ->get();
@@ -267,7 +267,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'Cart empty']);
         }
 
-        if($request->user_id){
+        if ($request->user_id) {
             $order = Order::create([
                 'user_id' => $request->user_id,
                 'total_price' => 0,
@@ -277,8 +277,7 @@ class OrderController extends Controller
                 'parent_order_id' => 0, // temp
                 'is_active' => 1
             ]);
-        } 
-        else{
+        } else {
 
             $order = Order::create([
                 'user_id' => auth()->id(),
@@ -321,9 +320,9 @@ class OrderController extends Controller
 
 
 
-        if($request->user_id){
+        if ($request->user_id) {
             Cart::where('user_id', $request->user_id)->delete();
-        }else{
+        } else {
             Cart::where('user_id', auth()->id())->delete();
         }
 
@@ -476,7 +475,7 @@ class OrderController extends Controller
             'method' => 'required|in:bank,cheque,cash',
         ]);
 
-    
+
 
         $order = Order::findOrFail($request->order_id);
 
@@ -497,7 +496,7 @@ class OrderController extends Controller
             return response()->json(['error' => 'Exceeds remaining']);
         }
 
-         // ✅ PREPARE PAYMENT DATA
+        // ✅ PREPARE PAYMENT DATA
         $paymentData = [
             'order_id' => $order->id,
             'user_id' => auth()->id(),
@@ -506,7 +505,7 @@ class OrderController extends Controller
             'status' => 'done'
         ];
 
-         // ✅ EXTRA FIELDS BASED ON MODE
+        // ✅ EXTRA FIELDS BASED ON MODE
         if ($request->method === 'bank') {
 
             if (!$request->account_name) {
@@ -535,7 +534,7 @@ class OrderController extends Controller
         //     'status' => 'done'
         // ]);
 
-         // cash → no extra fields
+        // cash → no extra fields
 
         // ✅ SAVE PAYMENT
         Payment::create($paymentData);
@@ -703,7 +702,7 @@ class OrderController extends Controller
         ]);
     }
 
-    
+
 
     public function getReturnsGrouped()
     {
@@ -757,7 +756,7 @@ class OrderController extends Controller
         ]);
     }
 
-    
+
 
     public function updateStatus(Request $request)
     {
@@ -804,18 +803,18 @@ class OrderController extends Controller
             $return->save();
         }
 
-            $user = $returns->first()->order->user;
+        $user = $returns->first()->order->user;
 
-            if ($user && $user->email) {
-                Mail::to($user->email)->send(
-                    new ReturnStatusMail(
-                        $request->return_number,
-                        $request->status,
-                        $returns,
-                        $totalRefund
-                    )
-                );
-            }
+        if ($user && $user->email) {
+            Mail::to($user->email)->send(
+                new ReturnStatusMail(
+                    $request->return_number,
+                    $request->status,
+                    $returns,
+                    $totalRefund
+                )
+            );
+        }
 
 
         return response()->json([
@@ -860,5 +859,40 @@ class OrderController extends Controller
         ]);
     }
 
-    
+    public function againOrder($id)
+    {
+        $userId = auth()->id();
+
+        // ✅ order fetch
+        $order = Order::with('items.product')
+            ->where('user_id', $userId)
+            ->where('parent_order_id', $id)
+            ->firstOrFail();
+
+        // ✅ OPTIONAL: pehle cart empty karo
+        Cart::where('user_id', $userId)->delete();
+
+        foreach ($order->items as $item) {
+
+            // ✅ check if already exists
+            $existing = Cart::where('user_id', $userId)
+                ->where('product_id', $item->product_id)
+                ->first();
+
+            if ($existing) {
+                $existing->quantity += $item->quantity;
+                $existing->save();
+            } else {
+                Cart::create([
+                    'user_id' => $userId,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                ]);
+            }
+        }
+
+        // ✅ DIRECT CHECKOUT PAGE
+        return redirect('/checkout')->with('success', 'Order copied to cart!');
+    }
+
 }

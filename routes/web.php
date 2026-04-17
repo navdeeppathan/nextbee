@@ -686,3 +686,4 @@ Route::post('/draft/place/{id}', [OrderController::class, 'placeDraftOrder']);
 Route::post('/order/add-item', [OrderController::class, 'addItem']);
 Route::post('/order/update-item', [OrderController::class, 'updateItem']);
 Route::post('/order/delete-item', [OrderController::class, 'deleteItem']);
+Route::get('/order-copy/{id}', [OrderController::class, 'againOrder'])->middleware('auth');
