@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReturnStatusMail;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
@@ -11,7 +12,7 @@ use App\Models\OrderReturn;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Payment;
-
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -775,6 +776,8 @@ class OrderController extends Controller
             ]);
         }
 
+        $totalRefund = 0;
+
         foreach ($returns as $return) {
 
             $return->status = $request->status;
@@ -788,6 +791,8 @@ class OrderController extends Controller
                 $return->refund_amount = $refund;
                 $return->refund_status = 'processed';
 
+                $totalRefund += $refund;
+
             }
 
             // ❌ If rejected
@@ -798,6 +803,20 @@ class OrderController extends Controller
 
             $return->save();
         }
+
+            $user = $returns->first()->order->user;
+
+            if ($user && $user->email) {
+                Mail::to($user->email)->send(
+                    new ReturnStatusMail(
+                        $request->return_number,
+                        $request->status,
+                        $returns,
+                        $totalRefund
+                    )
+                );
+            }
+
 
         return response()->json([
             'success' => true,
