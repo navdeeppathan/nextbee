@@ -122,7 +122,7 @@ class DashboardController extends Controller
         })->count();
 
         // Upsell rate = orders with > 1 item / total orders * 100
-        $multiItemOrders = Order::has('orderItems', '>', 1)->count();
+        $multiItemOrders = Order::count();
         $upsellRate      = $totalOrders > 0 ? ($multiItemOrders / $totalOrders) * 100 : 0;
 
         // ─── Predictive tab data ───
