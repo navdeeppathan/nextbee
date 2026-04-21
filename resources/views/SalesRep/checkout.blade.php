@@ -343,6 +343,95 @@
 
 
                 </div>
+
+                @if(isset($orderReturns) && count($orderReturns) > 0)
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-red-200 p-6 mt-6">
+                        
+                        <h2 class="font-display text-lg font-semibold text-red-600 mb-4 flex items-center gap-2">
+                            <i class="fas fa-undo"></i>
+                            Return Invoice
+                        </h2>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b-2 border-slate-100">
+                                        <th class="text-left py-3 px-2 text-xs font-semibold text-slate-500 uppercase">
+                                            Product
+                                        </th>
+                                        <th class="text-center py-3 px-2 text-xs font-semibold text-slate-500 uppercase">
+                                            Qty Returned
+                                        </th>
+                                        <th class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase">
+                                            Price
+                                        </th>
+                                        <th class="text-right py-3 px-2 text-xs font-semibold text-slate-500 uppercase">
+                                            Refund
+                                        </th>
+                                        <th class="text-left py-3 px-2 text-xs font-semibold text-slate-500 uppercase">
+                                            Reason
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    @php $totalRefund = 0; @endphp
+
+                                    @foreach($orderReturns as $return)
+                                        @php
+                                            $refund = $return->product->price * $return->quantity;
+                                            $totalRefund += $refund;
+                                        @endphp
+
+                                        <tr class="border-b border-slate-100">
+                                            <td class="py-4 px-2">
+                                                <div>
+                                                    <p class="font-medium text-slate-900">
+                                                        {{ $return->product->title }}
+                                                    </p>
+                                                    <p class="text-xs text-slate-500">
+                                                        {{ $return->product->sku_code }}
+                                                    </p>
+                                                </div>
+                                            </td>
+
+                                            <td class="text-center">
+                                                {{ $return->quantity }}
+                                            </td>
+
+                                            <td class="text-right">
+                                                £{{ number_format($return->product->price, 2) }}
+                                            </td>
+
+                                            <td class="text-right font-semibold text-red-600">
+                                                £{{ number_format($refund, 2) }}
+                                            </td>
+
+                                            <td class="text-sm text-slate-600">
+                                                {{ $return->reason }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {{-- TOTAL REFUND --}}
+                        <div class="flex justify-end mt-4">
+                            <div class="bg-red-50 px-4 py-3 rounded-lg">
+                                <p class="text-sm text-slate-600">Total Refund</p>
+                                <p class="text-lg font-bold text-red-600">
+                                    £{{ number_format($totalRefund, 2) }}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                @endif
                 <!-- Notes & Instructions -->
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
                     <h2 class="font-display text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">

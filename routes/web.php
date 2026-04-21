@@ -64,6 +64,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderLog;
 use App\Models\Cart;
+use App\Models\OrderReturn;
 
 Route::post('/locations/store', [LocationController::class, 'store'])
     ->name('locations.store');
@@ -500,7 +501,12 @@ Route::get('/checkout-sales/{order_id}', function ($order_id) {
         ];
     });
 
-    return view('SalesRep.checkout', compact('orderData', 'order'));
+    // ✅ ADD THIS
+    $orderReturns = OrderReturn::with('product')
+        ->where('order_id', $order_id)
+        ->get();
+
+    return view('SalesRep.checkout', compact('orderData', 'order', 'orderReturns'));
 });
 
 Route::get('/checkout-inventory/{order_id}', function ($order_id) {
