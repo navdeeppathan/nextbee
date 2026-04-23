@@ -405,7 +405,8 @@ class OrderController extends Controller
                 'moq' => $item->product->moq,
                 'price' => $item->price,
                 'qty' => $item->quantity,
-                'lineTotal' => $item->price * $item->quantity
+                'lineTotal' => $item->price * $item->quantity,
+               
             ];
         });
 

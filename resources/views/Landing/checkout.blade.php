@@ -152,6 +152,33 @@
         .toast.show {
             transform: translateX(0);
         }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 50px;
+            margin-top: 8px;
+
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+
+            min-width: 260px;
+
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+
+            z-index: 9999;
+            /* 🔥 MOST IMPORTANT */
+        }
+
+        .profile-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
     </style>
 
 </head>
@@ -195,16 +222,56 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div class="text-right hidden md:block">
-                        <p class="text-xs text-slate-500">{{ Auth::user()->role }}</p>
-                        <p class="text-sm font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                <div class="flex items-center gap-4" id="profile-container">
+
+                    <div onclick="toggleProfile(event)" class="flex items-center gap-4 cursor-pointer">
+
+                        <div class="text-right hidden md:block">
+                            <p class="text-xs text-slate-500">{{ Auth::user()->role }}</p>
+                            <p class="text-sm font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                        </div>
+
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-900 font-bold">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </span>
+                        </div>
+
                     </div>
-                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span class="text-blue-900 font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+
+                    <!-- 🔥 PROFILE DROPDOWN -->
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="p-4 border-b border-slate-100">
+                            <p class="font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                            <p class="text-sm text-slate-500">{{ Auth::user()->email }}</p>
+                        </div>
+
+                        <div class="p-2">
+                            <a href="/customer/profile"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-sm">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+
+                            <a href="/customer/dashboard"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-sm">
+                                <i class="fas fa-building"></i> Dashboard
+                            </a>
+                        </div>
+
+                        <div class="p-2 border-t">
+                            <form method="POST" action="{{ url('/logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-sm">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+
             </div>
+
+        </div>
         </div>
     </nav>
 
@@ -335,6 +402,35 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <p class="text-sm font-medium text-slate-700 mb-3">
+                            Quick Add (Category Based):
+                        </p>
+
+                        <div id="quick-add-container" class="flex flex-wrap gap-2">
+                            <!-- Dynamic buttons yaha aayenge -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Add Buttons -->
+                    <!-- <div class="mt-6 pt-6 border-t border-slate-100">
+                        <p class="text-sm font-medium text-slate-700 mb-3">Quick Add Regular Items:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="quickAddProduct('CC-330-24')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-700 transition">
+                                + Coca-Cola 330ml
+                            </button>
+                            <button onclick="quickAddProduct('RB-250-24')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-700 transition">
+                                + Red Bull 250ml
+                            </button>
+                            <button onclick="quickAddProduct('HB-415-24')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-700 transition">
+                                + Heinz Beans
+                            </button>
+                            <button onclick="quickAddProduct('BE-PEAS-1K')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm text-slate-700 transition">
+                                + Birds Eye Peas
+                            </button>
+                        </div>
+                    </div> -->
 
 
                 </div>
@@ -497,6 +593,7 @@
     </div>
 
     <script>
+        let lastCategoryId = null;
 
         // ✅ render items
         function renderOrderLines() {
@@ -553,10 +650,43 @@
                 </tr>
         
     `).join('');
+            if (orderLines.length > 0 && orderLines[0].category_id) {
 
+                lastCategoryId = orderLines[orderLines.length - 1].category_id;
+
+                loadQuickAddProducts(lastCategoryId);
+            }
             document.getElementById('line-count').innerText = orderLines.length + " items";
         }
 
+        function loadQuickAddProducts(categoryId) {
+            // 🔥 THIS LINE MISSING
+            const cartProductIds = orderLines.map(item => item.product_id);
+            const params = new URLSearchParams();
+
+            cartProductIds.forEach(id => {
+                params.append('exclude[]', id);
+            });
+
+            fetch(`/products/by-category/${categoryId}?${params.toString()}`)
+                .then(res => res.json())
+                .then(products => {
+
+                    const container = document.getElementById('quick-add-container');
+
+                    if (products.length === 0) {
+                        container.innerHTML = `<p class="text-sm text-gray-400">All products already added ✅</p>`;
+                        return;
+                    }
+
+                    container.innerHTML = products.map(p => `
+                <button onclick="quickAdd(${p.id})"
+                    class="px-3 py-2 bg-slate-100 hover:bg-blue-100 rounded-lg text-sm">
+                    + ${p.title}
+                </button>
+            `).join('');
+                });
+        }
 
         function updateQty(index, change) {
 
@@ -936,6 +1066,18 @@
             let today = new Date().toISOString().split('T')[0];
             document.getElementById('delivery-date').value = today;
 
+        });
+        function toggleProfile(e) {
+            e.stopPropagation(); // 🔥 IMPORTANT
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.classList.toggle('active');
+        }
+        document.addEventListener('click', function (e) {
+            const container = document.getElementById('profile-container');
+
+            if (!container.contains(e.target)) {
+                document.getElementById('profile-dropdown').classList.remove('active');
+            }
         });
     </script>
 </body>

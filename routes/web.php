@@ -560,12 +560,15 @@ Route::get('/checkout', function () {
     $cartData = $cartItems->map(function ($item) {
         return [
             'id' => $item->id, // ✅ MUST
+            'product_id' => $item->product->id, // 🔥 MUST
             'name' => $item->product->title,
             'sku' => $item->product->sku_code,
             'price' => $item->product->price,
             'moq' => 1,
             'qty' => max(5, $item->quantity),
-            'lineTotal' => $item->product->price * max(5, $item->quantity)
+            'lineTotal' => $item->product->price * max(5, $item->quantity),
+               // 🔥 ADD THIS LINE (MAIN FIX)
+         'category_id' => $item->product->category_id
         ];
     });
 
@@ -694,3 +697,4 @@ Route::post('/order/add-item', [OrderController::class, 'addItem']);
 Route::post('/order/update-item', [OrderController::class, 'updateItem']);
 Route::post('/order/delete-item', [OrderController::class, 'deleteItem']);
 Route::get('/order-copy/{id}', [OrderController::class, 'againOrder'])->middleware('auth');
+Route::get('/products/by-category/{id}', [ProductController::class, 'getByCategory']);
