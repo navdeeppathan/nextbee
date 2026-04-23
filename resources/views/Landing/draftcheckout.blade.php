@@ -335,6 +335,15 @@
                             </tbody>
                         </table>
                     </div>
+                    <div class="mt-6 pt-6 border-t border-slate-100">
+                        <p class="text-sm font-medium text-slate-700 mb-3">
+                            Quick Add (Category Based):
+                        </p>
+
+                        <div id="quick-add-container" class="flex flex-wrap gap-2">
+                            <!-- Dynamic buttons yaha aayenge -->
+                        </div>
+                    </div>
 
 
                 </div>
@@ -443,7 +452,8 @@
                             </div>
                             <div class="flex justify-between text-xs mb-1">
                                 <span class="text-slate-600">Available</span>
-                                <span class="font-medium text-green-600" id="credit-available">£ {{ Auth::user()->credit_limit ?? 0 }}</span>
+                                <span class="font-medium text-green-600" id="credit-available">£
+                                    {{ Auth::user()->credit_limit ?? 0 }}</span>
                             </div>
                             <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
                                 <div id="credit-bar" class="bg-green-500 h-2 rounded-full transition-all"
@@ -499,6 +509,7 @@
     </div>
 
     <script>
+        let lastCategoryId = null;
 
         // ✅ render items
         function renderOrderLines() {
@@ -556,14 +567,50 @@
         
     `).join('');
 
+            if (orderLines.length > 0 && orderLines[0].category_id) {
+
+                lastCategoryId = orderLines[orderLines.length - 1].category_id;
+
+                loadQuickAddProducts(lastCategoryId);
+            }
+
             document.getElementById('line-count').innerText = orderLines.length + " items";
+        }
+
+        function loadQuickAddProducts(categoryId) {
+            // 🔥 THIS LINE MISSING
+            const cartProductIds = orderLines.map(item => item.product_id);
+            const params = new URLSearchParams();
+
+            cartProductIds.forEach(id => {
+                params.append('exclude[]', id);
+            });
+
+            fetch(`/products/by-category/${categoryId}?${params.toString()}`)
+                .then(res => res.json())
+                .then(products => {
+
+                    const container = document.getElementById('quick-add-container');
+
+                    if (products.length === 0) {
+                        container.innerHTML = `<p class="text-sm text-gray-400">All products already added ✅</p>`;
+                        return;
+                    }
+
+                    container.innerHTML = products.map(p => `
+                <button onclick="quickAdd(${p.id})"
+                    class="px-3 py-2 bg-slate-100 hover:bg-blue-100 rounded-lg text-sm">
+                    + ${p.title}
+                </button>
+            `).join('');
+                });
         }
 
 
         function updateQty(index, change) {
 
             let item = orderLines[index];
-           // 🔥 FORCE NUMBER (THIS IS THE FIX)
+            // 🔥 FORCE NUMBER (THIS IS THE FIX)
             item.qty = Number(item.qty);
             if (change < 0 && item.qty <= 5) {
                 showToast('Minimum qty is 5');
@@ -726,27 +773,27 @@
 
             let creditLimit = {{ Auth::user()->credit_limit ?? 0 }};
 
-// 🔥 NO LIMIT — NEGATIVE ALLOWED
-let available = creditLimit - grandTotal;
+            // 🔥 NO LIMIT — NEGATIVE ALLOWED
+            let available = creditLimit - grandTotal;
 
-// UI update
-let availableEl = document.getElementById('credit-available');
-availableEl.innerText = "£" + available.toFixed(2);
+            // UI update
+            let availableEl = document.getElementById('credit-available');
+            availableEl.innerText = "£" + available.toFixed(2);
 
-// 🔥 COLOR CHANGE
-if (available < 0) {
-    availableEl.classList.remove('text-green-600');
-    availableEl.classList.add('text-green-600'); // ❌ negative
-} else {
-    availableEl.classList.remove('text-green-600');
-    availableEl.classList.add('text-green-600'); // ✅ normal
-}
+            // 🔥 COLOR CHANGE
+            if (available < 0) {
+                availableEl.classList.remove('text-green-600');
+                availableEl.classList.add('text-green-600'); // ❌ negative
+            } else {
+                availableEl.classList.remove('text-green-600');
+                availableEl.classList.add('text-green-600'); // ✅ normal
+            }
 
-// 🔥 PROGRESS BAR
-let percent = (grandTotal / creditLimit) * 100;
-if (percent > 100) percent = 100;
+            // 🔥 PROGRESS BAR
+            let percent = (grandTotal / creditLimit) * 100;
+            if (percent > 100) percent = 100;
 
-document.getElementById('credit-bar').style.width = percent + "%";
+            document.getElementById('credit-bar').style.width = percent + "%";
             // ✅ 🔥 THIS FIX
             document.getElementById('submit-btn').disabled = orderLines.length === 0;
         }
