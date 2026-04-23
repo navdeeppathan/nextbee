@@ -152,6 +152,33 @@
         .toast.show {
             transform: translateX(0);
         }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 50px;
+            margin-top: 8px;
+
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+
+            min-width: 260px;
+
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+
+            z-index: 9999;
+            /* 🔥 MOST IMPORTANT */
+        }
+
+        .profile-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
     </style>
 
 </head>
@@ -195,14 +222,53 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <div class="text-right hidden md:block">
-                        <p class="text-xs text-slate-500">{{ Auth::user()->role }}</p>
-                        <p class="text-sm font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                <div class="flex items-center gap-4" id="profile-container">
+
+                    <div onclick="toggleProfile(event)" class="flex items-center gap-4 cursor-pointer">
+
+                        <div class="text-right hidden md:block">
+                            <p class="text-xs text-slate-500">{{ Auth::user()->role }}</p>
+                            <p class="text-sm font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                        </div>
+
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span class="text-blue-900 font-bold">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </span>
+                        </div>
+
                     </div>
-                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span class="text-blue-900 font-bold">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+
+                    <!-- 🔥 PROFILE DROPDOWN -->
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="p-4 border-b border-slate-100">
+                            <p class="font-semibold text-slate-900">{{ Auth::user()->name }}</p>
+                            <p class="text-sm text-slate-500">{{ Auth::user()->email }}</p>
+                        </div>
+
+                        <div class="p-2">
+                            <a href="/customer/profile"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-sm">
+                                <i class="fas fa-user"></i> My Profile
+                            </a>
+
+                            <a href="/customer/dashboard"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-50 text-sm">
+                                <i class="fas fa-building"></i> Dashboard
+                            </a>
+                        </div>
+
+                        <div class="p-2 border-t">
+                            <form method="POST" action="{{ url('/logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg text-sm">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -964,6 +1030,19 @@
             let today = new Date().toISOString().split('T')[0];
             document.getElementById('delivery-date').value = today;
 
+        });
+
+        function toggleProfile(e) {
+            e.stopPropagation(); // 🔥 IMPORTANT
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.classList.toggle('active');
+        }
+        document.addEventListener('click', function (e) {
+            const container = document.getElementById('profile-container');
+
+            if (!container.contains(e.target)) {
+                document.getElementById('profile-dropdown').classList.remove('active');
+            }
         });
     </script>
 </body>
