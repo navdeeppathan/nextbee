@@ -103,27 +103,51 @@ class XeroController extends Controller
         return $data['access_token'];
     }
 
-   public function createContact()
+    public function createContact($name, $email)
     {
-        $token = $this->getValidAccessToken();
-        $xero = XeroToken::where('user_id', auth()->id())->first();
+        // ✅ Always use superadmin token
+        $xero = XeroToken::first(); // or where role = superadmin
+
+        if (!$xero) {
+            throw new \Exception("Xero not connected");
+        }
+
+        $token = $this->getValidAccessTokenByToken($xero);
 
         $response = Http::withToken($token)
             ->withHeaders([
                 'xero-tenant-id' => $xero->tenant_id,
             ])
             ->post('https://api.xero.com/api.xro/2.0/Contacts', [
-                'Name' => 'Customer Name',
-                'EmailAddress' => 'customer@gmail.com',
+                "Contacts" => [
+                    [
+                        'Name' => $name,
+                        'EmailAddress' => $email,
+                    ]
+                ]
             ]);
 
         return $response->json();
     }
 
-    public function createInvoice()
+    private function getValidAccessTokenByToken($token)
     {
-        $token = $this->getValidAccessToken();
-        $xero = XeroToken::where('user_id', auth()->id())->first();
+        if (now()->greaterThan($token->expires_at)) {
+            return $this->refreshToken($token);
+        }
+
+        return $token->access_token;
+    }
+
+    public function createInvoice($contactId)
+    {
+        $xero = XeroToken::first();
+
+        if (!$xero) {
+            throw new \Exception("Xero not connected");
+        }
+
+        $token = $this->getValidAccessTokenByToken($xero);
 
         $response = Http::withToken($token)
             ->withHeaders([
@@ -134,7 +158,7 @@ class XeroController extends Controller
                     [
                         "Type" => "ACCREC",
                         "Contact" => [
-                            "Name" => "Customer Name"
+                            "ContactID" => $contactId
                         ],
                         "LineItems" => [
                             [

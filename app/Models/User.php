@@ -28,7 +28,8 @@ class User extends Authenticatable
         'sales_assigned',
         'credit_limit',
         'invoice_pay_days',
-        'tier'
+        'tier',
+        'xero_contact_id'
     ];
 
     protected $hidden = [
