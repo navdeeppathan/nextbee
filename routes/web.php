@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\RouteController;
 
+use App\Http\Controllers\XeroController;
+
+Route::get('/xero/connect', [XeroController::class, 'connect']);
+Route::get('/xero/callback', [XeroController::class, 'callback']);
+Route::get('/xero/tenant', [XeroController::class, 'getTenant']);
+
+Route::post('/xero/contact', [XeroController::class, 'createContact']);
+Route::post('/xero/invoice', [XeroController::class, 'createInvoice']);
+
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register-driver', [AuthController::class, 'registerDriver'])->name('register-driver');
@@ -664,7 +673,6 @@ Route::post('/order/update-status', function (Request $req) {
 });
 Route::post('/order-item/add', [OrderController::class, 'addItem2']);
 
-
 Route::post('/order-item/delete', function (Request $req) {
 
     OrderItem::where('id', $req->order_item_id)->delete();
@@ -682,6 +690,7 @@ Route::post('/cart/update', function (Request $request) {
 
     return response()->json(['success' => true]);
 });
+
 Route::post('/cart/delete', [CartController::class, 'delete'])->middleware('auth');
 // Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');

@@ -8,7 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+
+use function PHPUnit\Framework\callback;
 
 class AuthController extends Controller
 {
@@ -153,6 +156,8 @@ class AuthController extends Controller
 
         return redirect()->back()->with('success', 'Customer updated successfully ✅');
     }
+
+    
     // LOGIN
     public function login(Request $request)
     {
@@ -191,7 +196,6 @@ class AuthController extends Controller
             }
              if(trim($user->role) == 'superadmin') {
                 return redirect('/dashboard');
-            
             }
 
             // all other roles go to admin

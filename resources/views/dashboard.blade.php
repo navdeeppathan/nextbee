@@ -88,6 +88,9 @@
                 <button onclick="switchMainTab('customer')" id="tab-customer" class="px-8 py-3 text-sm font-extrabold uppercase tracking-widest text-slate-500 rounded-xl transition-all duration-300 hover:bg-red-50 hover:text-red-500 hover:scale-105">👤 Customer</button>
                 <button onclick="switchMainTab('warehouse')" id="tab-warehouse" class="px-8 py-3 text-sm font-extrabold uppercase tracking-widest text-slate-500 rounded-xl transition-all duration-300 hover:bg-emerald-50 hover:text-emerald-500 hover:scale-105">📦 Warehouse</button>
                 <button onclick="switchMainTab('logistics')" id="tab-logistics" class="px-8 py-3 text-sm font-extrabold uppercase tracking-widest text-slate-500 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:text-indigo-500 hover:scale-105">🚚 Logistics</button>
+                <a href="/xero/connect" class="px-8 py-3 text-sm font-extrabold uppercase tracking-widest text-slate-500 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:text-indigo-500 hover:scale-105">
+                    Connect Xero
+                </a>
             </div>
         </div>
 
