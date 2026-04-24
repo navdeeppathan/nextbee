@@ -148,5 +148,14 @@ class ProductController extends Controller
         return back();
     }
 
-    
+ public function getByCategory(Request $request, $id)
+{
+    $exclude = $request->exclude ?? [];
+
+    return Product::where('category_id', $id)
+        ->whereNotIn('id', $exclude) // 🔥 already added हटाओ
+        ->select('id','title','price','image','sku_code')
+        ->limit(5) // ✅ अब सही जगह
+        ->get();
+}
 }

@@ -6,7 +6,8 @@
 @section('content')
 
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 
 
     <div class="card">
@@ -17,6 +18,7 @@
                 <span class="pill pill-blue" style="font-size:11px;"><span class="pill-dot"></span>{{ $totalTransactions }}
                     transactions</span>
                 <button
+                onclick="exportPDF()"
                     style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:6px 12px; font-size:11px; font-weight:600; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:5px;">
                     <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
@@ -194,6 +196,41 @@
                     location.reload();
                 });
         }
+
+        function exportPDF() {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Table headers
+    let headers = [];
+    document.querySelectorAll("table thead th").forEach(th => {
+        headers.push(th.innerText);
+    });
+
+    // Table rows
+    let rows = [];
+    document.querySelectorAll("table tbody tr").forEach(tr => {
+
+        let row = [];
+        tr.querySelectorAll("td").forEach(td => {
+            row.push(td.innerText.trim());
+        });
+
+        if (row.length > 0) {
+            rows.push(row);
+        }
+    });
+
+    // Generate table in PDF
+    doc.autoTable({
+        head: [headers],
+        body: rows,
+        startY: 20,
+    });
+
+    doc.save("transactions.pdf");
+}
     </script>
 
 @endsection
