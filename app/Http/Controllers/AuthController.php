@@ -114,6 +114,8 @@ class AuthController extends Controller
                 $user->email
             );
 
+            
+
             // OPTIONAL: store xero contact id
             if (isset($response['Contacts'][0]['ContactID'])) {
                 $user->update([
@@ -122,11 +124,12 @@ class AuthController extends Controller
             }
 
         } catch (\Exception $e) {
+            
             \Log::error('Xero Contact Error: ' . $e->getMessage());
         }
 
-        // ❌ remove Auth::login($user);
-        // ✅ direct login page
+        //  remove Auth::login($user);
+        // direct login page
         return redirect()->back()->with('success', 'Register success, please login');
     }
 
