@@ -63,7 +63,7 @@ class XeroController extends Controller
                 'tenant_id' => $data[0]['tenantId'] ?? null
             ]);
 
-        return $data;
+        redirect('/dashboard');
     }
 
     
