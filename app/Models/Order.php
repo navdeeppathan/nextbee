@@ -22,7 +22,8 @@ class Order extends Model
         'parent_order_id',   // 🔥 ADD THIS
         'is_active' ,
         'assigned_driver',
-        'delivery_date'       // 🔥 ADD THIS
+        'delivery_date',
+        'xero_invoice_id'       // 🔥 ADD THIS
 
     ];
     public function items()

@@ -927,6 +927,21 @@
                                     Suspend User
                                 </button>
                         </form>
+                        @if ($customer->status == 'active')
+                            <form action="{{ route('customer.sync.xero', $customer->id) }}" method="POST">
+                                @csrf
+                                <button 
+                                    type="submit"
+                                    @if($customer->xero_contact_id) disabled @endif
+                                    class="w-full py-2 rounded-lg text-sm font-semibold transition
+                                        {{ $customer->xero_contact_id 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'bg-indigo-600 hover:bg-indigo-700 text-white' }}">
+                                    
+                                    {{ $customer->xero_contact_id ? 'Synced to Xero' : 'Sync to Xero' }}
+                                </button>
+                            </form>
+                        @endif
 
                         <div class="flex gap-2">
                             <form action="{{ route('send.pricelist', $customer->id) }}" method="POST" enctype="multipart/form-data">
@@ -1387,6 +1402,8 @@
     </div>
 
 
+
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
@@ -1448,6 +1465,7 @@
         document.getElementById('edit_contact').value = customer.primary_contact_name || '';
         document.getElementById('edit_phone').value = customer.phone || '';
         document.getElementById('edit_email').value = customer.email || '';
+        document.getElementById('edit_status').value = customer.status;
 
         // ✅ Delivery Days Checkbox
         document.querySelectorAll('.edit-day').forEach(cb => {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\XeroToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -83,7 +84,7 @@ class XeroController extends Controller
         return $token->access_token;
     }
 
-   private function refreshToken($token)
+    private function refreshToken($token)
     {
         $response = Http::asForm()
             ->withBasicAuth(env('XERO_CLIENT_ID'), env('XERO_CLIENT_SECRET'))
@@ -130,6 +131,91 @@ class XeroController extends Controller
         return $response->json();
     }
 
+    
+
+    public function syncToXero($id)
+    {
+        try {
+            // ✅ Fetch customer with role = customer
+            $customer = User::where('id', $id)
+                ->where('role', 'customer')
+                ->firstOrFail();
+
+            // ✅ Call Xero
+            $xero = new XeroController();
+
+            $response = $xero->createContact(
+                $customer->business_name,
+                $customer->email
+            );
+
+            // ✅ Save Xero Contact ID
+            if (isset($response['Contacts'][0]['ContactID'])) {
+                $customer->update([
+                    'xero_contact_id' => $response['Contacts'][0]['ContactID']
+                ]);
+            }
+
+            return back()->with('success', 'Customer synced to Xero successfully');
+
+        } catch (\Exception $e) {
+            \Log::error('Xero Contact Error: ' . $e->getMessage());
+
+            return back()->with('error', 'Failed to sync with Xero');
+        }
+    }
+
+    
+
+    public function createItem($product)
+    {
+        // ✅ Always get stored token
+        $xero = XeroToken::first();
+
+        if (!$xero) {
+            throw new \Exception("Xero not connected");
+        }
+
+        // ✅ Use refresh logic
+        $accessToken = $this->getValidAccessTokenByToken($xero);
+
+        $response = Http::withToken($accessToken)
+            ->withHeaders([
+                'xero-tenant-id' => $xero->tenant_id,
+                'Accept' => 'application/json',
+            ])
+            ->post('https://api.xero.com/api.xro/2.0/Items', [
+                "Items" => [
+                    [
+                        "Code" => $product->sku_code ?? 'ITEM-' . $product->id,
+                        "Name" => $product->title,
+                        "Description" => $product->description ?? '',
+                        "PurchaseDescription" => $product->description ?? '',
+                        "PurchaseDetails" => [
+                            "UnitPrice" => $product->price ?? 0,
+                            "AccountCode" => "200"
+                        ],
+                        "SalesDetails" => [
+                            "UnitPrice" => $product->price ?? 0,
+                            "AccountCode" => "200"
+                        ]
+                    ]
+                ]
+            ]);
+
+        // ✅ Better error logging
+        if ($response->failed()) {
+            \Log::error('Xero Item Error', [
+                'status' => $response->status(),
+                'body' => $response->json()
+            ]);
+
+            throw new \Exception('Xero Item Creation Failed');
+        }
+
+        return $response->json();
+    }
+
     private function getValidAccessTokenByToken($token)
     {
         if (now()->greaterThan($token->expires_at)) {
@@ -139,7 +225,44 @@ class XeroController extends Controller
         return $token->access_token;
     }
 
-    public function createInvoice($contactId)
+    // public function createInvoice($contactId)
+    // {
+    //     $xero = XeroToken::first();
+
+    //     if (!$xero) {
+    //         throw new \Exception("Xero not connected");
+    //     }
+
+    //     $token = $this->getValidAccessTokenByToken($xero);
+
+    //     $response = Http::withToken($token)
+    //         ->withHeaders([
+    //             'xero-tenant-id' => $xero->tenant_id,
+    //         ])
+    //         ->post('https://api.xero.com/api.xro/2.0/Invoices', [
+    //             "Invoices" => [
+    //                 [
+    //                     "Type" => "ACCREC",
+    //                     "Contact" => [
+    //                         "ContactID" => $contactId
+    //                     ],
+    //                     "LineItems" => [
+    //                         [
+    //                             "Description" => "Product",
+    //                             "Quantity" => 1,
+    //                             "UnitAmount" => 100,
+    //                             "AccountCode" => "200"
+    //                         ]
+    //                     ],
+    //                     "Status" => "DRAFT"
+    //                 ]
+    //             ]
+    //         ]);
+
+    //     return $response->json();
+    // }
+
+    public function createInvoice($customer, $order)
     {
         $xero = XeroToken::first();
 
@@ -149,29 +272,49 @@ class XeroController extends Controller
 
         $token = $this->getValidAccessTokenByToken($xero);
 
+        $lineItems = [];
+
+        foreach ($order->items as $item) {
+            $lineItems[] = [
+                "Description" => $item->product->title,
+                "Quantity" => $item->quantity,
+                "UnitAmount" => $item->price,
+                "AccountCode" => "200",
+                "DiscountRate" => 0 // or calculate if needed
+            ];
+        }
+
+        $payload = [
+            "Invoices" => [
+                [
+                    "Type" => "ACCREC",
+                    "Contact" => [
+                        "ContactID" => $customer->xero_contact_id
+                    ],
+                    "Date" => now()->format('Y-m-d'),
+                    "DueDate" => now()->addDays(7)->format('Y-m-d'),
+                    "LineAmountTypes" => "Exclusive",
+                    "LineItems" => $lineItems,
+                    "Status" => "DRAFT"
+                ]
+            ]
+        ];
+
         $response = Http::withToken($token)
             ->withHeaders([
                 'xero-tenant-id' => $xero->tenant_id,
+                'Accept' => 'application/json'
             ])
-            ->post('https://api.xero.com/api.xro/2.0/Invoices', [
-                "Invoices" => [
-                    [
-                        "Type" => "ACCREC",
-                        "Contact" => [
-                            "ContactID" => $contactId
-                        ],
-                        "LineItems" => [
-                            [
-                                "Description" => "Product",
-                                "Quantity" => 1,
-                                "UnitAmount" => 100,
-                                "AccountCode" => "200"
-                            ]
-                        ],
-                        "Status" => "DRAFT"
-                    ]
-                ]
+            ->post('https://api.xero.com/api.xro/2.0/Invoices', $payload);
+
+        if ($response->failed()) {
+            \Log::error('Xero Invoice Error', [
+                'status' => $response->status(),
+                'body' => $response->json()
             ]);
+
+            throw new \Exception('Invoice creation failed');
+        }
 
         return $response->json();
     }

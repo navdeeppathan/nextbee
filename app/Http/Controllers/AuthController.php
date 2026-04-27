@@ -106,27 +106,7 @@ class AuthController extends Controller
         ]);
 
         // ✅ CALL XERO API
-        // try {
-        //     $xero = new XeroController();
-
-        //     $response = $xero->createContact(
-        //         $user->business_name,
-        //         $user->email
-        //     );
-
-            
-
-        //     // OPTIONAL: store xero contact id
-        //     if (isset($response['Contacts'][0]['ContactID'])) {
-        //         $user->update([
-        //             'xero_contact_id' => $response['Contacts'][0]['ContactID']
-        //         ]);
-        //     }
-
-        // } catch (\Exception $e) {
-            
-        //     \Log::error('Xero Contact Error: ' . $e->getMessage());
-        // }
+        
 
         //  remove Auth::login($user);
         // direct login page
@@ -177,6 +157,9 @@ class AuthController extends Controller
             
         ]);
 
+        
+            
+        
         return redirect()->back()->with('success', 'Customer updated successfully ✅');
     }
     

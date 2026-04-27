@@ -33,13 +33,13 @@
                     <a href="/inventory-page" class="nav-item {{ request()->is('inventory-page') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-boxes"></i></span>
                         <span class="nav-text">Inventory</span>
-                        <span class="nav-badge">47</span>
+                        {{-- <span class="nav-badge">47</span> --}}
                         <span class="tooltip">Inventory</span>
                     </a>
                     <a href="/deliveries" class="nav-item {{ request()->is('deliveries') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-truck"></i></span>
                         <span class="nav-text">Deliveries</span>
-                        <span class="nav-badge warning">156</span>
+                        {{-- <span class="nav-badge warning">156</span> --}}
                         <span class="tooltip">Deliveries</span>
                     </a>
                     <a href="/drivers" class="nav-item {{ request()->is('drivers') ? 'active' : '' }}">
@@ -66,7 +66,7 @@
                     <a href="/returns" class="nav-item {{ request()->is('returns') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-undo-alt"></i></span>
                         <span class="nav-text">Returns</span>
-                        <span class="nav-badge warning">3</span>
+                        {{-- <span class="nav-badge warning">3</span> --}}
                         <span class="tooltip">Returns</span>
                     </a>
                 </div>

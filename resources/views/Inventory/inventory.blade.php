@@ -753,6 +753,11 @@
                                     </div>
                                 </div> --}}
                                 @forelse($product->locations as $location)
+                                    @php
+                                        $today = \Carbon\Carbon::today();
+                                        $expiry = \Carbon\Carbon::parse($location->expiry_date);
+                                        $daysLeft = $today->diffInDays($expiry, false); // negative if expired
+                                    @endphp
 
                                     <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
                                         
@@ -792,6 +797,26 @@
                                                 <span class="expiry-badge expiry-warning">Medium</span>
                                             @else
                                                 <span class="expiry-badge expiry-good">Good</span>
+                                            @endif
+
+                                            <!-- EXPIRY STATUS -->
+                                            @if($daysLeft < 0)
+                                                <span class="expiry-badge expiry-critical">Expired</span>
+
+                                            @elseif($daysLeft <= 2)
+                                                <span class="expiry-badge expiry-critical">
+                                                    Expiring in {{ $daysLeft }} day{{ $daysLeft == 1 ? '' : 's' }}
+                                                </span>
+
+                                            @elseif($daysLeft <= 7)
+                                                <span class="expiry-badge expiry-warning">
+                                                    Expiring soon
+                                                </span>
+
+                                            @else
+                                                <span class="expiry-badge expiry-good">
+                                                    Safe
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -1096,7 +1121,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Product Brand</label>
-                    <input type="number" name="brand" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="7">
+                    <input type="text" name="brand" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-slate-900 focus:border-blue-500 focus:outline-none" placeholder="e.g., Nestle">
                 </div>
 
                 <div class="border-t border-slate-200 pt-6">

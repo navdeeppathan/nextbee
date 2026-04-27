@@ -12,6 +12,7 @@ use App\Models\OrderReturn;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
@@ -318,12 +319,32 @@ class OrderController extends Controller
             'parent_order_id' => $order->id // 🔥 MAIN FIX
         ]);
 
-
-
         if ($request->user_id) {
             Cart::where('user_id', $request->user_id)->delete();
         } else {
             Cart::where('user_id', auth()->id())->delete();
+        }
+
+        try {
+            $customer = User::find($order->user_id);
+
+            // ✅ Only if customer has Xero contact
+            if ($customer && $customer->xero_contact_id) {
+
+                $xero = new XeroController();
+
+                $response = $xero->createInvoice($customer, $order);
+
+                // ✅ OPTIONAL: store invoice ID
+                if (isset($response['Invoices'][0]['InvoiceID'])) {
+                    $order->update([
+                        'xero_invoice_id' => $response['Invoices'][0]['InvoiceID']
+                    ]);
+                }
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Xero Invoice Error: ' . $e->getMessage());
         }
 
         return response()->json(['success' => true]);

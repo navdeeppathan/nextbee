@@ -13,7 +13,9 @@ Route::get('/xero/connect', [XeroController::class, 'connect']);
 Route::get('/xero/callback', [XeroController::class, 'callback']);
 Route::get('/xero/tenant', [XeroController::class, 'getTenant']);
 
-Route::post('/xero/contact', [XeroController::class, 'createContact']);
+// Route::post('/xero/contact', [XeroController::class, 'createContact']);
+Route::post('/customer/{id}/sync-xero', [XeroController::class, 'syncToXero'])
+    ->name('customer.sync.xero');
 Route::post('/xero/invoice', [XeroController::class, 'createInvoice']);
 
 
@@ -152,6 +154,7 @@ Route::get('/brands/{brand}', function ($brand) {
 Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
     Route::get('/inventory', function () {
+        
 
         return view('Inventory.layouts.app');
     });
@@ -203,6 +206,7 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
     Route::get('/inventory-page', function () {
         $categories = Category::all();
+        // $products = Product::orderBy('id', 'desc')->get();
         $products = Product::all();
 
         return view('Inventory.inventory', compact('categories', 'products'));

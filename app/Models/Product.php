@@ -25,7 +25,8 @@ class Product extends Model
         'basket',
         'quantity',
         'product_type',
-        'brand'
+        'brand',
+        'xero_item_id'
     ];
 
     public function category()

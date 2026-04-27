@@ -79,10 +79,29 @@ class ProductController extends Controller
             $data['image'] = 'uploads/' . $name;;
         }
 
-        Product::create($data);
+        // Product::create($data);
+         // ✅ Create Product
+        $product = Product::create($data);
+
+        try {
+            $xero = new XeroController();
+            $response = $xero->createItem($product);
+
+            // OPTIONAL: store item id
+            if (isset($response['Items'][0]['ItemID'])) {
+                $product->update([
+                    'xero_item_id' => $response['Items'][0]['ItemID']
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            \Log::error('Xero Sync Failed: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Inventory item added successfully');
     }
+
+    
     public function edit($id)
     {
         $product = Product::find($id);

@@ -33,7 +33,7 @@
                     <a href="/sales-customers" class="nav-item {{ request()->is('sales-customers') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-users"></i></span>
                         <span class="nav-text">My Customers</span>
-                        <span class="nav-badge">3</span>
+                        {{-- <span class="nav-badge">3</span> --}}
                         <span class="tooltip">My Customers</span>
                     </a>
                     <a href="/sales-orders2" class="nav-item {{ request()->is('sales-orders') ? 'active' : '' }}">
@@ -44,7 +44,7 @@
                     <a href="/sales-tasks" class="nav-item {{ request()->is('sales-tasks') ? 'active' : '' }}">
                         <span class="nav-icon"><i class="fas fa-tasks"></i></span>
                         <span class="nav-text">Tasks</span>
-                        <span class="nav-badge warning">5</span>
+                        {{-- <span class="nav-badge warning">5</span> --}}
                         <span class="tooltip">Tasks</span>
                     </a>
                 </div>
