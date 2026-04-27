@@ -629,11 +629,11 @@
                     onclick="toggleMobileMenu()">Brands</a>
                 <a href="#services" class="block text-2xl font-medium text-slate-800"
                     onclick="toggleMobileMenu()">Services</a>
-                <a href="/sales-order-page2" onclick="toggleMobileMenu();"
-                    class="block text-2xl font-medium text-blue-900"> Sales Order</a>
+                <a href="/checkout" onclick="toggleMobileMenu();" class="block text-2xl font-medium text-blue-900">
+                    Sales Order</a>
                 <hr class="border-slate-200">
-                <a href="#" class="block text-lg font-medium text-slate-600">My Profile</a>
-                <a href="#" class="block text-lg font-medium text-slate-600">Order History</a>
+                <a href="/customer/profile" class="block text-lg font-medium text-slate-600">My Profile</a>
+                <a href="//customer/orders" class="block text-lg font-medium text-slate-600">Order History</a>
                 <button onclick="logout()" class="block text-lg font-medium text-red-600">Logout</button>
             </div>
         </div>
@@ -897,9 +897,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                                                    </button> -->
+                                                                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                                        </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1269,7 +1269,7 @@
                     class="px-8 py-4 bg-yellow-500 text-blue-900 font-bold rounded-full hover:bg-yellow-400 transition text-lg">
                     <i class="fas fa-phone mr-2"></i> Call Sarah
                 </a>
-                <a href="/sales-order-page2"
+                <a href="/checkout"
                     class="px-8 py-4 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition border border-blue-700 text-lg inline-flex items-center">
                     <i class="fas fa-clipboard-list mr-2"></i> Sales Order
                 </a>
@@ -1306,18 +1306,18 @@
                     <ul class="space-y-2 text-sm">
                         <li><a href="#products" class="hover:text-white transition">Browse Products</a></li>
                         <li><a href="#sea-items" class="hover:text-white transition">Items on Sea</a></li>
-                        <li><a href="#" onclick="toggleOrderPanel()" class="hover:text-white transition">My Sales
+                        <li><a href="/checkout"  class="hover:text-white transition">My Sales
                                 Orders</a></li>
-                        <li><a href="#" class="hover:text-white transition">Order History</a></li>
+                        <li><a href="/customer/orders" class="hover:text-white transition">Order History</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-white font-bold mb-4">Account</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-white transition">My Profile</a></li>
+                        <li><a href="/customer/profile" class="hover:text-white transition">My Profile</a></li>
                         <li><a href="#" class="hover:text-white transition">Payment Terms</a></li>
-                        <li><a href="#" class="hover:text-white transition">Invoices</a></li>
-                        <li><a href="#" class="hover:text-white transition">Delivery Addresses</a></li>
+                        <li><a href="/customer/dashboard" class="hover:text-white transition">Invoices</a></li>
+                        <li><a href="/customer/profile" class="hover:text-white transition">Delivery Addresses</a></li>
                     </ul>
                 </div>
                 <div>
