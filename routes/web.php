@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\RouteController;
+use App\Http\Controllers\ContainerController;
+
 
 use App\Http\Controllers\XeroController;
 
@@ -95,16 +97,18 @@ Route::get('/', function () {
     return view('Landing.index', compact('categories', 'products', 'brands'));
 });
 
-Route::get('/main', function () {
-    $categories = Category::all();
-    $products = Product::with('category')->get(); // 👈 important
-    // 🔥 unique brands nikalo
-    $brands = Product::whereNotNull('brand')
-        ->where('brand', '!=', '')
-        ->distinct()
-        ->pluck('brand');
-    return view('Landing.main', compact('categories', 'products', 'brands'));
-})->middleware('auth');
+// Route::get('/main', function () {
+//     $categories = Category::all();
+//     $products = Product::with('category')->get(); // 👈 important
+//     // 🔥 unique brands nikalo
+//     $brands = Product::whereNotNull('brand')
+//         ->where('brand', '!=', '')
+//         ->distinct()
+//         ->pluck('brand');
+//     return view('Landing.main', compact('categories', 'products', 'brands'));
+// })->middleware('auth');
+
+Route::get('/main', [ContainerController::class, 'index'])->middleware('auth');
 
 Route::get('/brand/{brand}', function ($brand) {
 
@@ -154,7 +158,7 @@ Route::get('/brands/{brand}', function ($brand) {
 Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
     Route::get('/inventory', function () {
-        
+
 
         return view('Inventory.layouts.app');
     });
@@ -239,24 +243,24 @@ Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
 
     Route::get('/sales-orders-inventory', function () {
         $orders = Order::with(['user', 'payment'])
-        ->where('status', '!=', 'draft')
-        ->where('status', '!=', 'created')
-        ->where('is_active', 1)
-        ->latest()
-        ->paginate(10);
-        
+            ->where('status', '!=', 'draft')
+            ->where('status', '!=', 'created')
+            ->where('is_active', 1)
+            ->latest()
+            ->paginate(10);
+
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->where('is_active', 1)
             ->count();
 
-        $confirmedOrders = Order::where('status', 'accepted')->where('is_active', 1)->count();    
-       
+        $confirmedOrders = Order::where('status', 'accepted')->where('is_active', 1)->count();
+
         $processingOrders = Order::where('status', 'ready for delivery')->where('is_active', 1)->count();
 
         $deliveredOrders = Order::where('status', 'delivered')->where('is_active', 1)->count();
-        
+
         return view('Inventory.inventory_sales_orders', compact('orders', 'totalOrders', 'processingOrders', 'deliveredOrders', 'confirmedOrders'));
     });
 
@@ -342,7 +346,7 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
     Route::get('/sales-orders2', function () {
 
 
-        $orders= Order::with(['user', 'payment'])->where('status', '!=', 'draft')->where('is_active', 1)->latest()->paginate(10);
+        $orders = Order::with(['user', 'payment'])->where('status', '!=', 'draft')->where('is_active', 1)->latest()->paginate(10);
 
         $totalOrders = Order::where('status', 'accepted')
             ->whereMonth('created_at', Carbon::now()->month)
@@ -360,26 +364,26 @@ Route::middleware(['auth', 'role:sale_rep'])->group(function () {
 
     Route::get('/create-sales-checkout/{user_id}', function ($user_id) {
 
-    $user = User::findOrFail($user_id);
+        $user = User::findOrFail($user_id);
 
-    $cartItems = \App\Models\Cart::with('product')
-        ->where('user_id', $user_id) // ⚠️ check this
-        ->get();
+        $cartItems = \App\Models\Cart::with('product')
+            ->where('user_id', $user_id) // ⚠️ check this
+            ->get();
 
-    $cartData = $cartItems->map(function ($item) {
-        return [
-            'id' => $item->id,
-            'name' => $item->product->title,
-            'sku' => $item->product->sku_code,
-            'price' => $item->product->price,
-            'moq' => 1,
-            'qty' => max(5, $item->quantity),
-            'lineTotal' => $item->product->price * max(5, $item->quantity)
-        ];
+        $cartData = $cartItems->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->product->title,
+                'sku' => $item->product->sku_code,
+                'price' => $item->product->price,
+                'moq' => 1,
+                'qty' => max(5, $item->quantity),
+                'lineTotal' => $item->product->price * max(5, $item->quantity)
+            ];
+        });
+
+        return view('SalesRep.checkoutsalescustomer', compact('cartItems', 'cartData', 'user'));
     });
-
-    return view('SalesRep.checkoutsalescustomer', compact('cartItems', 'cartData', 'user'));
-});
 
     Route::get('/sales', function () {
         return view('SalesRep.sales_dashboard');
@@ -580,8 +584,8 @@ Route::get('/checkout', function () {
             'moq' => 1,
             'qty' => max(5, $item->quantity),
             'lineTotal' => $item->product->price * max(5, $item->quantity),
-               // 🔥 ADD THIS LINE (MAIN FIX)
-         'category_id' => $item->product->category_id
+            // 🔥 ADD THIS LINE (MAIN FIX)
+            'category_id' => $item->product->category_id
         ];
     });
 
@@ -635,10 +639,10 @@ Route::post('/order/update-status', function (Request $req) {
 
     $oldStatus = $order->status;
 
-    if(!in_array($req->status, ['accepted', 'created'])) {
+    if (!in_array($req->status, ['accepted', 'created'])) {
         $order->status = $req->status;
     }
-    if(in_array($req->status, ['accepted', 'created'])) {
+    if (in_array($req->status, ['accepted', 'created'])) {
         $order->is_active = 0;
     }
     $order->save();
@@ -703,6 +707,7 @@ Route::post('/cart/delete', [CartController::class, 'delete'])->middleware('auth
 Route::post('/place-order', [OrderController::class, 'placeOrder'])->middleware('auth');
 Route::post('/save-draft', [OrderController::class, 'saveDraft'])->middleware('auth');
 Route::get('/invoice/{id}', [OrderController::class, 'invoice'])->middleware('auth');
+Route::post('/container/preorder', [ContainerController::class, 'preorder'])->middleware('auth');
 
 Route::get('/orderstatus/{id}', [OrderController::class, 'viewDraft']);
 Route::post('/draft/place/{id}', [OrderController::class, 'placeDraftOrder']);
@@ -711,3 +716,12 @@ Route::post('/order/update-item', [OrderController::class, 'updateItem']);
 Route::post('/order/delete-item', [OrderController::class, 'deleteItem']);
 Route::get('/order-copy/{id}', [OrderController::class, 'againOrder'])->middleware('auth');
 Route::get('/products/by-category/{id}', [ProductController::class, 'getByCategory']);
+
+Route::middleware(['auth', 'role:inventory_manager'])->group(function () {
+
+    Route::get('/container/create', [ContainerController::class, 'create']);
+
+    Route::post('/container/store', [ContainerController::class, 'store']);
+    Route::get('/container/list', [ContainerController::class, 'list']);
+
+});

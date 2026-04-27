@@ -655,18 +655,59 @@
                 <div class="flex items-center gap-4">
                     <div class="text-right">
                         <p class="text-sm text-slate-400">Total Containers</p>
-                        <p class="text-2xl font-bold text-white">12</p>
+                        <p class="text-2xl font-bold text-white"> {{ $totalContainers }}</p>
                     </div>
                     <div class="text-right">
                         <p class="text-sm text-slate-400">Est. Value</p>
-                        <p class="text-2xl font-bold text-yellow-400">£2.4M</p>
+                        <p class="text-2xl font-bold text-yellow-400"> £ {{ number_format($totalValue) }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Sea Items Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Container 1 -->
+
+                @foreach($containers as $container)
+
+                    <div class="sea-card rounded-2xl p-5">
+
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <p class="text-xs text-slate-400 uppercase">Container</p>
+                                <p class="text-white font-bold">{{ $container->container_no }}</p>
+                            </div>
+
+                            <span class="eta-badge text-white text-xs font-bold px-3 py-1 rounded-full">
+                                ETA {{ $container->eta_days }} Days
+                            </span>
+                        </div>
+
+                        <div class="border-t border-white/10 pt-4">
+                            <p class="text-xs text-slate-400 mb-2">Key Items:</p>
+
+                            <div class="flex flex-wrap gap-2">
+
+                                @foreach($container->products->take(3) as $product)
+                                    <span class="text-xs bg-white/10 text-white px-2 py-1 rounded">
+                                        {{ $product->title }}
+                                    </span>
+                                @endforeach
+
+                            </div>
+                        </div>
+
+                        <button onclick="preorderContainer('{{ $container->id }}')"
+                            class="w-full mt-4 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg">
+                            Pre-order Items
+                        </button>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+            <!-- <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              
                 <div class="sea-card rounded-2xl p-5">
                     <div class="flex justify-between items-start mb-4">
                         <div>
@@ -690,7 +731,7 @@
                     </button>
                 </div>
 
-                <!-- Container 2 -->
+               
                 <div class="sea-card rounded-2xl p-5">
                     <div class="flex justify-between items-start mb-4">
                         <div>
@@ -714,7 +755,7 @@
                     </button>
                 </div>
 
-                <!-- Container 3 -->
+               
                 <div class="sea-card rounded-2xl p-5">
                     <div class="flex justify-between items-start mb-4">
                         <div>
@@ -737,7 +778,7 @@
                     </button>
                 </div>
 
-                <!-- Container 4 -->
+                
                 <div class="sea-card rounded-2xl p-5">
                     <div class="flex justify-between items-start mb-4">
                         <div>
@@ -761,10 +802,10 @@
                         Pre-order Items
                     </button>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Quick Stats -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <!-- <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                 <div class="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
                     <div class="text-2xl font-bold text-yellow-400">£450K</div>
                     <div class="text-sm text-slate-400">Pre-orders Available</div>
@@ -781,7 +822,7 @@
                     <div class="text-2xl font-bold text-yellow-400">48h</div>
                     <div class="text-sm text-slate-400">Dispatch on Arrival</div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </section>
     @php
@@ -856,9 +897,9 @@
                                         <i class="fas fa-plus mr-2"></i>Add to Sales Order
                                     </button>
                                     <!-- <button onclick="addToCart({{ $product->id }})"
-                                                                            class="w-full py-3 bg-blue-900 text-white rounded-xl">
-                                                                            <i class="fas fa-plus mr-2"></i>Add to Sales Order
-                                                                        </button> -->
+                                                                                        class="w-full py-3 bg-blue-900 text-white rounded-xl">
+                                                                                        <i class="fas fa-plus mr-2"></i>Add to Sales Order
+                                                                                    </button> -->
                                 </div>
                             </div>
                             <div class="p-5">
@@ -1628,7 +1669,28 @@
 
         // Preorder container
         function preorderContainer(containerId) {
-            showToast('Pre-order request for ' + containerId + ' submitted. Your account manager will contact you.');
+
+            fetch('/container/preorder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    container_id: containerId
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    if (data.success) {
+                        showToast('Container items added to cart ✅');
+
+                        // 🔥 सीधे checkout भी भेज सकते हो
+                        window.location.href = "/checkout";
+                    }
+
+                });
         }
 
         // View price list
